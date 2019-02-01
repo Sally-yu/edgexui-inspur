@@ -1,0 +1,111 @@
+<div *ngIf="device">
+  <div style="margin-bottom: 16px;">
+    <button nz-button class="tool-btn-green" (click)="add()">新增</button>
+    <button nz-button [nzType]="'primary'" (click)="save()">保存</button>
+    <button [disabled]="!device.id" nz-button (click)="delete()" nzType="danger">删除</button>
+    <button nz-button (click)="close()">返回</button>
+  </div>
+
+  <nz-layout style="background-color: #fff">
+    <nz-content style="margin-top: 16px">
+      <p>设备信息</p>
+      <div nz-row nzGutter="8">
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>名称</nz-form-label>
+            <input nz-input placeholder="" [(ngModel)]="device.name">
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>描述</nz-form-label>
+            <input nz-input placeholder="" [(ngModel)]="device.description">
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>标签(多个用英文逗号分隔)</nz-form-label>
+            <input nz-input placeholder="" [(ngModel)]="device.labels">
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row nzGutter="8">
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>服务</nz-form-label>
+            <nz-select style="width: 100%" [(ngModel)]="device.service.name"
+                       nzShowSearch>
+              <nz-option *ngFor="let srv of avaServices" [nzLabel]="srv.name" [nzValue]="srv.name">
+              </nz-option>
+            </nz-select>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>寻址</nz-form-label>
+            <nz-select style="width: 100%" [(ngModel)]="device.addressable.name"
+                       nzShowSearch>
+              <nz-option *ngFor="let add of avaAddress" [nzLabel]="add.name" [nzValue]="add.name">
+              </nz-option>
+            </nz-select>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>配置文件</nz-form-label>
+            <nz-select style="width: 100%" [(ngModel)]="device.profile.name"
+                       nzShowSearch>
+              <nz-option *ngFor="let pro of avaProfiles" [nzLabel]="pro.name" [nzValue]="pro.name">
+              </nz-option>
+            </nz-select>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <nz-table #coms [nzData]="device.profile.commands" [nzPageSize]="4" nzTitle="数据采集" [nzSize]="'middle'">
+        <thead>
+        <tr>
+          <th style="width: 20rem">命令</th>
+          <th style="width: 70rem">返回数据</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let com of coms.data ">
+          <td>{{com.name}}</td>
+          <td>
+            <input nz-input>
+          </td>
+          <td>
+            <button nz-button [ngClass]="'listbtn'" [nzType]="'primary'">发送</button>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+
+      <nz-table #coms [nzData]="device.profile.commands" [nzPageSize]="4" nzTitle="参数设置" [nzSize]="'middle'">
+        <thead>
+        <tr>
+          <th style="width: 20rem">命令</th>
+          <th style="width: 70rem;">参数</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let com of coms.data ">
+          <td>{{com.name}}</td>
+          <td>
+            <div style="display: inline-block;margin-right: 1rem" *ngFor="let para of com.put.parameterNames">
+              <input nz-input [placeholder]="para">
+            </div>
+          </td>
+          <td>
+            <button nz-button [ngClass]="'listbtn'" [nzType]="'primary'">设置</button>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+
+    </nz-content>
+  </nz-layout>
+</div>

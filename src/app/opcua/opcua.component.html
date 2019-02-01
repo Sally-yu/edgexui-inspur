@@ -1,0 +1,90 @@
+<div *ngIf="opcDevice">
+  <div style="margin-bottom: 16px;">
+    <button class="tool-btn-green" nz-button (click)="opcStart()" style="">
+      <i class="icon-play-circle"></i>启动服务
+    </button>
+    <button class="tool-btn-red" nz-button (click)="opcStop()">
+      <i class="icon-poweroff"></i>停止服务
+    </button>
+    <button nz-button (click)="pingTest()"><i class="icon-database"></i>连接测试</button>
+    <button nz-button><i class="icon-close-circle"></i>删除配置</button>
+    <button nz-button><i class="icon-sync"></i>刷新配置</button>
+    <button nz-button (click)="close()"><i class="icon-left-circle"></i>返回上级</button>
+  </div>
+
+  <nz-content>
+    <h3>采集客户端配置</h3>
+    <div nz-row nzGutter="8">
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>OPC类型</nz-form-label>
+          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.opctype">
+            <nz-option *ngFor="let type of opcTypes" [nzLabel]="type"
+                       [nzValue]="type"></nz-option>
+          </nz-select>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>服务器地址</nz-form-label>
+          <nz-input-group [nzSuffix]="suffixIconSearch">
+            <input type="text" nz-input [(ngModel)]="opcDevice.serverip">
+            <ng-template #suffixIconSearch>
+              <button class="input-btn" nz-button nzType="primary" (click)="search()">
+                <i class="icon-bulb"></i>
+              </button>
+            </ng-template>
+          </nz-input-group>
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>服务端名称</nz-form-label>
+          <input nz-input type="text" [(ngModel)]="opcDevice.servername">
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>采集频率</nz-form-label>
+          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.frq">
+            <nz-option *ngFor="let f of collectFrq" [nzLabel]="f+'ms'" [nzValue]="f"></nz-option>
+          </nz-select>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <h3>数据库配置</h3>
+    <div nz-row nzGutter="8">
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>数据库地址</nz-form-label>
+          <input nz-input type="text" [(ngModel)]="opcDevice.dbip">
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>数据库名称</nz-form-label>
+          <input nz-input type="text" [(ngModel)]="opcDevice.dbname">
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>用户名</nz-form-label>
+          <input nz-input type="text" [(ngModel)]="opcDevice.dbuser">
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>密码</nz-form-label>
+          <input nz-input type="password" [(ngModel)]="opcDevice.dbpwd">
+        </nz-form-item>
+      </div>
+    </div>
+  </nz-content>
+
+</div>

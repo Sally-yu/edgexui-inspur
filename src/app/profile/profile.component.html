@@ -1,0 +1,35 @@
+<div style="margin-bottom: 16px;">
+  <button nz-button class="tool-btn-green"(click)="upload()">
+    上传
+  </button>
+  <button nz-button [nzType]="'primary'" (click)="getPro()">
+    刷新
+  </button>
+</div>
+
+<nz-table [nzSize]="'middle'" #pros [nzData]="profiles" [nzLoading]="loading">
+  <thead>
+  <tr>
+    <th>名称</th>
+    <th>描述</th>
+    <th>标签</th>
+    <th>制造商</th>
+    <th>创建时间</th>
+    <th>修改时间</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let pro of pros.data">
+    <td>{{pro.name}}</td>
+    <td>{{pro.description}}</td>
+    <td>{{pro.labels}}</td>
+    <td>{{pro.manufacturer}}</td>
+    <td>{{pro.created}}</td>
+    <td>{{pro.modified}}</td>
+    <td>
+      <a (click)="delete(pro.id)" style="color:#f22">删除</a>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

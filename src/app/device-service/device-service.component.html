@@ -1,0 +1,50 @@
+<app-service-detail *ngIf="selectedService" [service]="selectedService"  (closed)="detailClosed($event)" (deleteOne)="detailNext($event)">
+</app-service-detail>
+
+<app-opcua *ngIf="selectOpc" [opcDevice]="selectOpc" (result)="detailClosed($event)"></app-opcua>
+
+<div *ngIf="show">
+  <div style="margin-bottom: 16px;">
+    <button nz-button  class="tool-btn-green"  (click)="newService()">
+      新增
+    </button>
+    <button nz-button (click)="getService()" [nzType]="'primary'">
+      刷新
+    </button>
+  </div>
+  <nz-table #srvs [nzData]="device_services" [nzSize]="'middle'">
+    <thead>
+    <tr>
+      <th>名称</th>
+      <th>描述</th>
+      <th>标签</th>
+      <th>状态</th>
+      <th>管理</th>
+      <th>上次连接</th>
+      <th>上次响应</th>
+      <th>创建时间</th>
+      <th>修改时间</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of srvs.data">
+      <td>{{data.name}}</td>
+      <td>{{data.description}}</td>
+      <td>{{data.labels}}</td>
+      <td>{{data.operatingState}}</td>
+      <td>{{data.adminState}}</td>
+      <td>{{data.lastConnected}}</td>
+      <td>{{data.lastReported}}</td>
+      <td>{{data.created}}</td>
+      <td>{{data.modified}}</td>
+      <td>
+        <a (click)="edit(data.name)">编辑</a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a *ngIf="!data.opc" style="color:#F22;" (click)="delete(data.name)">删除</a>
+        <span *ngIf="data.opc" style="color: #9d9d9d"  nz-tooltip nzTitle="opc设备暂不支持删除" nzPlacement="rightTop">删除</span>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</div>

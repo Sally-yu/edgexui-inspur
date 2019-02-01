@@ -1,0 +1,34 @@
+<nz-table #notis [nzData]="notifications" [nzPageSize]="10" [nzSize]="'middle'">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>slug</th>
+      <th>sender</th>
+      <th>category</th>
+      <th>severity</th>
+      <th>content</th>
+      <th>description</th>
+      <th>status</th>
+      <th>labels</th>
+      <th>origin</th>
+      <th nzShowSort [nzSortKey]="notifications.created" [nzSort]="'descend'">created</th>
+      <th >modified</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let noti of notifications">
+      <td>{{noti.index+1}}</td>
+      <td>{{noti.slug}}</td>
+      <td>{{noti.sender}}</td>
+      <td>{{noti.category}}</td>
+      <td>{{noti.severity}}</td>
+      <td>{{noti.content}}</td>
+      <td>{{noti.description}}</td>
+      <td>{{noti.status}}</td>
+      <td>{{noti.labels}}</td>
+      <td>{{noti.origin}}</td>
+      <td>{{noti.created}}</td>
+      <td>{{noti.modified}}</td>
+    </tr>
+  </tbody>
+</nz-table>

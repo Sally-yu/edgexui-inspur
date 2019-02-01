@@ -1,0 +1,16 @@
+<nz-content style="width: 100%; height: 65rem; background-color: #efefef">
+  <div [ngClass]="{'smalldiv':btn,'expdiv':!btn}">
+    <i [class]="btn?'icon-setting':'icon-close'" [ngClass]="{'smallbtn':btn,'expbtn':!btn}" (click)="btn=!btn">
+    </i>
+    <div *ngIf="!btn" class="contentdiv">
+      <label style="line-height: 24px">图表链接:</label>
+      <textarea nz-input [(ngModel)]="defaultUrl" rows="2" (ngModelChange)="getUrl()" [nzAutosize]="{ minRows: 2, maxRows: 4 }"></textarea>
+    </div>
+  </div>
+
+  <iframe
+    class="iframe"
+    style="width: 100%;height: 65rem"
+    frameborder="0">
+  </iframe>
+</nz-content>

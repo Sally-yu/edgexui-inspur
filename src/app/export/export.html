@@ -1,0 +1,304 @@
+<div>
+  <div class="export table">
+    <div style="margin-bottom: 16px;">
+      <button nz-button class="tool-btn-green" (click)="newReg()">
+        新增
+      </button>
+    </div>
+    <nz-table #deviceTabel [nzData]="registrations" [nzSize]="'middle'">
+      <thead>
+      <tr>
+        <th></th>
+        <th>名称</th>
+        <th>目标</th>
+        <th>启用</th>
+        <th>格式</th>
+        <th>创建时间</th>
+        <th>修改时间</th>
+        <th>详细地址</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of deviceTabel.data">
+        <!--<td>-->
+          <!--<button nz-button [nzType]="'primary'">-->
+            <!--<i nz-icon type="line-chart" theme="outline"></i>-->
+          <!--</button>-->
+        <!--</td>-->
+
+        <td>
+          <button nz-button [nzType]="'primary'" (click)="viewExport(data.id)">
+            输出
+          </button>
+        </td>
+        <td>{{data.name}}</td>
+        <td>{{data.destination}}</td>
+        <td>{{data.enable}}</td>
+        <td>{{data.format}}</td>
+        <td>{{data.created}}</td>
+        <td>{{data.modified}}</td>
+        <td>
+          <a (click)='viewIp(data.id)' nz-popover nzTitle="详细地址" nzTrigger="click" [nzContent]="ipTemplate"
+             nzPlacement="bottomRight">
+            查看地址
+          </a>
+        </td>
+
+        <td>
+          <a (click)="editReg(data.id)">编辑</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a style="color:#F22;" nz-popconfirm nzTitle="确认删除改设备吗？" (nzOnConfirm)="deleteReg(data.id)"
+             (nzOnCancel)="cancelDelete()">删除</a>
+
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+
+  <nz-table #nzTable [nzData]="chartData" [nzScroll]="{ y: '400px' }" [nzFrontPagination]="false"  [nzShowPagination]="false" [nzTitle]="'输出'">
+    <thead>
+      <tr>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of nzTable.data">
+      <td>{{data}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+
+</div>
+
+
+<ng-template #ipTemplate>
+  <nz-table #ipData [nzData]="ip" [nzShowPagination]=false>
+    <thead>
+    <tr>
+      <th>名称</th>
+      <th>协议</th>
+      <th>方式</th>
+      <th>地址</th>
+      <th>端口</th>
+      <th>路径</th>
+      <th>发布者</th>
+      <th>主题</th>
+      <th>基础url</th>
+      <th>url</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let devcieIp of ipData.data">
+      <td>{{devcieIp.addressable.name}}</td>
+      <td>{{devcieIp.addressable.protocol}}</td>
+      <td>{{devcieIp.addressable.method}}</td>
+      <td>{{devcieIp.addressable.address}}</td>
+      <td>{{devcieIp.addressable.port}}</td>
+      <td>{{devcieIp.addressable.path}}</td>
+      <td>{{devcieIp.addressable.publisher}}</td>
+      <td>{{devcieIp.addressable.topic}}</td>
+      <td>{{devcieIp.addressable.baseURL}}</td>
+      <td>{{devcieIp.addressable.url}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</ng-template>
+
+
+<nz-drawer [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom':'53px' }"
+           [nzMaskClosable]="false" [nzWidth]="800" [nzVisible]="showNewTab" nzTitle="添加设备" (nzOnClose)="closeReg()">
+  <nz-divider nzText="通用" nzOrientation="left"></nz-divider>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>名称</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.name">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>目标</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 240px;" [(ngModel)]="selectedReg.destination">
+            <nz-option *ngFor="let c of destinationData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>启用</nz-form-label>
+        <nz-form-control>
+          <nz-switch [(ngModel)]="selectedReg.enable"></nz-switch>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>压缩</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 240px;" [(ngModel)]="zip">
+            <nz-option *ngFor="let c of zipData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>格式</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 240px;" [(ngModel)]="selectedReg.format">
+            <nz-option *ngFor="let c of fomartData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+  </div>
+
+  <nz-divider nzText="地址" nzOrientation="left"></nz-divider>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>名称</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.name">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>协议</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 240px;" [(ngModel)]="selectedReg.addressable.protocol">
+            <nz-option *ngFor="let c of protcolData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>地址</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.address">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>端口</nz-form-label>
+        <nz-form-control>
+          <nz-input-number style="width: 240px;" [(ngModel)]="selectedReg.addressable.port"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>方式</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 240px;" [(ngModel)]="selectedReg.addressable.method">
+            <nz-option *ngFor="let c of methodData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>发布者</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.publisher">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>用户</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.user">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>密码</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.password">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>订阅主题</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.topic">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-label>路径</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedReg.addressable.url">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-divider nzText="加密（可选）" nzOrientation="left"></nz-divider>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>密钥</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>初始值</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>算法</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 240px;" [(ngModel)]="algorithm" nzPlaceHolder="">
+            <nz-option *ngFor="let c of algorithmData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-divider nzText="过滤（可选）" nzOrientation="left"></nz-divider>
+  <div nz-row nzGutter="8">
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-label>选择设备</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="footer">
+    <button type="button" (click)="closeReg()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+    <button type="button" (click)="submitReg()" class="ant-btn ant-btn-primary"><span>保存</span></button>
+  </div>
+</nz-drawer>

@@ -1,0 +1,36 @@
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  border-top: 1px solid rgb(232, 232, 232);
+  padding: 10px 16px;
+  text-align: right;
+  left: 0px;
+  background: #fff;
+}
+
+.example-viewport {
+  height: 400px;
+}
+
+
+
+.tool-btn-green{
+  background-color: #00cc00;
+  color: #fff;
+  border-color: #00cc00
+}
+
+.tool-btn-red{
+  background-color: #f5222d;
+  color: #fff;
+  border-color: #f5222d
+}
+
+.tool-btn-green:hover{
+  background-color: rgba(0,204,0,0.8);
+}
+
+.tool-btn-red:hover{
+  background-color: rgba(245,34,45,0.8);
+}

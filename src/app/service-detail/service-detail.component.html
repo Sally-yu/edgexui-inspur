@@ -1,0 +1,64 @@
+<div *ngIf="service">
+  <div style="margin-bottom: 16px;">
+    <button nz-button class="tool-btn-green" (click)="add()">新增</button>
+    <button nz-button [nzType]="'primary'" (click)="save()">保存</button>
+    <button nz-button (click)="delete()"  [disabled]="!service.id">删除</button>
+    <button nz-button (click)="close()">返回</button>
+  </div>
+
+    <nz-content>
+      <h3>服务信息</h3>
+      <div nz-row nzGutter="8">
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>名称</nz-form-label>
+            <input nz-input placeholder="" [(ngModel)]="service.name">
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>描述</nz-form-label>
+            <input nz-input placeholder="" [(ngModel)]="service.description">
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>标签（多个用英文逗号分隔）</nz-form-label>
+            <input nz-input placeholder="" [(ngModel)]="service.labels">
+          </nz-form-item>
+        </div>
+      </div>
+
+      <div nz-row nzGutter="8">
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>寻址</nz-form-label>
+            <nz-select style="width: 100%" [(ngModel)]="service.addressable.name"
+                       nzShowSearch>
+              <nz-option *ngFor="let add of avaAddressable" [nzLabel]="add.name" [nzValue]="add.name">
+              </nz-option>
+            </nz-select>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>管理状态</nz-form-label>
+            <div>
+              <nz-radio-group [(ngModel)]="service.adminState" nzName="radiogroup">
+                <label *ngFor="let admin of adminstats" nz-radio [nzValue]="admin">{{admin}}</label>
+              </nz-radio-group>
+            </div>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="8">
+          <nz-form-item>
+            <nz-form-label>启用</nz-form-label>
+            <div>
+              <nz-switch [(ngModel)]="service.operatingState"></nz-switch>
+            </div>
+          </nz-form-item>
+        </div>
+      </div>
+
+    </nz-content>
+</div>

@@ -1,0 +1,160 @@
+<!--<nz-header>-->
+<!--<img [src]="logoPath" alt="inspur" style="width: 14rem;margin-left: -1rem;">-->
+<!--<ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px; float:right">-->
+<!--<a (click)="open('用户')"><i class="icon-user"></i></a>-->
+<!--<a (click)="open('通知')"><i class="icon-bell"></i></a>-->
+<!--<a (click)="logout()"><i class="icon-logout"></i></a>-->
+<!--</ul>-->
+<!--<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" [nzTitle]="drawerTitle"-->
+<!--(nzOnClose)="close()">-->
+<!--<div *ngIf="drawerTitle=='用户'">-->
+<!--<p>-->
+<!--用户信息页面-->
+<!--</p>-->
+<!--</div>-->
+<!--<div *ngIf="drawerTitle=='通知'">-->
+<!--<p>-->
+<!--通知页面-->
+<!--</p>-->
+<!--</div>-->
+<!--</nz-drawer>-->
+<!--</nz-header>-->
+
+
+<nz-layout style="height: 100%;">
+  <nz-sider nzWidth="16rem" style="height: 100%;overflow: auto">
+    <ul [nzTheme]="'dark'" nz-menu [nzMode]="'inline'" style="height: 100%">
+      <li>
+        <div>
+          <img [src]="logoPath" alt="inspur" style="width: 13rem; padding-top: 0.3rem">
+        </div>
+      </li>
+      <li nz-submenu>
+        <span title>
+          <i class="icon-linechart"></i>
+            &nbsp;边缘分析</span>
+        <ul>
+          <li nz-menu-item (click)="content='边缘数据'">
+            <span title>
+              <i class="icon-desktop"></i>
+               &nbsp;边缘数据</span>
+          </li>
+          <li nz-menu-item (click)="content='边缘配置'">
+            <span title>
+              <i class="icon-setting"></i>
+               &nbsp;边缘配置</span>
+          </li>
+        </ul>
+      </li>
+
+      <li nz-menu-item (click)="content='数据订阅'">
+            <span title>
+              <i class="icon-export"></i>
+               &nbsp;数据订阅</span>
+      </li>
+
+      <li nz-menu-item (click)="content='任务调度'">
+            <span title>
+              <i class="icon-table"></i>
+               &nbsp;任务调度</span>
+      </li>
+
+      <li nz-menu-item (click)="content='规则管理'">
+            <span title>
+              <i class="icon-reloadtime"></i>
+               &nbsp;规则管理</span>
+      </li>
+
+      <li nz-menu-item (click)="content='通知告警'">
+            <span title>
+              <i class="icon-notification"></i>
+               &nbsp;通知告警</span>
+      </li>
+
+      <li nz-menu-item (click)="content='数据管理'">
+            <span title>
+              <i class="icon-database"></i>
+               &nbsp;数据管理</span>
+      </li>
+
+      <li nz-submenu>
+            <span title>
+              <i class="icon-cluster"></i>
+               &nbsp;设备管理</span>
+        <ul>
+          <li nz-menu-item (click)="content='设备注册'"><i class="icon-edit"></i>
+            &nbsp;设备注册
+          </li>
+          <li nz-menu-item (click)="content='设备服务'"><i class="icon-fork"></i>
+            &nbsp;设备服务
+          </li>
+          <li nz-menu-item (click)="content='设备属性'"><i class="icon-file"></i>
+            &nbsp;设备属性
+          </li>
+        </ul>
+      </li>
+
+      <li nz-menu-item (click)="content='网关代理'">
+            <span title>
+              <i class="icon-link"></i>
+               &nbsp;网关代理</span>
+      </li>
+
+    </ul>
+  </nz-sider>
+
+  <nz-layout>
+    <nz-content style="padding: 12px 12px;background: #fff;">
+      <div *ngIf="content=='欢迎'" class="welcome-page">
+        <!--<app-login></app-login>-->
+
+        <h1>Inspur Edge Access System</h1>
+        <h3>Welcome!</h3>
+      </div>
+
+      <div *ngIf="content=='设备注册'">
+        <app-device></app-device>
+      </div>
+
+      <div *ngIf="content=='设备服务'">
+        <app-device-service></app-device-service>
+      </div>
+
+      <div *ngIf="content=='设备属性'">
+        <app-profile></app-profile>
+      </div>
+
+      <div *ngIf="content=='边缘数据'">
+        <app-grafana></app-grafana>
+      </div>
+
+      <div *ngIf="content=='边缘配置'">
+        <app-grafana-setup></app-grafana-setup>
+      </div>
+
+      <div *ngIf="content=='任务调度'">
+        <app-schedule></app-schedule>
+      </div>
+      <div *ngIf="content=='通知告警'">
+        <app-notification></app-notification>
+      </div>
+      <div *ngIf="content=='数据管理'">
+        <app-database></app-database>
+      </div>
+      <div *ngIf="content=='数据订阅'">
+        <app-export></app-export>
+      </div>
+
+      <div *ngIf="content=='规则管理'">
+        <app-rule></app-rule>
+      </div>
+
+      <div *ngIf="content=='网关代理'">
+        <app-gateway></app-gateway>
+      </div>
+    </nz-content>
+    <nz-footer style="text-align: center; background: #fff;line-height: 0">Inspur ©2019 Build By Ant Design</nz-footer>
+  </nz-layout>
+
+</nz-layout>
+

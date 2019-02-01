@@ -1,0 +1,27 @@
+
+//列表中的按钮不偏移
+.listbtn{
+  margin-right: 0px;
+  margin-bottom: 0px;
+  margin-top: 0;
+}
+
+.tool-btn-green{
+  background-color: #00cc00;
+  color: #fff;
+  border-color: #00cc00
+}
+
+.tool-btn-red{
+  background-color: #f5222d;
+  color: #fff;
+  border-color: #f5222d
+}
+
+.tool-btn-green:hover{
+  background-color: rgba(0,204,0,0.8);
+}
+
+.tool-btn-red:hover{
+  background-color: rgba(245,34,45,0.8);
+}

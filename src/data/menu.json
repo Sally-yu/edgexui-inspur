@@ -1,0 +1,42 @@
+[
+	{
+		"title":"网关",
+		"url": "/pages/gateway.html",
+		"icon":"fa fa-bank"
+	},{
+		"title":"设备服务",
+		"url": "/pages/devices/deviceService.html",
+		"icon":"fa fa-gears"
+	},{
+			"title":"log信息",
+			"url": "/pages/logging.html",
+			"icon":"fa fa-bar-chart",
+			"children":[]
+		},{
+			"title":"时间表",
+			"url": "/pages/scheduler.html",
+			"icon":"fa fa-clock-o fa-lg",
+			"children":[]
+		},{
+			"title":"通知",
+			"url": "/pages/notification.html",
+			"icon":"fa fa-envelope",
+			"children":[]
+		},{
+		"title":"多媒体",
+		"url": "/pages/multimedia.html",
+		"icon":"fa fa-camera",
+		"children":[]
+	},{
+		"title":"输出端",
+		"url": "/pages/export.html",
+		"icon":"fa fa-cloud-upload",
+		"children":[]
+	},{
+		"title":"规则",
+		"url": "/pages/ruleengine.html",
+		"icon":"fa fa-wrench",
+		"children":[]
+	}
+]
+
