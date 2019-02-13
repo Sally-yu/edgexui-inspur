@@ -13,7 +13,7 @@ export class AppComponent {
   tabs = ['欢迎'];
   currIndex = 0;
 
-  logoPath='http://212.64.2.48/assets/img/logo-big.png';
+  logoPath='http://10.24.20.7/assets/img/logo-big.png';
   content='欢迎';
   collapsed=false;
 

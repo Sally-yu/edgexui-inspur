@@ -54,7 +54,7 @@ export class DeviceServiceComponent implements OnInit {
           'serverip': '10.24.19.221',
           'servername': '',
           'opctype': 'DA',
-          'frq': 100,
+          'frq': '100',
           'dbip': '10.24.19.221',
           'dbname': 'mom',
           'dbuser': 'admin',
@@ -74,6 +74,31 @@ export class DeviceServiceComponent implements OnInit {
       this.loading = false;
     }, error1 => {
       this.message.warning('获取服务失败:' + error1.error);
+      var  opcTest = {
+        'created': 0,
+        'modified': 0,
+        'origin': 0,
+        'description': '华力电机测试',
+        'id': '22223df234f',
+        'name': '华力电机测试',
+        'lastConnected': 0,
+        'lastReported': 0,
+        'operatingState': 'ENABLED',
+        'labels': ['opc'],
+        'addressable': {},
+        'adminState': 'UNLOCKED',
+        'opc': true,
+        'serverip': '10.24.19.221',
+        'servername': '',
+        'opctype': 'DA',
+        'frq': 100,
+        'dbip': '10.24.19.221',
+        'dbname': 'mom',
+        'dbuser': 'admin',
+        'dbpwd': 'aaaaaa'
+      };
+      this.device_services=[];
+      this.device_services = [...this.device_services, opcTest];//添加伪数据测试
       this.loading = false;
     });
   }

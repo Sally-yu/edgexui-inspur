@@ -18,14 +18,15 @@ export class OpcuaComponent implements OnInit {
     RunorNot: 'http://10.24.19.221:9990/Api/RunorNot.ashx',
     InfluxHandle: 'http://10.24.19.221:9990/Api/InfluxHandle.ashx',
     OpcHandle: 'http://10.24.19.221:9990/Api/OpcHandle.ashx',
-    OracleHandle:'http://10.24.19.221:9990/Api/OracleHandle.ashx'
   };
 
-  influxPort = 8086;
+  opcrun=false;
+  influxPort = '8086';
   opcTypes = ['DA', 'UA'];
   collectFrq = [
-    100, 300, 500, 800, 1000, 1500
+    '100', '300', '500', '800', '1000', '1500'
   ];
+  servernames = [];
 
   constructor(
     private http: HttpClient,
@@ -33,15 +34,26 @@ export class OpcuaComponent implements OnInit {
   ) {
   }
 
+  runornot(b:boolean):boolean{       //   true更新采集频率，false不更新
+    this.http.get(this.opcUrl.RunorNot,{responseType:'text'}).subscribe(res=>{
+      var js=JSON.parse(res);
+      this.opcrun=js.opcstate=='opcrun';
+      if(this.opcrun&&b){
+        this.opcDevice.frq=String(js.interval);//运行时赋采集频率
+      }
+      return this.opcrun;
+    });
+    return this.opcrun;
+  }
+
   //连接测试
   pingTest() {
-    var data = {
-      'database': this.opcDevice.dbname,
-      'inhost': this.opcDevice.dbip,
-      'inport': 8086
-    };
-    this.http.post(this.opcUrl.InfluxHandle, JSON.stringify(data)).subscribe(res => {
-      this.message.info('连接状态' + res);
+    var data = new FormData();
+    data.append('database', this.opcDevice.dbname);
+    data.append('inhost', this.opcDevice.dbip);
+    data.append('inport', '8086');
+    this.http.post(this.opcUrl.InfluxHandle, data, {responseType: 'text'}).subscribe(res => {
+      this.message.info(res);
     }, error1 => {
       this.message.warning('连接测试出错');
     });
@@ -50,79 +62,101 @@ export class OpcuaComponent implements OnInit {
   //启动
   opcStart() {
     var opcaction = 'startcollect';
-    var data = {
-      database: this.opcDevice.dbname,
-      inhost: this.opcDevice.dbip,
-      opctype: this.opcDevice.opctype,
-      opcip: this.opcDevice.serverip,
-      inport: this.influxPort,
-      serverurl: this.opcDevice.servername,
-      frequency: this.opcDevice.frq,
-      opcaction: opcaction
-    };
-    this.http.post(this.opcUrl.OpcHandle, JSON.stringify(data)).subscribe(res => {
-      this.message.success('opc启动');
+    var data = new FormData();
+    data.append('database', this.opcDevice.dbname);
+    data.append('inhost', this.opcDevice.dbip);
+    data.append('opctype', this.opcDevice.opctype);
+    data.append('opcip', this.opcDevice.serverip);
+    data.append('inport', this.influxPort);
+    data.append('serverurl', this.opcDevice.servername);
+    data.append('frequency', this.opcDevice.frq);
+    data.append('opcaction', opcaction);
+    this.http.post(this.opcUrl.OpcHandle, data, {responseType: 'text'}).subscribe(res => {
+      if (res.indexOf('Error') > -1 || res.indexOf('Exception') > -1) {   //后端代码内部报错也返回200，会在请求成功的结果中
+        this.message.warning('启动失败');
+      } else {
+        this.message.success(res);
+        this.runornot(true);
+      }
+      console.log(res);
     }, error1 => {
-      this.message.warning('opc启动失败:' + error1.error);
+      this.message.warning('启动失败', error1.error);
+      console.log(error1.error);
     });
   }
 
   //停止
   opcStop() {
+    if(!this.runornot(false)){
+      this.message.info('该服务未启动，无需停止');
+      return 0;
+    }
     var opcaction = 'stopcollect';
-    var data = {opcaction: opcaction};
-    this.http.post(this.opcUrl.OpcHandle, JSON.stringify(data)).subscribe(res => {
-      this.message.success('opc停止运行');
+    var data = new FormData();
+    data.append('opcaction', opcaction);
+    this.http.post(this.opcUrl.OpcHandle, data, {responseType: 'text'}).subscribe(res => {
+      if (res.indexOf('Error') > -1 || res.indexOf('Exception') > -1) {   //后端代码内部报错也返回200，会在请求成功的结果中
+        this.message.warning('停止失败');
+      } else {
+        this.message.success(res);
+      }
+      console.log(res);
     }, error1 => {
-      this.message.warning('opc停止时出错:' + error1.error);
+      this.message.warning('停止失败', error1.error);
+      console.log(error1.error);
     });
   }
 
   //删除配置
-  delete(){
+  delete() {
 
   }
 
   //查找服务器名称
   search() {
-    var data = {opcip: this.opcDevice.serverip, opctype: this.opcDevice.opctype, opcaction: 'recognition'};
-    this.http.post(this.opcUrl.OpcHandle,JSON.stringify(data)).subscribe(res=>{
-      this.getServerName(res);
-    })
+    var data = new FormData();
+    data.append('opcip', this.opcDevice.serverip);
+    data.append('opctype', this.opcDevice.opctype);
+    data.append('opcaction', 'recognition');
+    this.http.post(this.opcUrl.OpcHandle, data, {responseType: 'text'}).subscribe(res => {
+      console.log(res);
+      this.opcDevice.servername = res;
+      // this.message.success('查找服务端名称成功');
+      this.runornot(true);
+      this.getServerName(res.replace('[', '').replace(']', '').replace('"', '').split(','));
+    }),error1=>{
+      this.message.warning(error1.error);
+    };
   }
 
   //查找服务器名称
-  getServerName(data){
-    var servers=[];
-    this.opcDevice.servername=null;
+  getServerName(data) {
+    var servers = [];
+    this.opcDevice.servername = '';
+    this.servernames = [];
     if (!data) {
-      servers.push({ "text": "未找到Server", "id": "NoServer" });
+      // servers.push({ "text": "未找到Server", "id": "NoServer" });
     }
-    var self=this;
-    data.forEach(function(e){
-      var strs = []; //定义一数组
-      strs = e.split("/"); //字符分割
-      if (self.opcDevice.opctype === "DA") {
-        servers.push({ "text": strs[3], "id": e });
+    var self = this;
+    data.forEach(function (e) {
+      if (self.opcDevice.opctype === 'DA' || self.opcDevice.opctype === 'UA') {
+        self.servernames = [...self.servernames, e.replace('"', '')];
+      } else {
+        self.message.info('未定义的类型');
       }
-      else if(self.opcDevice.opctype==='UA') {
-        servers.push({ "text": e, "id": e });
-      }else{
-        this.message.info('未定义的类型');
-      }
-
     });
-    // this.servername=servers;
-    console.log(servers);
+    this.opcDevice.servername = this.servernames[0];
+    console.log(this.servernames);
   }
 
   //返回
-  close(){
+  close() {
     this.result.emit(true);
-    this.opcDevice=null;
+    this.opcDevice = null;
   }
 
   ngOnInit() {
+    this.search();
   }
 
 }

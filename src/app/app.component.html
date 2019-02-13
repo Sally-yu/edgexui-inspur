@@ -22,7 +22,7 @@
 
 
 <nz-layout style="height: 100%;">
-  <nz-sider nzWidth="16rem" style="height: 100%;overflow: auto">
+  <nz-sider nzWidth="210px" style="height: 100%;overflow: auto">
     <ul [nzTheme]="'dark'" nz-menu [nzMode]="'inline'" style="height: 100%">
       <li>
         <div>
@@ -103,9 +103,9 @@
     </ul>
   </nz-sider>
 
-  <nz-layout>
-    <nz-content style="padding: 12px 12px;background: #fff;">
-      <div *ngIf="content=='欢迎'" class="welcome-page">
+  <nz-layout style="height: 100%;background-color: #fff">
+    <nz-content [ngClass]="{'dark-content':content=='边缘数据','light-content':content!='边缘数据'}" >
+      <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%">
         <!--<app-login></app-login>-->
 
         <h1>Inspur Edge Access System</h1>
@@ -124,7 +124,7 @@
         <app-profile></app-profile>
       </div>
 
-      <div *ngIf="content=='边缘数据'">
+      <div *ngIf="content=='边缘数据'" style="display: initial">
         <app-grafana></app-grafana>
       </div>
 
@@ -153,7 +153,7 @@
         <app-gateway></app-gateway>
       </div>
     </nz-content>
-    <nz-footer style="text-align: center; background: #fff;line-height: 0">Inspur ©2019 Build By Ant Design</nz-footer>
+    <!--<nz-footer style="text-align: center; background: #fff;line-height: 20px"></nz-footer>-->
   </nz-layout>
 
 </nz-layout>

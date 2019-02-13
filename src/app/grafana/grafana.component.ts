@@ -12,7 +12,6 @@ export class GrafanaComponent implements OnInit {
 
   btn=true;
 
-
   defaultUrl="http://localhost:8080/d/jgq_eofiz/yi-biao-pan-yan-shi?refresh=1m&orgId=1&from=1548314508355&to=1548314628355&theme=dark&&kiosk";
 
   getUrl(){

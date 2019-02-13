@@ -17,15 +17,6 @@
     <div nz-row nzGutter="8">
       <div nz-col nzSpan="6">
         <nz-form-item>
-          <nz-form-label>OPC类型</nz-form-label>
-          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.opctype">
-            <nz-option *ngFor="let type of opcTypes" [nzLabel]="type"
-                       [nzValue]="type"></nz-option>
-          </nz-select>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="6">
-        <nz-form-item>
           <nz-form-label>服务器地址</nz-form-label>
           <nz-input-group [nzSuffix]="suffixIconSearch">
             <input type="text" nz-input [(ngModel)]="opcDevice.serverip">
@@ -41,7 +32,10 @@
       <div nz-col nzSpan="6">
         <nz-form-item>
           <nz-form-label>服务端名称</nz-form-label>
-          <input nz-input type="text" [(ngModel)]="opcDevice.servername">
+          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.servername">
+            <nz-option *ngFor="let srv of servernames" [nzLabel]="srv"
+                       [nzValue]="srv"></nz-option>
+          </nz-select>
         </nz-form-item>
       </div>
 
@@ -50,6 +44,16 @@
           <nz-form-label>采集频率</nz-form-label>
           <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.frq">
             <nz-option *ngFor="let f of collectFrq" [nzLabel]="f+'ms'" [nzValue]="f"></nz-option>
+          </nz-select>
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="6">
+        <nz-form-item>
+          <nz-form-label>OPC类型</nz-form-label>
+          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.opctype">
+            <nz-option *ngFor="let type of opcTypes" [nzLabel]="type"
+                       [nzValue]="type"></nz-option>
           </nz-select>
         </nz-form-item>
       </div>

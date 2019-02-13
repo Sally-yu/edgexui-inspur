@@ -53,8 +53,9 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(window.sessionStorage.getItem("X_Session_Token"));
-    if(window.sessionStorage.getItem("X_Session_Token")==null||window.sessionStorage.getItem("X_Session_Token")==''){
-    window.location.href = '/login.html?ran=' + Math.random(); //prevent browser cache result to redirect  failed.
+    console.log(window.sessionStorage.getItem('X_Session_Token'));
+    if (window.sessionStorage.getItem('X_Session_Token') == null || window.sessionStorage.getItem('X_Session_Token') == '') {
+      window.location.href = '/login.html?ran=' + Math.random(); //prevent browser cache result to redirect  failed.
+    }
   }
-}}
+}
