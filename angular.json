@@ -35,10 +35,12 @@
               "src/theme.less",
               "src/styles.scss",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
-              "src/assets/font/iconfont.css"
+              "src/assets/font/iconfont.css",
+              "node_modules/jquery-ui-dist/jquery-ui.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.js"
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/jquery-ui-dist/jquery-ui.js"
             ]
           },
           "configurations": {

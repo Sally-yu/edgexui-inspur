@@ -1,0 +1,25 @@
+#droppable {
+  width: 400px;
+  height: 400px;
+  padding: 0.5em;
+  float: left;
+  margin: 10px;
+}
+
+.toolbox {
+  width: 200px;
+  display: inline-block;
+  float: left;
+  height: 100%;
+  background-color: #f7ecb5
+}
+
+.icon-in-toolbox{
+  text-align: center;
+  vertical-align: middle;
+  font-size: 30px;
+  height: 30px;
+  line-height: 30px;
+  width:30px;
+  background-color: #00cc00;
+}
