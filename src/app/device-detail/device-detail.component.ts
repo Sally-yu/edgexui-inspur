@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {NzMessageService} from 'ng-zorro-antd';
+import {NzMessageService, NzModalRef, NzModalService, UploadFile} from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-device-detail',
@@ -16,13 +16,27 @@ export class DeviceDetailComponent implements OnInit {
   @Output() result: EventEmitter<any> = new EventEmitter();
   @Output() deleteOne: EventEmitter<any> = new EventEmitter();
 
-  srvUrl = '/core-metadata/api/v1/deviceservice';//获取服务url
-  addUrl = '/core-metadata/api/v1/addressable';//获取addressable url
-  proUrl = '/core-metadata/api/v1/deviceprofile';//获取profile url
+  srvUrl = '/core-metadata/api/v1/deviceservice'; // 获取服务url
+  addUrl = '/core-metadata/api/v1/addressable'; // 获取addressable url
+  proUrl = '/core-metadata/api/v1/deviceprofile'; // 获取profile url
+  // imgUrl = window.location.protocol + window.location.host + '/assets/img'; //部署后 在本机的启动
+  imgUrl = 'http://10.24.20.7:8090/assets/img';//go后台上传服务url
+  saveUrl='http://10.24.20.7:8090/assets/img/save';//go后台保存图片地址到数据库连接
 
-  avaServices;//已注册的服务，全部服务
-  avaProfiles;//已有的全部profile
-  avaAddress;//已有的全部addressable
+  fileList = [
+    {
+      uid: -1,
+      name: '308TCR.png',
+      status: 'done',
+      url: this.imgUrl +'/'+'308TCR.png'   //go后台文件服务url  注意斜杠/
+    }
+  ];
+  previewImage = '';
+  previewVisible = false;
+
+  avaServices; // 已注册的服务，全部服务
+  avaProfiles; // 已有的全部profile
+  avaAddress; // 已有的全部addressable
   testSevices = [
     {
       'created': 1546390652116,
@@ -123,11 +137,11 @@ export class DeviceDetailComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private message: NzMessageService
+    private message: NzMessageService,
   ) {
   }
 
-  //新增
+  // 新增
   add() {
     this.device = {
       'created': 0,
@@ -209,14 +223,14 @@ export class DeviceDetailComponent implements OnInit {
     };
   }
 
-  //保存关闭，http申请保存
+  // 保存关闭，http申请保存
   save() {
     this.beforeSave();
-    var url = '/core-metadata/api/v1/device';
-    if (this.device.id) {//编辑保存
+    const url = '/core-metadata/api/v1/device';
+    if (this.device.id) {// 编辑保存
       this.http.put(url, JSON.stringify(this.device), {headers: this.head, responseType: 'text'}).subscribe(res => {
         this.message.success('保存成功');
-        //重新加载当前设备
+        // 重新加载当前设备
         this.http.get(url + '/name/' + this.device.name, {headers: this.head}).subscribe(res => {
           this.device = res;
         }, error1 => {
@@ -227,17 +241,17 @@ export class DeviceDetailComponent implements OnInit {
         console.log(error1);
         this.message.info('保存失败:' + error1.error);
       });
-    } else {//新增保存
+    } else {// 新增保存
       this.http.post(url, JSON.stringify(this.device), {headers: this.head, responseType: 'text'}).subscribe(res => {
           this.message.success('保存成功');
-          //重新加载当前设备
+          // 重新加载当前设备
           this.http.get(url + '/name/' + this.device.name, {headers: this.head}).subscribe(res => {
             this.device = res;
           }, error1 => {
             console.log(error1.error);
           });
         },
-        error1 => {//新增保存失败，换编辑保存
+        error1 => {// 新增保存失败，换编辑保存
           if (error1.statusText == 'Conflict') {
             this.message.info('设备已存在');
           } else {
@@ -247,21 +261,21 @@ export class DeviceDetailComponent implements OnInit {
     }
   }
 
-  //关闭
+  // 关闭
   close() {
     this.device = null;
     this.result.emit(true);
   }
 
-  //删除
+  // 删除
   delete() {
     if (this.device.id) {
       console.log(this.device);
-      var url = '/core-metadata/api/v1/device/id/';
+      const url = '/core-metadata/api/v1/device/id/';
       this.http.delete(url + this.device.id, {headers: this.head}).subscribe(res => {
           if (res) {
             this.message.success('删除成功');
-            this.deleteOne.emit(true);//发射消息，删除之后显示个新的device
+            this.deleteOne.emit(true); // 发射消息，删除之后显示个新的device
           }
         },
         error1 => {
@@ -271,25 +285,32 @@ export class DeviceDetailComponent implements OnInit {
     }
   }
 
-  //替换服务名称后，替换对应的服务对象
+  // 替换服务名称后，替换对应的服务对象
   beforeSave() {
     if (this.device.service instanceof Array) {
       this.device.service = this.avaServices.filter(s => s.name === this.device.service.name)[0];
-    }//修改服务后替换
+    }// 修改服务后替换
     if (this.device.addressable instanceof Array) {
       this.device.addressable = this.avaAddress.filter(a => a.name === this.device.addressable.name)[0];
-    }//修改寻址后替换
+    }// 修改寻址后替换
     if (this.device.profiles instanceof Array) {
       this.device.profiles = this.avaProfiles.filter(p => p.name === this.device.profiles.name)[0];
-    }//修改配置后替换
+    }// 修改配置后替换
     if (typeof (this.device.labels) == 'string') {
-      this.device.labels = this.device.labels.split(',');//以英文逗号分隔为数组
+      this.device.labels = this.device.labels.split(','); // 以英文逗号分隔为数组
     }
-    this.device.modified = (new Date()).valueOf();//更新修改时间
+    this.device.modified = (new Date()).valueOf(); // 更新修改时间
+    let imgkv={        //关联设备和图像
+      'deviceid':this.device.id,
+      'imgurl':this.fileList.length>0?this.fileList[0].name:''
+    }
+    this.http.post(this.saveUrl,imgkv).subscribe(res=>{
+      console.log("save img in mongodb");
+    })
     console.log(this.device);
   }
 
-  //获取所有可用设备服务
+  // 获取所有可用设备服务
   getServices() {
     // this.avaServices=this.testSevices;
     this.http.get(this.srvUrl, {headers: this.head}).subscribe(response => {
@@ -298,7 +319,7 @@ export class DeviceDetailComponent implements OnInit {
     console.log(this.avaServices);
   }
 
-  //获取可用profile
+  // 获取可用profile
   getProfiles() {
     this.http.get(this.proUrl, {headers: this.head}).subscribe(response => {
       this.avaProfiles = response;
@@ -306,12 +327,34 @@ export class DeviceDetailComponent implements OnInit {
     console.log(this.avaProfiles);
   }
 
-  //获取全部addresable
+  // 获取全部addresable
   getAddress() {
     this.http.get(this.addUrl, {headers: this.head}).subscribe(response => {
       this.avaAddress = response;
     });
     console.log(this.avaAddress);
+  }
+
+  handlePreview = (file: UploadFile) => {
+    this.previewImage = file.url || file.thumbUrl;
+    this.previewVisible = true;
+    console.log(this.fileList[0].status);
+  }
+
+  uploadChg(event){
+    // console.log(event.file);
+    console.log(event.fileList);
+    // console.log(event.event);
+  }
+
+  getImg(){
+    let j={
+      'deviceid':this.device.id
+    }
+    this.http.post(this.imgUrl+'/deviceid',j).subscribe(res=>{
+      this.fileList[0].name=res["Status"];  //返回信息在status中
+      this.fileList[0].url=this.imgUrl+'/'+res["Status"];
+    });
   }
 
   ngOnInit() {

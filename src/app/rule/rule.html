@@ -1,10 +1,31 @@
-<nz-content style="height: 100%;width: 100%" >
-  <div class="toolbox" style="">
-    <div id="draggable" class="icon-in-toolbox" >
-      <i class="icon-sync" ></i>
+<div id="container">
+  <div class="toolbox">
+
+    <div class="draggable">
+      <i class="icon-sync"></i>
+    </div>
+    <div class="draggable">
+      <i class="icon-bulb"></i>
+    </div>
+    <div class="draggable">
+      <i class="icon-desktop"></i>
+    </div>
+    <div class="draggable">
+      <i class="icon-close-circle"></i>
+    </div>
+    <div class="draggable">
+      <i class="icon-save"></i>
+    </div>
+    <div class="draggable">
+      <i class="icon-sync"></i>
+    </div>
+    <div class="draggable">
+      <i class="icon-bulb"></i>
     </div>
   </div>
-  <div id="droppable" >
-    <p>Drop here</p>
+
+
+  <div class=" resizable " id="img">
+    <img [src]="imgUrl+'/'+'31fd8efb64f66631630f1fb3b975b7b.png'" alt="background">
   </div>
-</nz-content>
+</div>

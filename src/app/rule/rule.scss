@@ -1,25 +1,43 @@
-#droppable {
-  width: 400px;
-  height: 400px;
-  padding: 0.5em;
-  float: left;
-  margin: 10px;
+#container{
+  height: 98%;
+  width: 100%;
+  //overflow: scroll;
+  display: inline;
+  position: absolute;
+  background-color: #0f0f0f;
 }
 
-.toolbox {
-  width: 200px;
-  display: inline-block;
-  float: left;
+#img{
   height: 100%;
-  background-color: #f7ecb5
+  width: 100%
 }
 
-.icon-in-toolbox{
-  text-align: center;
-  vertical-align: middle;
-  font-size: 30px;
-  height: 30px;
-  line-height: 30px;
-  width:30px;
-  background-color: #00cc00;
+img{
+  height: inherit;
+  width: inherit;
 }
+.toolbox {
+  width: 100px;
+  //display: inline-block;
+  //float: left;
+  height: 100%;
+  position: absolute;
+
+  div{
+    text-align: center;
+    line-height: 80px;
+    width: 80px;
+    height: 80px;
+    background-color: #00cc00;
+    border-radius: 10px;
+    /* padding-bottom: 10px; */
+    margin-bottom: 10px;
+    z-index: 1000;
+
+    i{
+      font-size: 60px;
+      color: #fff;
+    }
+  }
+}
+
