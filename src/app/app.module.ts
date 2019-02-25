@@ -24,6 +24,7 @@ import { DeviceServiceComponent } from './device-service/device-service.componen
 import { ServiceDetailComponent } from './service-detail/service-detail.component';
 import { GrafanaSetupComponent } from './grafana-setup/grafana-setup.component';
 import { OpcuaComponent } from './opcua/opcua.component';
+import { EdgeIntComponent } from './edge-int/edge-int.component';
 
 
 
@@ -47,6 +48,7 @@ registerLocaleData(zh);
     ServiceDetailComponent,
     GrafanaSetupComponent,
     OpcuaComponent,
+    EdgeIntComponent,
 
   ],
   imports: [

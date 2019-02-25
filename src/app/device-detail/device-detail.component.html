@@ -8,7 +8,26 @@
 
   <nz-layout style="background-color: #fff">
     <nz-content style="margin-top: 16px">
-      <p>设备信息</p>
+      <div>
+        <div class="clearfix">
+          <nz-upload
+            [nzAction]="imgUrl"
+            nzListType="picture-card"
+            [(nzFileList)]="fileList"
+            [nzShowButton]="fileList.length < 1"
+            [nzPreview]="handlePreview"
+            (nzChange)="uploadChg($event)">
+            <i nz-icon type="plus"></i>
+            <div class="ant-upload-text">设备图像</div>
+          </nz-upload>
+          <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+                    (nzOnCancel)="previewVisible=false">
+            <ng-template #modalContent>
+              <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }"/>
+            </ng-template>
+          </nz-modal>
+        </div>
+      </div>
       <div nz-row nzGutter="8">
         <div nz-col nzSpan="8">
           <nz-form-item>
@@ -28,6 +47,7 @@
             <input nz-input placeholder="" [(ngModel)]="device.labels">
           </nz-form-item>
         </div>
+
       </div>
       <div nz-row nzGutter="8">
         <div nz-col nzSpan="8">

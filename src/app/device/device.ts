@@ -98,7 +98,7 @@ export class DeviceComponent implements OnInit {
 
   }
 
-  //请求头
+  // 请求头
   head = new HttpHeaders({
     'X-Session-Token': '21232f297a57a5a743894a0e4a801fc3',
     'X-Requested-With': 'XMLHttpRequest'
@@ -138,26 +138,26 @@ export class DeviceComponent implements OnInit {
     }
   ];
 
-  devices;//设备列表，全部设备
-  currDevice;//选中的设备
+  devices; // 设备列表，全部设备
+  currDevice; // 选中的设备
 
   add() {
-    this.currDevice = this.defaultDevice;//一个空设备 无id
+    this.currDevice = this.defaultDevice; // 一个空设备 无id
     this.showlist = false;
   }
 
-  //点选一行的详情，编辑详情
+  // 点选一行的详情，编辑详情
   rowSelected(deviceId) {
     if (deviceId) {
-      this.currDevice = this.devices.filter(d => d.id === deviceId)[0];//当前选中设备
+      this.currDevice = this.devices.filter(d => d.id === deviceId)[0]; // 当前选中设备
       this.showlist = false;
     }
   }
 
-  //在列表中删除
+  // 在列表中删除
   delete(id) {
     if (id) {
-      var url = '/core-metadata/api/v1/device/id/';
+      let url = '/core-metadata/api/v1/device/id/';
       this.http.delete(url + id, {headers: this.head}).subscribe(res => {
           this.message.success('删除成功');
           this.reload();
@@ -169,7 +169,7 @@ export class DeviceComponent implements OnInit {
     }
   }
 
-  //初次加载和刷新数据
+  // 初次加载和刷新数据
   reload() {
     // this.devices = this.testData;//测试数据，单机做数据
     this.devices = null;
@@ -177,15 +177,15 @@ export class DeviceComponent implements OnInit {
     // this.opcdevice = this.testOPC;
   }
 
-  //获取设备列表
+  // 获取设备列表
   getDevice() {
-    var url = '/core-metadata/api/v1/device';
-    var head = this.head;
+    let url = '/core-metadata/api/v1/device';
+    let head = this.head;
     this.loading = true;
     this.http.get(url, {headers: head}).subscribe(response => {
         console.log('deviceresponse:' + response);
         this.devices = response;
-        this.devices.forEach(function (e) {  //处理标签数组 时间戳
+        this.devices.forEach(function (e) {  // 处理标签数组 时间戳
           if (e.labels instanceof Array) {
             e.labels = e.labels.join(',');
           }
@@ -199,7 +199,7 @@ export class DeviceComponent implements OnInit {
       });
   }
 
-  //详情页面关闭事件处理
+  // 详情页面关闭事件处理
   detailClose(event) {
     if (event) {
       this.currDevice = null;
@@ -208,17 +208,17 @@ export class DeviceComponent implements OnInit {
     }
   }
 
-  //详情页删除设备，传入新的
+  // 详情页删除设备，传入新的
   detailNext(event) {
     if (event) {
-      var url = '/core-metadata/api/v1/device';
+      let url = '/core-metadata/api/v1/device';
       this.http.get(url, {headers: this.head}).subscribe(response => {
           console.log('deviceresponse:' + response);
           this.devices = response;
-          this.devices.forEach(function (e) {  //处理标签数组 时间戳
+          this.devices.forEach(function (e) {  // 处理标签数组 时间戳
             if (e.labels instanceof Array) {
               e.labels = e.labels.join(',');
-            }//防止重复处理时报错
+            }// 防止重复处理时报错
           });
           this.currDevice = this.devices.length > 0 ? this.devices[0] : this.defaultDevice;
         },

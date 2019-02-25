@@ -47,6 +47,12 @@
         </ul>
       </li>
 
+      <li nz-menu-item (click)="content='边缘智能'">
+            <span title>
+              <i class="icon-bulb"></i>
+               &nbsp;边缘智能</span>
+      </li>
+
       <li nz-menu-item (click)="content='数据订阅'">
             <span title>
               <i class="icon-export"></i>
@@ -94,11 +100,12 @@
         </ul>
       </li>
 
-      <li nz-menu-item (click)="content='网关代理'">
-            <span title>
-              <i class="icon-link"></i>
-               &nbsp;网关代理</span>
-      </li>
+      <!--网关代理实际使用发现没用-->
+      <!--<li nz-menu-item (click)="content='网关代理'">-->
+            <!--<span title>-->
+              <!--<i class="icon-link"></i>-->
+               <!--网关代理</span>-->
+      <!--</li>-->
 
     </ul>
   </nz-sider>
@@ -106,7 +113,15 @@
   <nz-layout style="height: 100%;background-color: #fff">
     <nz-content [ngClass]="{'dark-content':content=='边缘数据','light-content':content!='边缘数据'}" >
       <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%">
+<<<<<<< HEAD
         <app-login></app-login>
+=======
+
+        <!--重要-->
+        <!--加入app-login自动跳转登录，直接在4200试运行时备注掉，否则无限加载登录页。实机部署时取消备注，否则没有权限不能获取微服务数据-->
+        <!---->
+        <!--<app-login></app-login>-->
+>>>>>>> 5f1410cba3da3cda4ec1dce6632fb7234e35fa49
 
         <h1>Inspur Edge Access System</h1>
         <h3>Welcome!</h3>
@@ -130,6 +145,10 @@
 
       <div *ngIf="content=='边缘配置'">
         <app-grafana-setup></app-grafana-setup>
+      </div>
+
+      <div *ngIf="content=='边缘智能'">
+        <app-edge-int></app-edge-int>
       </div>
 
       <div *ngIf="content=='任务调度'">
