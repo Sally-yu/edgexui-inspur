@@ -1,6 +1,7 @@
 import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {NzMessageService, NzModalRef, NzModalService, UploadFile} from 'ng-zorro-antd';
+import {AjaxService} from '../ajax.service';
 
 @Component({
   selector: 'app-device-detail',
@@ -19,18 +20,20 @@ export class DeviceDetailComponent implements OnInit {
   srvUrl = '/core-metadata/api/v1/deviceservice'; // 获取服务url
   addUrl = '/core-metadata/api/v1/addressable'; // 获取addressable url
   proUrl = '/core-metadata/api/v1/deviceprofile'; // 获取profile url
-  // imgUrl = window.location.protocol + window.location.host + '/assets/img'; //部署后 在本机的启动
-  imgUrl = 'http://10.24.20.7:8090/assets/img';//go后台上传服务url
-  saveUrl='http://10.24.20.7:8090/assets/img/save';//go后台保存图片地址到数据库连接
 
-  fileList = [
-    {
-      uid: -1,
-      name: '308TCR.png',
-      status: 'done',
-      url: this.imgUrl +'/'+'308TCR.png'   //go后台文件服务url  注意斜杠/
-    }
-  ];
+  // imgUrl = 'http://10.24.20.7:8090/assets/img'; //部署后 在本机的启动
+  // saveUrl = 'http://10.24.20.7:8090/assets/img/save'; //保存图片地址到数据库
+
+  imgUrl=this.ajax.imgUrl;
+  saveUrl=this.ajax.saveUrl;
+
+  // imgUrl = 'http://10.24.20.7:8090/assets/img';//go后台上传服务url
+  // saveUrl='http://10.24.20.7:8090/assets/img/save';//go后台保存图片地址到数据库连接
+
+  image={
+    name:'',
+    imgUrl: ''
+  };
   previewImage = '';
   previewVisible = false;
 
@@ -138,6 +141,7 @@ export class DeviceDetailComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private message: NzMessageService,
+    private ajax:AjaxService,
   ) {
   }
 
@@ -302,7 +306,7 @@ export class DeviceDetailComponent implements OnInit {
     this.device.modified = (new Date()).valueOf(); // 更新修改时间
     let imgkv={        //关联设备和图像
       'deviceid':this.device.id,
-      'imgurl':this.fileList.length>0?this.fileList[0].name:''
+      'imgurl':this.image.imgUrl,
     }
     this.http.post(this.saveUrl,imgkv).subscribe(res=>{
       console.log("save img in mongodb");
@@ -338,7 +342,7 @@ export class DeviceDetailComponent implements OnInit {
   handlePreview = (file: UploadFile) => {
     this.previewImage = file.url || file.thumbUrl;
     this.previewVisible = true;
-    console.log(this.fileList[0].status);
+    console.log(this.image);
   }
 
   uploadChg(event){
@@ -352,15 +356,21 @@ export class DeviceDetailComponent implements OnInit {
       'deviceid':this.device.id
     }
     this.http.post(this.imgUrl+'/deviceid',j).subscribe(res=>{
-      this.fileList[0].name=res["Status"];  //返回信息在status中
-      this.fileList[0].url=this.imgUrl+'/'+res["Status"];
+      this.image.name=res["Status"];  //返回信息在status中
+      this.image.imgUrl=this.imgUrl+'/'+res["Status"];
     });
   }
+
+  uploadImg(){
+
+  }
+
 
   ngOnInit() {
     this.getServices();
     this.getAddress();
     this.getProfiles();
+    this.getImg()
   }
 
 }

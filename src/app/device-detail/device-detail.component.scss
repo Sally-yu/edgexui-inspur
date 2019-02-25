@@ -1,27 +1,59 @@
-
 //列表中的按钮不偏移
-.listbtn{
+.listbtn {
   margin-right: 0px;
   margin-bottom: 0px;
   margin-top: 0;
 }
 
-.tool-btn-green{
+.tool-btn-green {
   background-color: #00cc00;
   color: #fff;
   border-color: #00cc00
 }
 
-.tool-btn-red{
+.tool-btn-red {
   background-color: #f5222d;
   color: #fff;
   border-color: #f5222d
 }
 
-.tool-btn-green:hover{
-  background-color: rgba(0,204,0,0.8);
+.tool-btn-green:hover {
+  background-color: rgba(0, 204, 0, 0.8);
 }
 
-.tool-btn-red:hover{
-  background-color: rgba(245,34,45,0.8);
+.tool-btn-red:hover {
+  background-color: rgba(245, 34, 45, 0.8);
 }
+
+.noImg {
+  padding-top: 60px;
+  width: 200px;
+  height: 200px;
+  border: 1px #d9d9d9 solid;
+  text-align: center;
+
+  i {
+    color: #d9d9d9;
+    line-height: 60px;
+    font-size: 60px;
+    transition-duration: 200ms;
+    -moz-transition-duration: 200ms;
+    -webkit-transition-duration: 200ms;
+
+  }
+
+  i:hover{
+    cursor:pointer;
+    color: #00cc00;
+    line-height: 60px;
+    font-size: 60px;
+    transition-duration: 200ms;
+    -moz-transition-duration: 200ms;
+    -webkit-transition-duration: 200ms;
+  }
+
+  p {
+    line-height: 20px;
+  }
+}
+

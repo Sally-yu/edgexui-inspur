@@ -61,14 +61,8 @@
 
       <li nz-menu-item (click)="content='任务调度'">
             <span title>
-              <i class="icon-table"></i>
-               &nbsp;任务调度</span>
-      </li>
-
-      <li nz-menu-item (click)="content='规则管理'">
-            <span title>
               <i class="icon-reloadtime"></i>
-               &nbsp;规则管理</span>
+               &nbsp;任务调度</span>
       </li>
 
       <li nz-menu-item (click)="content='通知告警'">
@@ -147,20 +141,19 @@
         <app-edge-int></app-edge-int>
       </div>
 
-      <div *ngIf="content=='任务调度'">
-        <app-schedule></app-schedule>
-      </div>
       <div *ngIf="content=='通知告警'">
         <app-notification></app-notification>
       </div>
+
       <div *ngIf="content=='数据管理'">
         <app-database></app-database>
       </div>
+
       <div *ngIf="content=='数据订阅'">
         <app-export></app-export>
       </div>
 
-      <div *ngIf="content=='规则管理'" style="display: initial">
+      <div *ngIf="content=='任务调度'" style="display: initial">
         <app-rule></app-rule>
       </div>
 

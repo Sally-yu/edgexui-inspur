@@ -1,6 +1,7 @@
 import {Component, OnInit, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {NzMessageService} from 'ng-zorro-antd';
+import {AjaxService} from '../ajax.service';
 
 
 declare var $: any;
@@ -15,7 +16,8 @@ export class DeviceComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private ajax: AjaxService,
   ) {
     this.defaultDevice = {
       'created': 0,
@@ -95,7 +97,6 @@ export class DeviceComponent implements OnInit {
         'commands': []
       }
     };
-
   }
 
   // 请求头
@@ -104,39 +105,12 @@ export class DeviceComponent implements OnInit {
     'X-Requested-With': 'XMLHttpRequest'
   });
 
+  imgUrl=this.ajax.imgUrl;
+  saveUrl=this.ajax.saveUrl;
+
   defaultDevice;
-  opcurl = '';
-  opcdevice;
   loading = false;
-
   showlist = true;
-
-  testOPC = [
-    {
-      id: '3232323132dqw3e2r',
-      servername: '华力电机测试',
-      serverip: '10.24.19.221',
-      workcenter: '工作中心',
-      location: '位置描述',
-      note: '备注',
-      creator: '王少刚',
-      created: '2018-11-13 13:53:09',
-      modifier: '王少刚',
-      modified: '2018-11-13 13:54:44'
-    },
-    {
-      id: '212324dnsa28972',
-      servername: '华力电机测试',
-      serverip: '10.24.19.221',
-      workcenter: '工作中心',
-      location: '位置描述',
-      note: '备注',
-      creator: '王少刚',
-      created: '2018-11-15 13:53:23',
-      modifier: '王少刚',
-      modified: '2018-11-16 16:52:44'
-    }
-  ];
 
   devices; // 设备列表，全部设备
   currDevice; // 选中的设备
@@ -171,10 +145,8 @@ export class DeviceComponent implements OnInit {
 
   // 初次加载和刷新数据
   reload() {
-    // this.devices = this.testData;//测试数据，单机做数据
     this.devices = null;
     this.getDevice();
-    // this.opcdevice = this.testOPC;
   }
 
   // 获取设备列表
@@ -230,10 +202,6 @@ export class DeviceComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(window.sessionStorage.getItem('X_Session_Token'));
-    // if (window.sessionStorage.getItem('X_Session_Token') == null || window.sessionStorage.getItem('X_Session_Token') == '') {
-    //   window.location.href = '/login.html?ran=' + Math.random(); //prevent browser cache result to redirect  failed.
-    // }
     this.reload();
   }
 
