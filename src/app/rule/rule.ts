@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {UploadFile} from 'ng-zorro-antd';
+import {AjaxService} from '../ajax.service';
 
 declare let $: any;
 @Component({
@@ -9,9 +10,12 @@ declare let $: any;
 })
 export class RuleComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private ajax :AjaxService,
+  ) { }
 
-  imgUrl = 'http://10.24.20.7:8090/assets/img';//go后台上传服务url
+  imgUrl=this.ajax.imgUrl;
+  saveUrl=this.ajax.saveUrl;
 
   uploadChg(event){
     console.log(event.file);
@@ -23,7 +27,6 @@ export class RuleComponent implements OnInit {
     $( ".draggable" ).draggable({ containment: "#container", scroll: false });
     $( ".resizable" ).resizable({ containment: "#container",aspectRatio: true});
     $( "#img").draggable({ containment: "#container", scroll: false });
-
   }
 
 }

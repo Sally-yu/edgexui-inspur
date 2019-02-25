@@ -11,7 +11,6 @@ import zh from '@angular/common/locales/zh';
 
 import { GatewayComponent } from './gateway/gateway';
 import { DeviceComponent } from './device/device';
-import { ScheduleComponent } from './schedule/schedule';
 import { NotificationComponent } from './notification/notification';
 import { ExportComponent } from './export/export';
 import { RuleComponent } from './rule/rule';
@@ -35,7 +34,6 @@ registerLocaleData(zh);
     AppComponent,
     GatewayComponent,
     DeviceComponent,
-    ScheduleComponent,
     NotificationComponent,
     ExportComponent,
     RuleComponent,

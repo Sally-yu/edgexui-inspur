@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {AjaxService} from './ajax.service';
+import {ajax} from 'rxjs/ajax';
+
 declare var $:any;
 // @ts-ignore
 // @ts-ignore
@@ -8,12 +11,12 @@ declare var $:any;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Edgex-Access';   //页面标题
+  title = 'Edge-Access';   //页面标题
 
   tabs = ['欢迎'];
-  currIndex = 0;
-
-  logoPath='http://10.24.20.7/assets/img/logo-big.png';
+  ajax= new AjaxService;
+  imgUrl=this.ajax.imgUrl;
+  logoPath=this.imgUrl+'/'+'logo-big.png';
   content='欢迎';
   collapsed=false;
 
