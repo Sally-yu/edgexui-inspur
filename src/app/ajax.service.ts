@@ -8,8 +8,8 @@ import { Injectable } from '@angular/core';
 export class AjaxService {
 
   public fileServerPort = "8090";
-  public host=window.location.protocol+'//'+window.location.hostname+':'+this.fileServerPort;
-  // public host='http://10.24.20.7:8090';
+  // public host=window.location.protocol+'//'+window.location.hostname+':'+this.fileServerPort;
+  public host='http://10.24.20.7:8090';
   public imgUrl=this.host+'/assets/img';
   public saveUrl=this.host+'/assets/img/save';
   public findUrl=this.host+'/assets/img/deviceid';

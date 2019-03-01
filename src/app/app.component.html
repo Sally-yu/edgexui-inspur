@@ -105,7 +105,7 @@
   </nz-sider>
 
   <nz-layout style="height: 100%;background-color: #fff">
-    <nz-content [ngClass]="{'dark-content':content=='边缘数据','light-content':content!='边缘数据'}" >
+    <nz-content [ngClass]="{'dark-content':(content=='边缘数据')||(content=='任务调度'),'light-content':(content!='边缘数据')&&(content!='任务调度')}" >
       <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%">
 
         <!--重要-->
@@ -129,7 +129,7 @@
         <app-profile></app-profile>
       </div>
 
-      <div *ngIf="content=='边缘数据'" style="display: initial">
+      <div *ngIf="content=='边缘数据'" >
         <app-grafana></app-grafana>
       </div>
 
@@ -153,7 +153,7 @@
         <app-export></app-export>
       </div>
 
-      <div *ngIf="content=='任务调度'" style="display: initial">
+      <div *ngIf="content=='任务调度'" >
         <app-rule></app-rule>
       </div>
 

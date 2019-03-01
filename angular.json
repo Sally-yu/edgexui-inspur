@@ -36,11 +36,23 @@
               "src/styles.scss",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/assets/font/iconfont.css",
-              "node_modules/jquery-ui-dist/jquery-ui.css"
+              "node_modules/jquery-ui-dist/jquery-ui.css",
+              "node_modules/jointjs/css/layout.css",
+              "node_modules/jointjs/css/themes/material.css",
+              "node_modules/jointjs/css/themes/default.css"
             ],
             "scripts": [
+              "node_modules/jquery-ui-dist/jquery-ui.js",
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/jquery-ui-dist/jquery-ui.js"
+              "node_modules/lodash/index.js",
+              "node_modules/gojs/release/go.js",
+              "node_modules/gojs/release/go-debug.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/underscore/underscore.js",
+              "node_modules/backbone/backbone.js",
+              "node_modules/jointjs/dist/joint.js",
+              "node_modules/dagre/dist/dagre.js",
+              "node_modules/graphlib/dist/graphlib.js"
             ]
           },
           "configurations": {
@@ -63,8 +75,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "15mb"
                 }
               ]
             }

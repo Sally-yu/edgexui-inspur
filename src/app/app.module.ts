@@ -5,6 +5,8 @@ import { NgZorroAntdModule, NZ_I18N, zh_CN, en_US } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 //配置angular
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
@@ -47,7 +49,6 @@ registerLocaleData(zh);
     GrafanaSetupComponent,
     OpcuaComponent,
     EdgeIntComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -55,7 +56,7 @@ registerLocaleData(zh);
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-
+    DragDropModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }],
   bootstrap: [AppComponent]
