@@ -1,8 +1,9 @@
 
 .img {
-  height:inherit;
+  height: inherit;
   width: inherit;
   display: inline-flex;
+
   div {
     text-align: center;
     line-height: 60px;
@@ -50,4 +51,83 @@
       color: #fff;
     }
   }
+}
+
+
+#contextMenu {
+  z-index: 10002;
+  position: absolute;
+  left: 5px;
+  border: 1px solid #444;
+  background-color: #F5F5F5;
+  display: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+  font-size: 12px;
+  font-family: sans-serif;
+}
+
+#contextMenu ul {
+  list-style: none;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+#contextMenu li a {
+  position: relative;
+  min-width: 60px;
+  color: #444;
+  display: inline-block;
+  padding: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#contextMenu li:hover {
+  background: #CEDFF2;
+  color: #EEE;
+}
+
+#contextMenu li ul li {
+  display: none;
+}
+
+#contextMenu li ul li a {
+  position: relative;
+  min-width: 60px;
+  padding: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#contextMenu li:hover ul li {
+  display: block;
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
+#topbar{
+  width: 100%;
+  background-color: whitesmoke;
+  height: 8%;
+  border-bottom: 1px solid darkgray;
+}
+
+.imgGroup {
+  background-color: whitesmoke;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  border-bottom: 1px solid darkgray;
+  cursor: pointer;
+
+  :hover{
+    background-color: darkgray;
+
+  }
+}
+
+.toolitem{
+  display: none;
 }
