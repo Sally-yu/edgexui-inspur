@@ -191,7 +191,7 @@ export class RuleComponent implements OnInit {
   //       diagram.skipsUndoManager = true;
   //       diagram.links.each(function (link) {
   //         var shape = link.findObject('PIPE');
-  //         var off = shape.strokeDashOffset - 3;
+  //         var off = shape.strokeDashOffset - 3;u
   //         // animate (move) the stroke dash
   //         shape.strokeDashOffset = (off <= 0) ? 60 : off;
   //         // animte (strobe) the opacity:
