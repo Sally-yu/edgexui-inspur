@@ -81,7 +81,6 @@ export class RuleComponent implements OnInit {
   saveUrl = this.ajax.saveUrl;
   backUrl = this.ajax.backUrl;
 
-<<<<<<< HEAD
   // gojs() {
   //
   //
@@ -278,17 +277,7 @@ export class RuleComponent implements OnInit {
   //
   // }
 
-  showValue() {
-    let v = this.myDiagram.model.toJson();
-    console.log(typeof (v));
-    console.log(v);
-    console.log(this.myDiagram.nodeTemplateMap);
-  }
-
-  svg() {
-=======
   initDiagram() {
->>>>>>> master
     var self = this;//传入angular this，self改变，this也改变
     var $ = go.GraphObject.make;
     var diagram = new go.Diagram('myDiagramDiv');
