@@ -2,7 +2,7 @@ import {AjaxService} from '../ajax.service';
 import * as go from 'gojs';
 import {Component, OnInit} from '@angular/core';
 
-declare var $: any; //jQuery
+declare var jq: any; //jQuery
 @Component({
   selector: 'app-rule',
   templateUrl: './rule.html',
@@ -10,66 +10,17 @@ declare var $: any; //jQuery
 })
 export class RuleComponent implements OnInit {
 
-  myDiagram;
+  diagram;
   flag = 1000;
   DataArray = [
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-    {key: 1, svg: '卡车'},
-    {key: 2, svg: '粉碎机'},
-    {key: 3, svg: '机组'},
-    {key: 4, svg: '加工厂'},
-    {key: 5, svg: '冷却塔',},
-    {key: 6, svg: '提炼塔'},
-    {key: 7, svg: '烘干塔'},
-    {key: 8, svg: '钻探工厂'},
-
+    {svg: '卡车'},
+    {svg: '粉碎机'},
+    {svg: '机组'},
+    {svg: '加工厂'},
+    {svg: '冷却塔',},
+    {svg: '提炼塔'},
+    {svg: '烘干塔'},
+    {svg: '钻探工厂'}
   ];
 
   constructor(
@@ -278,25 +229,21 @@ export class RuleComponent implements OnInit {
   // }
 
   initDiagram() {
-    var self = this;//传入angular this，self改变，this也改变
+    var self = this;
     var $ = go.GraphObject.make;
-    var diagram = new go.Diagram('myDiagramDiv');
-    self.myDiagram = diagram;
-    var DataArray = self.DataArray;
-
-    // the node template describes how each Node should be constructed
-    var imgUrl = 'http://10.24.20.7/assets/img/';
-    var backUrl = 'http://10.24.20.7/assets/im/back/';
+    self.diagram = new go.Diagram('myDiagramDiv');
+    var DataArray = self.DataArray;  //new一个防止双向绑定更改DataArray后图源列表改变
+    var imgUrl = this.imgUrl + '/';
 
     var myPalette = $(go.Palette, 'myPaletteDiv',
       {
         'undoManager.isEnabled': true,
-        // layout: $(go.GridLayout)
+        layout: $(go.GridLayout)
       });
     var myPalette2 = $(go.Palette, 'myPaletteDiv2',
       {
         'undoManager.isEnabled': true,
-        // layout: $(go.GridLayout)
+        layout: $(go.GridLayout)
       });
     var myPalette3 = $(go.Palette, 'myPaletteDiv3',
       {
@@ -309,23 +256,43 @@ export class RuleComponent implements OnInit {
         layout: $(go.GridLayout)
       });
 
-    myPalette.nodeTemplate =
-      $(go.Node, 'Vertical',
 
-        $(go.Picture, {width: 53, height: 53, imageStretch: go.GraphObject.Uniform},
-          new go.Binding('source', 'svg', function (svg) {
-            return imgUrl + svg + '.svg';
-          }),
-        ),
-        $(go.TextBlock,
-          {margin: 2},
-          new go.Binding('text', 'svg')
-        ),
-      );
+    function nodeStyle() {
+      return [
+        // The Node.location comes from the "loc" property of the node data,
+        // converted by the Point.parse static method.
+        // If the Node.location is changed, it updates the "loc" property of the node data,
+        // converting back using the Point.stringify static method.
+        new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
+        {
+          // the Node.location is at the center of each node
+          locationSpot: go.Spot.Center
+        }
+      ];
+    }
 
-    myPalette2.nodeTemplate = myPalette.nodeTemplate;
-    myPalette3.nodeTemplate = myPalette.nodeTemplate;
-    myPalette4.nodeTemplate = myPalette.nodeTemplate;
+    myPalette.nodeTemplateMap.add('',  // the default category
+      $(go.Node, 'Table',
+        $(go.Panel, 'Vertical',
+          $(go.Picture, {width: 53, height: 53, imageStretch: go.GraphObject.Uniform},
+            new go.Binding('source', 'svg', function (svg) {
+              return imgUrl + svg + '.svg';
+            }),
+          ),
+          $(go.TextBlock,
+            {margin: 2},
+            new go.Binding('text', 'svg')
+          )),
+        // four named ports, one on each side:
+        makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
+        makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
+        makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
+        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false)
+      ));
+
+    myPalette2.nodeTemplateMap = myPalette.nodeTemplateMap;
+    myPalette3.nodeTemplateMap = myPalette.nodeTemplateMap;
+    myPalette4.nodeTemplateMap = myPalette.nodeTemplateMap;
 
 
     function makePort(name, align, spot, output, input) {
@@ -357,7 +324,39 @@ export class RuleComponent implements OnInit {
         });
     };
 
-    diagram.groupTemplate = myPalette.groupTemplate;
+    self.diagram.nodeTemplateMap.add('',
+      $(go.Node, 'Table', nodeStyle(),
+        {
+          locationSpot: go.Spot.Center,  // the location is the center of the Shape
+          locationObjectName: 'PICTURE',
+          selectionAdorned: false,  // no selection handle when selected
+          resizable: true, resizeObjectName: 'PICTURE',  // user can resize the Shape
+          rotatable: true, rotateObjectName: 'PICTURE',  // rotate the Shape without rotating the label
+          // don't re-layout when node changes size
+          layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized
+        },
+        // $(go.Shape, "RoundedRectangle", // use this kind of figure for the Shape
+        //     // bind Shape.fill to Node.data.color
+        // ),
+        {contextMenu: myContextMenu},
+        $(go.Picture,
+          {
+            name: 'PICTURE',  // named so that the above properties can refer to this GraphObject
+            width: 80, height: 80, imageStretch: go.GraphObject.Uniform
+          },
+          new go.Binding('source', 'svg', function (svg) {
+            return imgUrl + svg + '.svg';
+          }),
+        ),
+        makePort('T', go.Spot.Top, go.Spot.Top, true, true),
+        makePort('L', go.Spot.Left, go.Spot.Left, true, true),
+        makePort('R', go.Spot.Right, go.Spot.Right, true, true),
+        makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, true)
+        ,
+        {
+          toolTip: myToolTip
+        },
+      ));
 
     //计算最接近的四角，弹出菜单时避免超边界
     function getPos(w, h) {
@@ -472,76 +471,64 @@ export class RuleComponent implements OnInit {
       }
       switch (val) {
         case 'cut':
-          diagram.commandHandler.cutSelection();
+          self.diagram.commandHandler.cutSelection();
           break;
         case 'copy':
-          diagram.commandHandler.copySelection();
+          self.diagram.commandHandler.copySelection();
           break;
         case 'paste':
-          diagram.commandHandler.pasteSelection(diagram.lastInput.documentPoint);
+          self.diagram.commandHandler.pasteSelection(self.diagram.lastInput.documentPoint);
           break;
         case 'delete':
-          diagram.commandHandler.deleteSelection();
+          self.diagram.commandHandler.deleteSelection();
           break;
         case 'color': {
         }
       }
-      diagram.currentTool.stopTool();
+      self.diagram.currentTool.stopTool();
     }
-
-    function f(event) {
-      diagram.add(
-        $(go.Part,  // this Part is not bound to any model data
-          {
-            layerName: 'Background', position: new go.Point(0, 0),
-            selectable: false, pickable: false
-          },
-          $(go.Picture, this.backsrc)  //ws中ts语法可能报转义错误，编译能过就可以，启用js下可无视报错
-        ));
-    }
-
 
     var myContextMenu = $(go.HTMLInfo, {
       show: showContextMenu,
       mainElement: cxElement
     });
 
-    diagram.nodeTemplate =
-      $(go.Node, 'Auto',
-        {
-          locationSpot: go.Spot.Center,  // the location is the center of the Shape
-          locationObjectName: 'PICTURE',
-          selectionAdorned: false,  // no selection handle when selected
-          resizable: true, resizeObjectName: 'PICTURE',  // user can resize the Shape
-          rotatable: true, rotateObjectName: 'PICTURE',  // rotate the Shape without rotating the label
-          // don't re-layout when node changes size
-          layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized
-        },
-        // $(go.Shape, "RoundedRectangle", // use this kind of figure for the Shape
-        //     // bind Shape.fill to Node.data.color
-        // ),
-        {contextMenu: myContextMenu},
-        $(go.Picture,
-          {
-            name: 'PICTURE',  // named so that the above properties can refer to this GraphObject
-            width: 80, height: 80, imageStretch: go.GraphObject.Uniform
-          },
-          new go.Binding('source', 'svg', function (svg) {
-            return imgUrl + svg + '.svg';
-          }),
-        ),
-        makePort('T', go.Spot.Top, go.Spot.Top, true, true),
-        makePort('L', go.Spot.Left, go.Spot.Left, true, true),
-        makePort('R', go.Spot.Right, go.Spot.Right, true, true),
-        makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, true)
-        ,
-        {
-          toolTip: myToolTip
-        },
-      );
+    // self.diagram.nodeTemplate =
+    //   $(go.Node, 'Auto',
+    //     {
+    //       locationSpot: go.Spot.Center,  // the location is the center of the Shape
+    //       locationObjectName: 'PICTURE',
+    //       selectionAdorned: false,  // no selection handle when selected
+    //       resizable: true, resizeObjectName: 'PICTURE',  // user can resize the Shape
+    //       rotatable: true, rotateObjectName: 'PICTURE',  // rotate the Shape without rotating the label
+    //       // don't re-layout when node changes size
+    //       layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized
+    //     },
+    //     // $(go.Shape, "RoundedRectangle", // use this kind of figure for the Shape
+    //     //     // bind Shape.fill to Node.data.color
+    //     // ),
+    //     {contextMenu: myContextMenu},
+    //     $(go.Picture,
+    //       {
+    //         name: 'PICTURE',  // named so that the above properties can refer to this GraphObject
+    //         width: 80, height: 80, imageStretch: go.GraphObject.Uniform
+    //       },
+    //       new go.Binding('source', 'svg', function (svg) {
+    //         return imgUrl + svg + '.svg';
+    //       }),
+    //     ),
+    //     makePort('T', go.Spot.Top, go.Spot.Top, true, true),
+    //     makePort('L', go.Spot.Left, go.Spot.Left, true, true),
+    //     makePort('R', go.Spot.Right, go.Spot.Right, true, true),
+    //     makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, true)
+    //     ,
+    //     {
+    //       toolTip: myToolTip
+    //     },
+    //   );
 
 
-    diagram.linkTemplate =
+    self.diagram.linkTemplate =
       $(go.Link, {
           toShortLength: -2,
           fromShortLength: -2,
@@ -584,14 +571,10 @@ export class RuleComponent implements OnInit {
     }
 
 
-    myPalette.model = new go.GraphLinksModel(DataArray, []);
-    myPalette2.model = new go.GraphLinksModel(DataArray, []);
-    myPalette3.model = new go.GraphLinksModel(DataArray, []);
-    myPalette4.model = new go.GraphLinksModel(DataArray, []);
-
-    function connect() {
-      diagram.model.nodeDataArray[0]['device'] = self.flag;
-    }
+    myPalette.model = new go.GraphLinksModel(DataArray);
+    myPalette2.model = new go.GraphLinksModel(DataArray);
+    myPalette3.model = new go.GraphLinksModel(DataArray);
+    myPalette4.model = new go.GraphLinksModel(DataArray);
 
   }
 
@@ -601,18 +584,28 @@ export class RuleComponent implements OnInit {
     // this.myDiagram.model.nodeDataArray[0]['device'] = 'deviceid';
     // // this.myDiagram.model=new go.GraphLinksModel(this.myDiagram.model.nodeDataArray,[]);
     // console.log(this.myDiagram.model.nodeDataArray);
-
   }
 
   showValue() {
-    let v = this.myDiagram.model.toJson();
-    console.log(typeof (v));
-    console.log(v);
-    console.log(this.myDiagram.nodeTemplateMap);
+    console.log(this.diagram.model.toJson());
+    this.diagram.model = go.Model.fromJson({ "class": "GraphLinksModel",
+      "nodeDataArray": [
+        {"svg":"机组", "key":-3, "loc":"203.421875 -111.734375"},
+        {"svg":"提炼塔", "key":-6, "loc":"-11.578125 29.265625"},
+        {"svg":"钻探工厂", "key":-8, "loc":"-167.578125 -66.734375"},
+        {"svg":"冷却塔", "key":-5, "loc":"-435.578125 -280.734375"},
+        {"svg":"粉碎机", "key":-2, "loc":"-378.578125 110.765625"},
+        {"svg":"烘干塔", "key":-7, "loc":"-526.578125 -79.734375"}
+      ],
+      "linkDataArray": [
+        {"from":-5, "to":-8, "points":[-395.578125,-280.734375,-385.578125,-280.734375,-301.578125,-280.734375,-301.578125,-66.734375,-217.578125,-66.734375,-207.578125,-66.734375]},
+        {"from":-7, "to":-2, "points":[-486.578125,-79.734375,-476.578125,-79.734375,-452.578125,-79.734375,-452.578125,110.765625,-428.578125,110.765625,-418.578125,110.765625]},
+        {"from":-2, "to":-8, "points":[-338.578125,110.765625,-328.578125,110.765625,-273.078125,110.765625,-273.078125,-53.401041666666664,-217.578125,-53.401041666666664,-207.578125,-53.401041666666664]}
+      ]});
   }
 
   ngOnInit() {
     this.initDiagram();
-    $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
+    jq('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
   }
 }
