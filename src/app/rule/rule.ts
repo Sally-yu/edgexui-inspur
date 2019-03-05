@@ -2,24 +2,15 @@ import {AjaxService} from '../ajax.service';
 import * as go from 'gojs';
 import {Component, OnInit} from '@angular/core';
 
-declare var $: any;
-
+declare var $: any; //jQuery
 @Component({
   selector: 'app-rule',
   templateUrl: './rule.html',
   styleUrls: ['./rule.scss']
 })
 export class RuleComponent implements OnInit {
-  // imgList = [
-  //   'icon-sync', 'icon-bulb', 'icon-desktop', 'icon-close-circle', 'icon-save', 'icon-sync',
-  //   'icon-bulb', 'icon-desktop',
-  // ];
-  imgList = [];
-  displayMtx = [];
-  rowCount = 3;
-  paperColor = 'rgba(100,200,20,0.5)';
+
   myDiagram;
-  myPalette;
   flag = 1000;
   DataArray = [
     {key: 1, svg: '卡车'},
@@ -30,6 +21,55 @@ export class RuleComponent implements OnInit {
     {key: 6, svg: '提炼塔'},
     {key: 7, svg: '烘干塔'},
     {key: 8, svg: '钻探工厂'},
+    {key: 1, svg: '卡车'},
+    {key: 2, svg: '粉碎机'},
+    {key: 3, svg: '机组'},
+    {key: 4, svg: '加工厂'},
+    {key: 5, svg: '冷却塔',},
+    {key: 6, svg: '提炼塔'},
+    {key: 7, svg: '烘干塔'},
+    {key: 8, svg: '钻探工厂'},
+    {key: 1, svg: '卡车'},
+    {key: 2, svg: '粉碎机'},
+    {key: 3, svg: '机组'},
+    {key: 4, svg: '加工厂'},
+    {key: 5, svg: '冷却塔',},
+    {key: 6, svg: '提炼塔'},
+    {key: 7, svg: '烘干塔'},
+    {key: 8, svg: '钻探工厂'},
+    {key: 1, svg: '卡车'},
+    {key: 2, svg: '粉碎机'},
+    {key: 3, svg: '机组'},
+    {key: 4, svg: '加工厂'},
+    {key: 5, svg: '冷却塔',},
+    {key: 6, svg: '提炼塔'},
+    {key: 7, svg: '烘干塔'},
+    {key: 8, svg: '钻探工厂'},
+    {key: 1, svg: '卡车'},
+    {key: 2, svg: '粉碎机'},
+    {key: 3, svg: '机组'},
+    {key: 4, svg: '加工厂'},
+    {key: 5, svg: '冷却塔',},
+    {key: 6, svg: '提炼塔'},
+    {key: 7, svg: '烘干塔'},
+    {key: 8, svg: '钻探工厂'},
+    {key: 1, svg: '卡车'},
+    {key: 2, svg: '粉碎机'},
+    {key: 3, svg: '机组'},
+    {key: 4, svg: '加工厂'},
+    {key: 5, svg: '冷却塔',},
+    {key: 6, svg: '提炼塔'},
+    {key: 7, svg: '烘干塔'},
+    {key: 8, svg: '钻探工厂'},
+    {key: 1, svg: '卡车'},
+    {key: 2, svg: '粉碎机'},
+    {key: 3, svg: '机组'},
+    {key: 4, svg: '加工厂'},
+    {key: 5, svg: '冷却塔',},
+    {key: 6, svg: '提炼塔'},
+    {key: 7, svg: '烘干塔'},
+    {key: 8, svg: '钻探工厂'},
+
   ];
 
   constructor(
@@ -41,6 +81,7 @@ export class RuleComponent implements OnInit {
   saveUrl = this.ajax.saveUrl;
   backUrl = this.ajax.backUrl;
 
+<<<<<<< HEAD
   // gojs() {
   //
   //
@@ -245,11 +286,14 @@ export class RuleComponent implements OnInit {
   }
 
   svg() {
+=======
+  initDiagram() {
+>>>>>>> master
     var self = this;//传入angular this，self改变，this也改变
     var $ = go.GraphObject.make;
     var diagram = new go.Diagram('myDiagramDiv');
     self.myDiagram = diagram;
-    var DataArray=self.DataArray;
+    var DataArray = self.DataArray;
 
     // the node template describes how each Node should be constructed
     var imgUrl = 'http://10.24.20.7/assets/img/';
@@ -270,11 +314,16 @@ export class RuleComponent implements OnInit {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
+    var myPalette4 = $(go.Palette, 'myPaletteDiv4',
+      {
+        'undoManager.isEnabled': true,
+        layout: $(go.GridLayout)
+      });
 
     myPalette.nodeTemplate =
       $(go.Node, 'Vertical',
 
-        $(go.Picture, {width: 80, height: 80, imageStretch: go.GraphObject.Uniform},
+        $(go.Picture, {width: 53, height: 53, imageStretch: go.GraphObject.Uniform},
           new go.Binding('source', 'svg', function (svg) {
             return imgUrl + svg + '.svg';
           }),
@@ -287,6 +336,7 @@ export class RuleComponent implements OnInit {
 
     myPalette2.nodeTemplate = myPalette.nodeTemplate;
     myPalette3.nodeTemplate = myPalette.nodeTemplate;
+    myPalette4.nodeTemplate = myPalette.nodeTemplate;
 
 
     function makePort(name, align, spot, output, input) {
@@ -320,13 +370,54 @@ export class RuleComponent implements OnInit {
 
     diagram.groupTemplate = myPalette.groupTemplate;
 
+    //计算最接近的四角，弹出菜单时避免超边界
+    function getPos(w, h) {
+      var backH = document.getElementById('myDiagramDiv').offsetHeight;//去px绝对数值
+      var backW = document.getElementById('myDiagramDiv').offsetWidth;//去px绝对数值
+      console.log(w, backW, h, backH);
+      if (h < backH / 2) {
+        if (w <= backW / 2) {
+          return 1;//左上角
+        } else if (w > backW / 2) {
+          return 2;//右上角
+        }
+      }
+      if (h > backH / 2) {
+        if (w >= backW / 2) {
+          return 3;//右下角
+        } else if (w < backW / 2) {
+          return 4;//左下角
+        }
+      }
+    }
+
     function showToolTip(obj, diagram, tool) {
       var toolTipDIV = document.getElementById('toolTipDIV');
       var pt = diagram.lastInput.viewPoint;
-      toolTipDIV.style.left = (pt.x + 10 + 510) + 'px'; //左边菜单和图源列表固定宽度大概510px，缩放不变
       var topHeight = document.getElementById('topbar').offsetHeight;//顶部的bar高度缩放变化，去px绝对数值
-      toolTipDIV.style.top = (pt.y + 10 + topHeight) + 'px';
-      document.getElementById('toolTipParagraph').textContent = 'Tooltip for: ' + obj.data.key;
+      var left = pt.x + 540;
+      var top = pt.y + 10 + topHeight;
+      var r = getPos(pt.x, pt.y);
+      switch (r) {
+        case 1:
+          break;
+        case 2:
+          left -= 300;
+          break;
+        case 3:
+          left -= 300;
+          top -= 300;
+          break;
+        case 4:
+          top -= 300;
+          break;
+        default:
+          break;
+      }
+      toolTipDIV.style.left = left + 'px'; //左边菜单和图源列表固定宽度大概530px，缩放不变
+      toolTipDIV.style.top = top + 'px';
+
+      document.getElementById('toolTipParagraph').textContent = 'Tooltip for: ' + r;
       toolTipDIV.style.display = 'block';
     }
 
@@ -344,79 +435,111 @@ export class RuleComponent implements OnInit {
 
     });
 
-    var cxElement = document.getElementById("contextMenu");
+    var cxElement = document.getElementById('contextMenu');
     // Since we have only one main element, we don't have to declare a hide method,
     // we can set mainElement and GoJS will hide it automatically
-
 
 
     function showContextMenu(obj, diagram, tool) {
       // Show only the relevant buttons given the current state.
       var cmd = diagram.commandHandler;
-      document.getElementById("cut").style.display = cmd.canCutSelection() ? "block" : "none";
-      document.getElementById("copy").style.display = cmd.canCopySelection() ? "block" : "none";
-      document.getElementById("paste").style.display = cmd.canPasteSelection() ? "block" : "none";
-      document.getElementById("delete").style.display = cmd.canDeleteSelection() ? "block" : "none";
-      document.getElementById("color").style.display = (obj !== null ? "block" : "none");
+      document.getElementById('cut').style.display = cmd.canCutSelection() ? 'block' : 'none';
+      document.getElementById('copy').style.display = cmd.canCopySelection() ? 'block' : 'none';
+      document.getElementById('paste').style.display = cmd.canPasteSelection() ? 'block' : 'none';
+      document.getElementById('delete').style.display = cmd.canDeleteSelection() ? 'block' : 'none';
+      document.getElementById('color').style.display = (obj !== null ? 'block' : 'none');
       // Now show the whole context menu element
-      cxElement.style.display = "block";
+      cxElement.style.display = 'block';
       // we don't bother overriding positionContextMenu, we just do it here:
       var pt = diagram.lastInput.viewPoint;
-      cxElement.style.left = (pt.x + 10 + 510) + 'px'; //左边菜单和图源列表固定宽度大概510px，缩放不变
       var topHeight = document.getElementById('topbar').offsetHeight;//顶部的bar高度缩放变化，去px绝对数值
-      cxElement.style.top = (pt.y + 10 + topHeight) + 'px';
+      var left = pt.x + 540;
+      var top = pt.y + 10 + topHeight;
+      var r = getPos(pt.x, pt.y);//计算四角中最接近的，以此调整位置
+      switch (r) {
+        case 1:
+          break;
+        case 2:
+          left -= 150;
+          break;
+        case 3:
+          left -= 150;
+          top -= 150;
+          break;
+        case 4:
+          top -= 150;
+          break;
+        default:
+          break;
+      }
+      cxElement.style.left = left + 'px'; //左边菜单和图源列表固定宽度大概530px，缩放不变
+      cxElement.style.top = top + 'px';
 
     }
 
     function cxcommand(event, val) {
-      if (val === undefined) val = event.currentTarget.id;
+      if (val === undefined) {
+        val = event.currentTarget.id;
+      }
       switch (val) {
-        case "cut": diagram.commandHandler.cutSelection(); break;
-        case "copy": diagram.commandHandler.copySelection(); break;
-        case "paste": diagram.commandHandler.pasteSelection(diagram.lastInput.documentPoint); break;
-        case "delete": diagram.commandHandler.deleteSelection(); break;
-        case "color": {
+        case 'cut':
+          diagram.commandHandler.cutSelection();
+          break;
+        case 'copy':
+          diagram.commandHandler.copySelection();
+          break;
+        case 'paste':
+          diagram.commandHandler.pasteSelection(diagram.lastInput.documentPoint);
+          break;
+        case 'delete':
+          diagram.commandHandler.deleteSelection();
+          break;
+        case 'color': {
         }
       }
       diagram.currentTool.stopTool();
     }
+
+    function f(event) {
+      diagram.add(
+        $(go.Part,  // this Part is not bound to any model data
+          {
+            layerName: 'Background', position: new go.Point(0, 0),
+            selectable: false, pickable: false
+          },
+          $(go.Picture, this.backsrc)  //ws中ts语法可能报转义错误，编译能过就可以，启用js下可无视报错
+        ));
+    }
+
 
     var myContextMenu = $(go.HTMLInfo, {
       show: showContextMenu,
       mainElement: cxElement
     });
 
-
     diagram.nodeTemplate =
       $(go.Node, 'Auto',
+        {
+          locationSpot: go.Spot.Center,  // the location is the center of the Shape
+          locationObjectName: 'PICTURE',
+          selectionAdorned: false,  // no selection handle when selected
+          resizable: true, resizeObjectName: 'PICTURE',  // user can resize the Shape
+          rotatable: true, rotateObjectName: 'PICTURE',  // rotate the Shape without rotating the label
+          // don't re-layout when node changes size
+          layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized
+        },
         // $(go.Shape, "RoundedRectangle", // use this kind of figure for the Shape
         //     // bind Shape.fill to Node.data.color
         // ),
-        { contextMenu: myContextMenu },
+        {contextMenu: myContextMenu},
         $(go.Picture,
-          {width: 80, height: 80, imageStretch: go.GraphObject.Uniform},
+          {
+            name: 'PICTURE',  // named so that the above properties can refer to this GraphObject
+            width: 80, height: 80, imageStretch: go.GraphObject.Uniform
+          },
           new go.Binding('source', 'svg', function (svg) {
             return imgUrl + svg + '.svg';
           }),
-          // {
-          //   contextMenu:     // define a context menu for each node
-          //     $('ContextMenu',  // that has one button
-          //       $('ContextMenuButton',
-          //         $(go.TextBlock, '关联设备'),
-          //         {click: connect}
-          //       ),
-          //       $('ContextMenuButton',
-          //         $(go.TextBlock, '取消关联'),
-          //       ),
-          //       $('ContextMenuButton',
-          //         $(go.TextBlock, 'item3'),
-          //       )
-          //       , $('ContextMenuButton',
-          //         $(go.TextBlock, 'item4'),
-          //       )
-          //       // more ContextMenuButtons would go here
-          //     )  // end Adornment
-          // },
         ),
         makePort('T', go.Spot.Top, go.Spot.Top, true, true),
         makePort('L', go.Spot.Left, go.Spot.Left, true, true),
@@ -425,8 +548,9 @@ export class RuleComponent implements OnInit {
         ,
         {
           toolTip: myToolTip
-        }
+        },
       );
+
 
     diagram.linkTemplate =
       $(go.Link, {
@@ -471,14 +595,15 @@ export class RuleComponent implements OnInit {
     }
 
 
-
     myPalette.model = new go.GraphLinksModel(DataArray, []);
     myPalette2.model = new go.GraphLinksModel(DataArray, []);
     myPalette3.model = new go.GraphLinksModel(DataArray, []);
+    myPalette4.model = new go.GraphLinksModel(DataArray, []);
 
     function connect() {
       diagram.model.nodeDataArray[0]['device'] = self.flag;
     }
+
   }
 
   click() {
@@ -487,17 +612,18 @@ export class RuleComponent implements OnInit {
     // this.myDiagram.model.nodeDataArray[0]['device'] = 'deviceid';
     // // this.myDiagram.model=new go.GraphLinksModel(this.myDiagram.model.nodeDataArray,[]);
     // console.log(this.myDiagram.model.nodeDataArray);
-    document.getElementById("myPaletteDiv").style.display="block";
-
 
   }
 
-  toggle(id){
-    document.getElementById(id).style.display=="none"?document.getElementById(id).style.display="block":document.getElementById(id).style.display="none";
+  showValue() {
+    let v = this.myDiagram.model.toJson();
+    console.log(typeof (v));
+    console.log(v);
+    console.log(this.myDiagram.nodeTemplateMap);
   }
 
   ngOnInit() {
-    this.svg();
-    // $('.resizable').resizable();
+    this.initDiagram();
+    $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
   }
 }
