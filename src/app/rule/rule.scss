@@ -101,11 +101,11 @@
   cursor: pointer;
 }
 
-#contextMenu li:hover ul li {
-  display: block;
-  margin-left: 0px;
-  margin-top: 0px;
-}
+//#contextMenu li:hover ul li {
+//  display: block;
+//  margin-left: 0px;
+//  margin-top: 0px;
+//}
 
 #topbar{
   width: 100%;
@@ -130,4 +130,13 @@
 
 .toolitem{
   display: none;
+}
+
+.active{
+  dispaly:block;
+}
+
+.ant-collapse-content-box{
+  padding:0;
+  padding-top:0;
 }
