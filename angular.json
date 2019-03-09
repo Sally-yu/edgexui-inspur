@@ -48,7 +48,9 @@
               "node_modules/underscore/underscore.js",
               "node_modules/backbone/backbone.js",
               "node_modules/dagre/dist/dagre.js",
-              "node_modules/graphlib/dist/graphlib.js"
+              "node_modules/graphlib/dist/graphlib.js",
+              "node_modules/gojs/extensions/FreehandDrawingTool.js",
+              "node_modules/gojs/extensions/GeometryReshapingTool.js"
             ]
           },
           "configurations": {

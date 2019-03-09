@@ -14,8 +14,10 @@ export class AjaxService {
   public saveUrl=this.host+'/assets/img/save';
   public findUrl=this.host+'/assets/img/deviceid';
   public backUrl=this.host+'/assets/img/back';
+  public workUrl=this.host+'/workspace';
 
   constructor() {
     console.log(this.host);
   }
+
 }
