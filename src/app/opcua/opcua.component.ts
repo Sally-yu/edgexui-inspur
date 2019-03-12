@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NzMessageService} from 'ng-zorro-antd';
+import { and } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-opcua',
@@ -12,6 +13,62 @@ export class OpcuaComponent implements OnInit {
   @Input() opcDevice;
 
   @Output() result: EventEmitter<any> = new EventEmitter();
+ 
+  servergroup=new Array(20);
+  savestrategy:string;
+  servername:string;
+  removestate:boolean=false;//判断是否显示删除数据库按钮
+  addstate:boolean=false;//判断是否显示添加数据库按钮
+  login =new Array();
+
+  influxlist = [];//数组列表信息
+
+  addInput() {
+    var number;
+    if(this.login==null){
+      number=2;
+      this.removestate=false;
+    }else{
+      this.removestate=true;
+      number = this.login.length + 2;
+    }
+    this.login.push({"name":"从数据库"+number,"id":number});
+    if((this.login.length+2)<this.influxlist.length){
+      this.addstate=true;
+    }
+    else{
+      this.addstate=false;
+    }
+  }
+  removeInput() {
+      let i = this.login.length-1;
+      this.servergroup.splice(i-1, 1);
+      this.login.splice(i, 1);
+      if(i>0){
+        this.removestate=true;
+      }else{
+        this.removestate=false;
+      }
+      if((this.login.length+2)<this.influxlist.length){
+        this.addstate=true;
+      }
+      else{
+        this.addstate=false;
+      }
+  }
+  isNotSelected(servername,node){
+    if(servername===node){
+      return true;
+    }else{
+      return this.servergroup.indexOf(node) === -1;
+    }
+  }
+  strategyChange(strategy){
+    this.servergroup.length=0;
+    if(strategy==="集群版部署" && this.influxlist.length>2){
+      this.addstate=true;
+    }
+  }
 
   //OpcUrl
   opcUrl = {
@@ -46,21 +103,20 @@ export class OpcuaComponent implements OnInit {
     return this.opcrun;
   }
 
-  //连接测试
-  pingTest() {
-    var data = new FormData();
-    data.append('database', this.opcDevice.dbname);
-    data.append('inhost', this.opcDevice.dbip);
-    data.append('inport', '8086');
-    this.http.post(this.opcUrl.InfluxHandle, data, {responseType: 'text'}).subscribe(res => {
-      this.message.info(res);
-    }, error1 => {
-      this.message.warning('连接测试出错');
+  //保存数据存储策略配置信息
+  saveDataconfig() {
+    var datastrategy={ "savestrategy": this.savestrategy,
+                        "login":JSON.stringify(this.login),
+                        "servergroup":JSON.stringify(this.servergroup)
+                      }  
+    this.http.post('http://127.0.0.1:8090/assets/opcua/insert',datastrategy)
+    .subscribe(res => {
+     
     });
   }
-
   //启动
   opcStart() {
+    this.saveDataconfig();
     var opcaction = 'startcollect';
     var data = new FormData();
     data.append('database', this.opcDevice.dbname);
@@ -154,9 +210,34 @@ export class OpcuaComponent implements OnInit {
     this.result.emit(true);
     this.opcDevice = null;
   }
+  //获取influx数据库配置信息列表
+  getDatabaselist(){
+    this.http.get('http://127.0.0.1:8090/assets/influx/get')
+    .subscribe(data => {
+      this.influxlist=JSON.parse(JSON.stringify(data));
+    });
+  }
+  getDataconfig(){
+
+    this.http.post('http://127.0.0.1:8090/assets/opcua/get',null)
+    .subscribe(data => {
+      var datastrategy=JSON.parse(JSON.stringify(data));
+      this.savestrategy=datastrategy.savestrategy;
+      this.login=JSON.parse(datastrategy.login);
+      this.servergroup=JSON.parse(datastrategy.servergroup);
+      if(this.login.length>0){
+        this.removestate=true;
+      }
+      if(this.servergroup.length<this.influxlist.length){
+        this.addstate=true;
+      }
+    });
+  }
 
   ngOnInit() {
     this.search();
+    this.getDatabaselist();
+    this.getDataconfig()
   }
 
 }

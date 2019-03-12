@@ -58,7 +58,7 @@ export class DeviceServiceComponent implements OnInit {
           'dbip': '10.24.19.221',
           'dbname': 'mom',
           'dbuser': 'admin',
-          'dbpwd': 'aaaaaa'
+          'dbpwd': 'admin'
         };
       this.device_services = [...this.device_services, opcTest];//添加伪数据测试
       console.log(this.device_services);
@@ -95,7 +95,7 @@ export class DeviceServiceComponent implements OnInit {
         'dbip': '10.24.19.221',
         'dbname': 'mom',
         'dbuser': 'admin',
-        'dbpwd': 'aaaaaa'
+        'dbpwd': 'admin'
       };
       this.device_services=[];
       this.device_services = [...this.device_services, opcTest];//添加伪数据测试
