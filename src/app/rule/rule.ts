@@ -1,11 +1,13 @@
 import {AjaxService} from '../ajax.service';
 import * as go from 'gojs';
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {NzMessageService} from 'ng-zorro-antd';
 import {UUID} from 'angular2-uuid';
 
-declare var jq: any; //jQuery
+declare var $: any; //jQuery
+declare var BMap: any;
+
 @Component({
   selector: 'app-rule',
   templateUrl: './rule.html',
@@ -13,17 +15,21 @@ declare var jq: any; //jQuery
 })
 export class RuleComponent implements OnInit {
 
+  @Input() currWork;
+  @Output() result: EventEmitter<any> = new EventEmitter();
+  @Output() deleteOne: EventEmitter<any> = new EventEmitter();
+
   diagram;
   flag = 1000;
   DataArray = [
-    {svg: '卡车', deviceid: ''},
-    {svg: '粉碎机', deviceid: ''},
-    {svg: '机组', deviceid: ''},
-    {svg: '加工厂', deviceid: ''},
-    {svg: '冷却塔', deviceid: ''},
-    {svg: '提炼塔', deviceid: ''},
-    {svg: '烘干塔', deviceid: ''},
-    {svg: '钻探工厂', deviceid: ''}
+    {svg: '卡车', deviceid: '', status: ''},
+    {svg: '粉碎机', deviceid: '', status: ''},
+    {svg: '机组', deviceid: '', status: '0'},
+    {svg: '加工厂', deviceid: '', status: '0'},
+    {svg: '冷却塔', deviceid: '', status: '0'},
+    {svg: '提炼塔', deviceid: '', status: '1'},
+    {svg: '烘干塔', deviceid: '', status: '1'},
+    {svg: '钻探工厂', deviceid: '', status: '1'}
   ];
   builtIn = [
     {svg: 'Rectangle', category: 'shape'},
@@ -41,7 +47,7 @@ export class RuleComponent implements OnInit {
     {svg: 'LineV', category: 'shape'},
     // {svg: 'MinusLine', category: 'shape'},
     {svg: 'PlusLine', category: 'shape'},
-    {svg: 'XLine', category: 'shape'}
+    // {svg: 'XLine', category: 'shape'}
   ];
 
   private defaultDevice = {
@@ -127,106 +133,8 @@ export class RuleComponent implements OnInit {
   currDevice = {};//选中图标的nodedata
 
   tempDeviceId = '';
-  devices = [];
+  devices;
   zoom = 0;
-
-  testSevices = [
-    {
-      'created': 1546390652116,
-      'modified': 1546390652116,
-      'origin': 1546390652044,
-      'description': '',
-      'id': '5c2c0c7c9f8fc200015417a0',
-      'name': 'edgex-device-virtual',
-      'lastConnected': 0,
-      'lastReported': 0,
-      'operatingState': 'ENABLED',
-      'labels': [
-        'virtual'
-      ],
-      'addressable': {
-        'created': 1546390652032,
-        'modified': 0,
-        'origin': 1546390651579,
-        'id': '5c2c0c7c9f8fc2000154179f',
-        'name': 'edgex-device-virtual',
-        'protocol': 'HTTP',
-        'method': 'POST',
-        'address': 'edgex-device-virtual',
-        'port': 49990,
-        'path': '/api/v1/callback',
-        'publisher': null,
-        'user': null,
-        'password': null,
-        'topic': null,
-        'baseURL': 'HTTP://edgex-device-virtual:49990',
-        'url': 'HTTP://edgex-device-virtual:49990/api/v1/callback'
-      },
-      'adminState': 'UNLOCKED'
-    },
-    {
-      'created': 1546409649408,
-      'modified': 1546409649408,
-      'origin': 1546409649405,
-      'description': '',
-      'id': '5c2c56b19f8fc200015417cf',
-      'name': 'edgex-device-mqtt',
-      'lastConnected': 0,
-      'lastReported': 0,
-      'operatingState': 'ENABLED',
-      'labels': [],
-      'addressable': {
-        'created': 1546409649404,
-        'modified': 0,
-        'origin': 1546409649402,
-        'id': '5c2c56b19f8fc200015417ce',
-        'name': 'edgex-device-mqtt',
-        'protocol': 'HTTP',
-        'method': 'POST',
-        'address': 'localhost',
-        'port': 49982,
-        'path': '/api/v1/callback',
-        'publisher': null,
-        'user': null,
-        'password': null,
-        'topic': null,
-        'baseURL': 'HTTP://localhost:49982',
-        'url': 'HTTP://localhost:49982/api/v1/callback'
-      },
-      'adminState': 'UNLOCKED'
-    },
-    {
-      'created': 1547715025256,
-      'modified': 1547715025256,
-      'origin': 1547715025246,
-      'description': '',
-      'id': '5c4041d19f8fc20001386fe1',
-      'name': 'device-random',
-      'lastConnected': 0,
-      'lastReported': 0,
-      'operatingState': 'ENABLED',
-      'labels': [],
-      'addressable': {
-        'created': 1547715025243,
-        'modified': 0,
-        'origin': 1547715025228,
-        'id': '5c4041d19f8fc20001386fe0',
-        'name': 'device-random',
-        'protocol': 'HTTP',
-        'method': 'POST',
-        'address': 'device-random',
-        'port': 49988,
-        'path': '/api/v1/callback',
-        'publisher': null,
-        'user': null,
-        'password': null,
-        'topic': null,
-        'baseURL': 'HTTP://device-random:49988',
-        'url': 'HTTP://device-random:49988/api/v1/callback'
-      },
-      'adminState': 'UNLOCKED'
-    }
-  ];
 
   constructor(
     private ajax: AjaxService,
@@ -244,13 +152,13 @@ export class RuleComponent implements OnInit {
   initDiagram() {
     var self = this;
     var $ = go.GraphObject.make;
+    var DataArray = self.DataArray;  //new一个防止双向绑定更改DataArray后图源列表改变
+    var imgUrl = this.imgUrl + '/';
+
     self.diagram = $(go.Diagram, 'myDiagramDiv',  // must name or refer to the DIV HTML element
       {
         'undoManager.isEnabled': true  // enable undo & redo
       });
-    var DataArray = self.DataArray;  //new一个防止双向绑定更改DataArray后图源列表改变
-    var imgUrl = this.imgUrl + '/';
-
     var myPalette = $(go.Palette, 'myPaletteDiv',
       {
         'undoManager.isEnabled': true,
@@ -321,7 +229,8 @@ export class RuleComponent implements OnInit {
       self.currDevice = obj.data;
       self.matchDevice();
       console.log(self.currDevice);
-      var left = pt.x + 500;
+      var fromLeft = document.getElementById('leftbar').offsetWidth;
+      var left = pt.x + 208 + fromLeft + 10;//左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
       var top = pt.y + 10 + topHeight;
       var r = getPos(pt.x, pt.y);
       switch (r) {
@@ -361,7 +270,8 @@ export class RuleComponent implements OnInit {
       console.log(self.currDevice);
       var pt = diagram.lastInput.viewPoint;
       var topHeight = document.getElementById('topbar').offsetHeight;//顶部的bar高度缩放变化，去px绝对数值
-      var left = pt.x + 500;
+      var fromLeft = document.getElementById('leftbar').offsetWidth;
+      var left = pt.x + 208 + fromLeft + 10; //左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
       var top = pt.y + 10 + topHeight;
       var r = getPos(pt.x, pt.y);//计算四角中最接近的，以此调整位置
       switch (r) {
@@ -442,7 +352,7 @@ export class RuleComponent implements OnInit {
         $(go.Shape,
           {
             name: 'SHAPE',
-            strokeWidth: 2,
+            strokeWidth: 1,
             stroke: 'black',
             fill: 'transparent',
             width: 20,
@@ -451,10 +361,6 @@ export class RuleComponent implements OnInit {
           new go.Binding('figure', 'svg')),
         // Shape.fill is bound to Node.data.color
         // four named ports, one on each side:
-        makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
-        makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
-        makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
-        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false)
       ));
 
     myPalette1.nodeTemplateMap.add('',  // the default category
@@ -470,18 +376,53 @@ export class RuleComponent implements OnInit {
             new go.Binding('text', 'svg')
           )),
         // four named ports, one on each side:
-        makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
-        makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
-        makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
-        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false)
       ));
 
     myPalette2.nodeTemplateMap = myPalette1.nodeTemplateMap;
     myPalette3.nodeTemplateMap = myPalette2.nodeTemplateMap;
     myPalette4.nodeTemplateMap = myPalette3.nodeTemplateMap;
 
+    self.diagram.nodeTemplateMap.add('picture',  // the default category
+      $(go.Node, 'Auto',
+        nodeStyle(),
+        {
+          locationSpot: go.Spot.Center,  // the location is the center of the Shape
+          locationObjectName: 'PIC',
+          selectionAdorned: false,  // no selection handle when selected
+          resizable: true, resizeObjectName: 'PIC',  // user can resize the Shape
+          rotatable: true, rotateObjectName: 'PIC',  // rotate the Shape without rotating the label
+          layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
+        },
+        $(go.Picture,
+          {name: 'PIC', width: 80, height: 80, imageStretch: go.GraphObject.UniformToFill},
+          new go.Binding('source', 'src'),
+        ),
+        // Shape.fill is bound to Node.data.color
+        // four named ports, one on each side:
+        makePort('T', go.Spot.Top, go.Spot.TopSide, true, true),
+        makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
+        makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
+        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, true),
+        {toolTip: myToolTip},
+        {contextMenu: myContextMenu}
+      ));
 
-
+    self.diagram.nodeTemplateMap.add('Comment',
+      $(go.Node, 'Auto', nodeStyle(),
+        $(go.Shape, 'Rectangle',
+          {fill: '#DEE0A3', strokeWidth: 0}),
+        $(go.TextBlock,
+          {
+            margin: 5,
+            maxSize: new go.Size(200, NaN),
+            wrap: go.TextBlock.WrapFit,
+            textAlign: 'center',
+            editable: true,
+            font: 'bold 12pt Helvetica, Arial, sans-serif',
+            stroke: '#454545'
+          },
+          new go.Binding('text').makeTwoWay()),
+      ));
 
     self.diagram.nodeTemplateMap.add('shape',  // the default category
       $(go.Node, 'Auto',
@@ -507,10 +448,10 @@ export class RuleComponent implements OnInit {
           new go.Binding('figure', 'svg')),
         // Shape.fill is bound to Node.data.color
         // four named ports, one on each side:
-        makePort('T', go.Spot.Top, go.Spot.TopSide, false, true),
+        makePort('T', go.Spot.Top, go.Spot.TopSide, true, true),
         makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
         makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
-        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, false),
+        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, true),
         {toolTip: myToolTip},
         {contextMenu: myContextMenu}
       ));
@@ -539,6 +480,21 @@ export class RuleComponent implements OnInit {
           new go.Binding('source', 'svg', function (svg) {
             return imgUrl + svg + '.svg';
           }),
+        ),
+        $(go.Shape, 'Circle',    //指示灯
+          {
+            alignment: go.Spot.TopRight, alignmentFocus: go.Spot.TopRight,
+            width: 20, height: 20, strokeWidth: 0
+          },
+          new go.Binding('fill', 'status', function (s) {
+            var color = '#9d9d9d';
+            if (s == '1') {
+              color = '#00cc00';
+            } else if (s == '0') {
+              color = '#ee0000';
+            }
+            return color;
+          })
         ),
         makePort('T', go.Spot.Top, go.Spot.Top, true, true),
         makePort('L', go.Spot.Left, go.Spot.Left, true, true),
@@ -660,39 +616,47 @@ export class RuleComponent implements OnInit {
   }
 
   load() {
-    var loaddata;
-    this.diagram.model = go.Model.fromJson(
-      {
-        'key': '032b5e67-b9c7-a710-111e-edb81fd3efdb',
-        'class': 'GraphLinksModel',
-        'linkDataArray': [{
-          'from': -1,
-          'to': -2,
-          'points': [-378.578125, 220.359375, -368.578125, 220.359375, -182.078125, 220.359375, -182.078125, 228.69270833333334, 4.421875, 228.69270833333334, 22.421875, 228.69270833333334]
-        }, {
-          'from': -8,
-          'to': -2,
-          'points': [-366.578125, -261.640625, -356.578125, -261.640625, -172.078125, -261.640625, -172.078125, 202.02604166666669, 12.421875, 202.02604166666669, 22.421875, 202.02604166666669]
-        }],
-        'nodeDataArray': [
-          {'svg': '机组', 'deviceid': '', 'key': -3, 'loc': '186.921875 82.359375'},
-          {
-            'svg': '卡车',
-            'deviceid': '',
-            'key': -1,
-            'loc': '-418.578125 220.359375'
-          }, {'svg': '粉碎机', 'deviceid': '', 'key': -2, 'loc': '62.421875 215.359375'},
-          {
-            'svg': '钻探工厂',
-            'deviceid': '5c4041d19f8fc20001386fe1',
-            'key': -8,
-            'loc': '-406.578125 -261.640625'
-          }]
+    var top = $('#topbar').height();
+    var width = $('#map-container').width();
+    var height = $('#map-container').height();
+    console.log(top, width, height);
+    // var width = document.getElementById('map-container').offsetWidth;
+    // var height = document.getElementById('map-container').offsetHeight;
+    $('#myDiagramDiv').css('top', top + 'px');
+    $('#myDiagramDiv').css('height', height + 'px');
+    $('#myDiagramDiv').css('width', width + 'px');
+
+    this.diagram.model = go.Model.fromJson(this.currWork);
+
+  }
+
+  getDevice() {
+    let url = '/core-metadata/api/v1/device';
+    var head = new HttpHeaders({
+      'X-Session-Token': '21232f297a57a5a743894a0e4a801fc3',
+      'X-Requested-With': 'XMLHttpRequest'
+    });
+    this.http.get(url, {headers: head}).subscribe(response => {
+        console.log('deviceresponse:' + response);
+        this.devices = response;
+        this.devices.forEach(function (e) {  // 处理标签数组 时间戳
+          if (e.labels instanceof Array) {
+            e.labels = e.labels.join(',');
+          }
+        });
+      },
+      error1 => {
+        this.message.warning(error1);
+        console.log(error1);
       });
   }
 
   matchDevice() {
-    this.dataDevice = this.currDevice['deviceid'] ? this.testSevices.filter(d => d.id === this.currDevice['deviceid'])[0] : this.defaultDevice;
+    try {
+      this.dataDevice = this.currDevice['deviceid'] ? this.devices.filter(d => d.id === this.currDevice['deviceid'])[0] : this.defaultDevice;
+    } catch (e) {
+
+    }
   }
 
   //对话框取消
@@ -723,8 +687,94 @@ export class RuleComponent implements OnInit {
     this.diagram.commandHandler.increaseZoom(n);
   }
 
-  ngOnInit() {
+  //添加标签
+  addComm() {
+    this.showValue();
+    this.diagram.model.nodeDataArray = [...this.diagram.model.nodeDataArray, {category: 'Comment', text: '添加评论'}];
+    console.log(this.diagram.model.nodeDataArray);
+    console.log(typeof (this.diagram.model.nodeDataArray));
+  }
+
+  // 关闭
+  close() {
+    this.currWork = null;
+    this.result.emit(true);
+  }
+
+  //隐藏工具栏
+  topbarhid() {
+    this.diagram.currentTool.stopTool();
+    $('#topbar').css('display', 'none');
+    $('#topbar').css('height', '0');
+    $('#droptop').css('display', 'block');
+    $('#toolcontent').css('height', '99%');
+    this.load();
+  }
+
+  //显示工具栏
+  topbarshow() {
+    this.diagram.currentTool.stopTool();
+    $('#topbar').css('display', 'flex');
+    $('#topbar').css('height', '10%');
+    $('#droptop').css('display', 'none');
+    $('#toolcontent').css('height', '89%');
+    this.load();
+  }
+
+  toggleleft() {
+    this.diagram.currentTool.stopTool();
+    var display = $('#leftbar').css('display');
+    if (display === 'none') {
+      $('#leftbar').css('display', 'block');
+      $('#leftbtn').toggleClass('icon-left');
+      $('#leftbtn').toggleClass('icon-right');
+    } else {
+      $('#leftbar').css('display', 'none');
+      $('#leftbtn').toggleClass('icon-left');
+      $('#leftbtn').toggleClass('icon-right');
+    }
+    var left = document.getElementById('leftbar').offsetWidth;
+    $('#dropleft').css('margin-left', left);//左侧拉出按钮位置
+    this.load();
+  }
+
+  makeMap() {
+    var map = new BMap.Map('map');
+    var point = new BMap.Point(116.404, 39.915);
+    map.centerAndZoom(point, 15);
+    window.setTimeout(function () {
+      map.panTo(new BMap.Point(116.409, 39.918));
+    }, 2000);
+  }
+
+  init() {
+    console.log(this.currWork);
+    this.getDevice();
+    this.makeMap();
     this.initDiagram();
-    jq('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
+
+    $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
+    var left = document.getElementById('leftbar').offsetWidth;
+    $('#dropleft').css('margin-left', left);//左侧拉出按钮位置
+    // var top = document.getElementById('topbar').offsetHeight;
+    var top = $('#topbar').height();
+    var width = $('#map-container').width();
+    var height = $('#map-container').height();
+    console.log(top, width, height);
+    // var width = document.getElementById('map-container').offsetWidth;
+    // var height = document.getElementById('map-container').offsetHeight;
+    $('#myDiagramDiv').css('top', top + 'px');
+    $('#myDiagramDiv').css('height', height + 'px');
+    $('#myDiagramDiv').css('width', width + 'px');
+
+    $('.topbtn').css('padding-top', (top - 50) / 2 + 'px');
+    $('#upcontent').css('padding-top', (top - 50) / 2 + 'px');
+
+    this.load();
+  }
+
+  ngOnInit() {
+    this.init();
+    this.load();
   }
 }

@@ -26,6 +26,7 @@ import { ServiceDetailComponent } from './service-detail/service-detail.componen
 import { GrafanaSetupComponent } from './grafana-setup/grafana-setup.component';
 import { OpcuaComponent } from './opcua/opcua.component';
 import { EdgeIntComponent } from './edge-int/edge-int.component';
+import { RulelistComponent } from './rulelist/rulelist.component';
 
 
 
@@ -49,6 +50,7 @@ registerLocaleData(zh);
     GrafanaSetupComponent,
     OpcuaComponent,
     EdgeIntComponent,
+    RulelistComponent,
   ],
   imports: [
     BrowserModule,

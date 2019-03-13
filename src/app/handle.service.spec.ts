@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HandleService } from './handle.service';
+import { dataHandler } from './handle.service';
 
 describe('HandleService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: HandleService = TestBed.get(HandleService);
+    const service: dataHandler = TestBed.get(dataHandler);
     expect(service).toBeTruthy();
   });
 });

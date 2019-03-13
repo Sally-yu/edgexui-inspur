@@ -1,26 +1,3 @@
-<!--<nz-header>-->
-<!--<img [src]="logoPath" alt="inspur" style="width: 14rem;margin-left: -1rem;">-->
-<!--<ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px; float:right">-->
-<!--<a (click)="open('用户')"><i class="icon-user"></i></a>-->
-<!--<a (click)="open('通知')"><i class="icon-bell"></i></a>-->
-<!--<a (click)="logout()"><i class="icon-logout"></i></a>-->
-<!--</ul>-->
-<!--<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" [nzTitle]="drawerTitle"-->
-<!--(nzOnClose)="close()">-->
-<!--<div *ngIf="drawerTitle=='用户'">-->
-<!--<p>-->
-<!--用户信息页面-->
-<!--</p>-->
-<!--</div>-->
-<!--<div *ngIf="drawerTitle=='通知'">-->
-<!--<p>-->
-<!--通知页面-->
-<!--</p>-->
-<!--</div>-->
-<!--</nz-drawer>-->
-<!--</nz-header>-->
-
-
 <nz-layout style="height: 100%;">
   <nz-sider nzWidth="210px" style="height: 100%;overflow: auto">
     <ul [nzTheme]="'dark'" nz-menu [nzMode]="'inline'" style="height: 100%">
@@ -154,7 +131,7 @@
       </div>
 
       <div *ngIf="content=='任务调度'" >
-        <app-rule></app-rule>
+        <app-rulelist></app-rulelist>
       </div>
 
       <div *ngIf="content=='网关代理'">
