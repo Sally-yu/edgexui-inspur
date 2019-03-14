@@ -4,6 +4,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {NzMessageService} from 'ng-zorro-antd';
 import {UUID} from 'angular2-uuid';
+import * as echarts from 'node_modules/echarts/echarts.simple';
 
 declare var $: any; //jQuery
 declare var BMap: any;
@@ -31,6 +32,7 @@ export class RuleComponent implements OnInit {
     {svg: '烘干塔', deviceid: '', status: '1'},
     {svg: '钻探工厂', deviceid: '', status: '1'}
   ];
+  cusData = [];
   builtIn = [
     {svg: 'Rectangle', category: 'shape'},
     // {svg: 'Square', category: 'shape'},
@@ -49,6 +51,12 @@ export class RuleComponent implements OnInit {
     {svg: 'PlusLine', category: 'shape'},
     // {svg: 'XLine', category: 'shape'}
   ];
+  optMap = false;
+
+  opacity = 1;
+  down = true;
+
+  mapIcon = 'icon-setting';
 
   private defaultDevice = {
     'created': 0,
@@ -144,6 +152,7 @@ export class RuleComponent implements OnInit {
   }
 
   visible = false;
+  addSvgShow = false;
   imgUrl = this.ajax.imgUrl;
   saveUrl = this.ajax.saveUrl;
   backUrl = this.ajax.backUrl;
@@ -184,6 +193,11 @@ export class RuleComponent implements OnInit {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
+    var myPalette5 = $(go.Palette, 'myPaletteDiv5',
+      {
+        'undoManager.isEnabled': true,
+        layout: $(go.GridLayout)
+      });
 
     var myToolTip = $(go.HTMLInfo, {
       show: showToolTip,
@@ -201,26 +215,6 @@ export class RuleComponent implements OnInit {
       mainElement: cxElement
     });
 
-    //计算最接近的四角，弹出菜单时避免超边界
-    function getPos(w, h) {
-      var backH = document.getElementById('myDiagramDiv').offsetHeight;//去px绝对数值
-      var backW = document.getElementById('myDiagramDiv').offsetWidth;//去px绝对数值
-      console.log(w, backW, h, backH);
-      if (h < backH / 2) {
-        if (w <= backW / 2) {
-          return 1;//左上角
-        } else if (w > backW / 2) {
-          return 2;//右上角
-        }
-      }
-      if (h > backH / 2) {
-        if (w >= backW / 2) {
-          return 3;//右下角
-        } else if (w < backW / 2) {
-          return 4;//左下角
-        }
-      }
-    }
 
     function showToolTip(obj, diagram, tool) {
       var toolTipDIV = document.getElementById('toolTipDIV');
@@ -230,9 +224,9 @@ export class RuleComponent implements OnInit {
       self.matchDevice();
       console.log(self.currDevice);
       var fromLeft = document.getElementById('leftbar').offsetWidth;
-      var left = pt.x + 208 + fromLeft + 10;//左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
+      var left = pt.x + fromLeft + 10;//左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
       var top = pt.y + 10 + topHeight;
-      var r = getPos(pt.x, pt.y);
+      var r = self.getPos(pt.x, pt.y);
       switch (r) {
         case 1:
           break;
@@ -271,9 +265,11 @@ export class RuleComponent implements OnInit {
       var pt = diagram.lastInput.viewPoint;
       var topHeight = document.getElementById('topbar').offsetHeight;//顶部的bar高度缩放变化，去px绝对数值
       var fromLeft = document.getElementById('leftbar').offsetWidth;
-      var left = pt.x + 208 + fromLeft + 10; //左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
+      console.log(topHeight);
+      var left = pt.x + fromLeft + 10; //左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
       var top = pt.y + 10 + topHeight;
-      var r = getPos(pt.x, pt.y);//计算四角中最接近的，以此调整位置
+      var r = self.getPos(pt.x, pt.y);//计算四角中最接近的，以此调整位置
+      console.log(r);
       switch (r) {
         case 1:
           break;
@@ -337,6 +333,7 @@ export class RuleComponent implements OnInit {
         });
     };
 
+    //工具栏图形
     myPalette.nodeTemplateMap.add('shape',  // the default category
       $(go.Node, 'Table',
         nodeStyle(),
@@ -379,8 +376,9 @@ export class RuleComponent implements OnInit {
       ));
 
     myPalette2.nodeTemplateMap = myPalette1.nodeTemplateMap;
-    myPalette3.nodeTemplateMap = myPalette2.nodeTemplateMap;
-    myPalette4.nodeTemplateMap = myPalette3.nodeTemplateMap;
+    myPalette3.nodeTemplateMap = myPalette1.nodeTemplateMap;
+    myPalette4.nodeTemplateMap = myPalette1.nodeTemplateMap;
+    myPalette5.nodeTemplateMap = myPalette1.nodeTemplateMap;
 
     self.diagram.nodeTemplateMap.add('picture',  // the default category
       $(go.Node, 'Auto',
@@ -481,7 +479,7 @@ export class RuleComponent implements OnInit {
             return imgUrl + svg + '.svg';
           }),
         ),
-        $(go.Shape, 'Circle',    //指示灯
+        $(go.Shape, 'Circle',
           {
             alignment: go.Spot.TopRight, alignmentFocus: go.Spot.TopRight,
             width: 20, height: 20, strokeWidth: 0
@@ -563,6 +561,8 @@ export class RuleComponent implements OnInit {
     myPalette2.model = new go.GraphLinksModel(DataArray);
     myPalette3.model = new go.GraphLinksModel(DataArray);
     myPalette4.model = new go.GraphLinksModel(DataArray);
+    myPalette5.model = new go.GraphLinksModel(self.cusData);
+
   }
 
   click(val) {
@@ -583,6 +583,10 @@ export class RuleComponent implements OnInit {
         break;
     }
     this.diagram.currentTool.stopTool();
+  }
+
+  addSvg() {
+    this.addSvgShow = true;
   }
 
   showValue() {
@@ -615,19 +619,29 @@ export class RuleComponent implements OnInit {
     });
   }
 
+  //计算最接近的四角，弹出菜单时避免超边界
+  getPos(w, h) {
+    var backH = $('#myDiagramDiv').height();//去px绝对数值
+    var backW = $('#myDiagramDiv').width();//去px绝对数值
+    console.log(w, backW, h, backH);
+    if (h < backH / 2) {
+      if (w <= backW / 2) {
+        return 1;//左上角
+      } else if (w > backW / 2) {
+        return 2;//右上角
+      }
+    }
+    if (h > backH / 2) {
+      if (w >= backW / 2) {
+        return 3;//右下角
+      } else if (w < backW / 2) {
+        return 4;//左下角
+      }
+    }
+  }
+
   load() {
-    var top = $('#topbar').height();
-    var width = $('#map-container').width();
-    var height = $('#map-container').height();
-    console.log(top, width, height);
-    // var width = document.getElementById('map-container').offsetWidth;
-    // var height = document.getElementById('map-container').offsetHeight;
-    $('#myDiagramDiv').css('top', top + 'px');
-    $('#myDiagramDiv').css('height', height + 'px');
-    $('#myDiagramDiv').css('width', width + 'px');
-
     this.diagram.model = go.Model.fromJson(this.currWork);
-
   }
 
   getDevice() {
@@ -662,6 +676,7 @@ export class RuleComponent implements OnInit {
   //对话框取消
   handleCancel() {
     this.visible = false;
+    this.addSvgShow = false;
   }
 
   //对话框确认
@@ -695,29 +710,44 @@ export class RuleComponent implements OnInit {
     console.log(typeof (this.diagram.model.nodeDataArray));
   }
 
+  mapUp() {
+    if (!this.optMap) {
+      $('#myDiagramDiv').css('pointer-events', 'none');
+      $('#myDiagramDiv  canvas').css('pointer-events', 'none');
+      $('#myDiagramDiv  div').css('pointer-events', 'none');
+      this.mapIcon = 'icon-image';
+    } else if (this.optMap) {
+      $('#myDiagramDiv').css('pointer-events', 'auto');
+      $('#myDiagramDiv  canvas').css('pointer-events', 'auto');
+      $('#myDiagramDiv  div').css('pointer-events', 'auto');
+      this.mapIcon = 'icon-setting';
+    }
+    this.optMap = !this.optMap;
+  }
+
   // 关闭
   close() {
     this.currWork = null;
     this.result.emit(true);
   }
 
-  //隐藏工具栏
-  topbarhid() {
-    this.diagram.currentTool.stopTool();
-    $('#topbar').css('display', 'none');
-    $('#topbar').css('height', '0');
-    $('#droptop').css('display', 'block');
-    $('#toolcontent').css('height', '99%');
-    this.load();
-  }
-
   //显示工具栏
-  topbarshow() {
+  toggleTop() {
     this.diagram.currentTool.stopTool();
-    $('#topbar').css('display', 'flex');
-    $('#topbar').css('height', '10%');
-    $('#droptop').css('display', 'none');
-    $('#toolcontent').css('height', '89%');
+    var display = $('#topbar').css('display');
+    if (display === 'none') {
+      $('#topbar').css('display', 'flex');
+      $('#droptop  i').toggleClass('icon-down');
+      $('#droptop  i').toggleClass('icon-up');
+      $('#droptop').css('top', '90px');
+      $('#myDiagramDiv').css('top', '90px');
+    } else {
+      $('#topbar').css('display', 'none');
+      $('#droptop  i').toggleClass('icon-up');
+      $('#droptop  i').toggleClass('icon-down');
+      $('#droptop').css('top', '0');
+      $('#myDiagramDiv').css('top', '0');
+    }
     this.load();
   }
 
@@ -728,13 +758,15 @@ export class RuleComponent implements OnInit {
       $('#leftbar').css('display', 'block');
       $('#leftbtn').toggleClass('icon-left');
       $('#leftbtn').toggleClass('icon-right');
+      $('#dropleft').css('left', '320px');
+      $('#myDiagramDiv').css('left', '320px');
     } else {
       $('#leftbar').css('display', 'none');
       $('#leftbtn').toggleClass('icon-left');
       $('#leftbtn').toggleClass('icon-right');
+      $('#dropleft').css('left', '0');
+      $('#myDiagramDiv').css('left', '0');
     }
-    var left = document.getElementById('leftbar').offsetWidth;
-    $('#dropleft').css('margin-left', left);//左侧拉出按钮位置
     this.load();
   }
 
@@ -752,29 +784,46 @@ export class RuleComponent implements OnInit {
     this.getDevice();
     this.makeMap();
     this.initDiagram();
-
     $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
-    var left = document.getElementById('leftbar').offsetWidth;
-    $('#dropleft').css('margin-left', left);//左侧拉出按钮位置
-    // var top = document.getElementById('topbar').offsetHeight;
-    var top = $('#topbar').height();
-    var width = $('#map-container').width();
-    var height = $('#map-container').height();
-    console.log(top, width, height);
-    // var width = document.getElementById('map-container').offsetWidth;
-    // var height = document.getElementById('map-container').offsetHeight;
-    $('#myDiagramDiv').css('top', top + 'px');
-    $('#myDiagramDiv').css('height', height + 'px');
-    $('#myDiagramDiv').css('width', width + 'px');
+  }
 
-    $('.topbtn').css('padding-top', (top - 50) / 2 + 'px');
-    $('#upcontent').css('padding-top', (top - 50) / 2 + 'px');
 
-    this.load();
+
+  loop() {
+    var self=this;
+    var diagram = self.diagram;
+    setTimeout(function () {
+      var oldskips = diagram.skipsUndoManager;
+      diagram.skipsUndoManager = true;
+      diagram.links.each(function (link) {
+        var shape = link.findObject('PIPE');
+        var off = shape.strokeDashOffset - 3;
+        // animate (move) the stroke dash
+        shape.strokeDashOffset = (off <= 0) ? 60 : off;
+        // animte (strobe) the opacity:
+        if (self.down) {
+          self.opacity = self.opacity - 0.01;
+        } else {
+          self.opacity = self.opacity + 0.003;
+        }
+        if (self.opacity <= 0) {
+          self.down = !self.down;
+          self.opacity = 0;
+        }
+        if (self.opacity > 1) {
+          self.down = !self.down;
+          self.opacity = 1;
+        }
+        shape.opacity = self.opacity;
+      });
+      diagram.skipsUndoManager = oldskips;
+      self.loop();
+    }, 60);
   }
 
   ngOnInit() {
     this.init();
     this.load();
+    this.loop();
   }
 }

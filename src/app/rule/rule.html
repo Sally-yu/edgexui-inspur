@@ -1,86 +1,107 @@
 <div style="height: 100%;width:100%" id="content">
-<div id="topbar">
-  <div class="topbtn" (click)="close()">
-    <i class="icon-Import"></i><br>
-    返回
-  </div>
-  <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-  <div class="topbtn" (click)="load()">
-    <i class="icon-reload"></i><br>
-    重新加载
-  </div>
-  <div class="topbtn" (click)="save()">
-    <i class="icon-save"></i><br>
-    保存
-  </div>
-  <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+  <div id="topbar">
+    <div class="topbtn" (click)="close()">
+      <i class="icon-Import"></i><br>
+      返回
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn" (click)="load()">
+      <i class="icon-reload"></i><br>
+      重新加载
+    </div>
+    <div class="topbtn" (click)="save()">
+      <i class="icon-save"></i><br>
+      保存
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
-  <div class="topbtn" (click)="this.diagram.commandHandler.undo()">
-    <i class="icon-undo"></i><br>
-    撤销
-  </div>
-  <div class="topbtn" (click)="this.diagram.commandHandler.redo()">
-    <i class="icon-redo"></i><br>
-    重做
-  </div>
-  <div class="topbtn" (click)="zoomOut(0.6)">
-    <i class="icon-minus-circle"></i><br>
-    缩小
-  </div>
-  <div class="topbtn" (click)="zoomOut(1.7)">
-    <i class="icon-plus-circle"></i><br>
-    放大
-  </div>
-  <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn" (click)="this.diagram.commandHandler.undo()">
+      <i class="icon-undo"></i><br>
+      撤销
+    </div>
+    <div class="topbtn" (click)="this.diagram.commandHandler.redo()">
+      <i class="icon-redo"></i><br>
+      重做
+    </div>
+    <div class="topbtn" (click)="zoomOut(0.6)">
+      <i class="icon-minus-circle"></i><br>
+      缩小
+    </div>
+    <div class="topbtn" (click)="zoomOut(1.7)">
+      <i class="icon-plus-circle"></i><br>
+      放大
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
-  <div class="topbtn">
-    <i class="icon-link"></i><br>
-    链接
-  </div>
-  <div class="topbtn">
-    <i class="icon-image"></i><br>
-    图片
-  </div>
-  <div class="topbtn" (click)="addComm()">
-    <i class="icon-comment"></i><br>
-    备注
-  </div>
-  <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn">
+      <i class="icon-link"></i><br>
+      链接
+    </div>
+    <div class="topbtn">
+      <i class="icon-image"></i><br>
+      图片
+    </div>
+    <div class="topbtn" (click)="addComm()">
+      <i class="icon-comment"></i><br>
+      备注
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
-  <div id="myPaletteDiv"
-       style="margin:0 8px;height:80%;width:160px;top:10%;background-color: white;box-shadow: inset 0px 0px 4px 0px black;border-radius: 4px"></div>
-  <div id="upcontent" (click)="topbarhid()">
-    <i class="icon-up"></i><br>
-    收起
-  </div>
-</div>
+    <div id="myPaletteDiv"
+         style="margin:0 8px;height:80%;width:160px;top:10%;background-color: white;box-shadow: inset 0px 0px 4px 0px black;border-radius: 4px"></div>
 
-<div id="toolcontent">
-  <!--<div id="map" style="position: absolute;width:1200px;height:800px;"></div>-->
-  <div id="droptop" (click)="topbarshow()">
-    <i class="icon-down"></i>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn" (click)="mapUp()">
+      <i [class]="mapIcon"></i><br>
+      切换
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn">
+      <i class="icon-right-circle"></i><br>
+      启动
+    </div>
+    <div class="topbtn">
+      <i class="icon-stop"></i><br>
+      停止
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn">
+      <i class="icon-plus-circle" (click)="addSvg()"></i><br>
+      添加图源
+    </div>
+
   </div>
-  <div id="leftbar">
-    <nz-collapse nzAccordion>
-      <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'">
-        <div id="myPaletteDiv1" style="height:600px;max-height: 800px;"></div>
+
+  <div id="toolcontent">
+    <!--<div id="map" style="position: absolute;width:1200px;height:800px;"></div>-->
+    <div id="droptop" (click)="toggleTop()">
+      <i class="icon-up"></i>
+    </div>
+    <div id="leftbar">
+      <div>
+
+      </div>
+      <nz-collapse nzAccordion>
+        <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'" >
+          <div id="myPaletteDiv1" style="height:600px;max-height: 800px;"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel [nzHeader]="'机床'">
+          <div id="myPaletteDiv2" style="height: 600px;max-height: 800px;"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel [nzHeader]="'交通工具'">
+          <div id="myPaletteDiv3" style="height: 600px;max-height: 800px;"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel [nzHeader]="'加热设备'">
+          <div id="myPaletteDiv4" style="height: 600px;max-height: 800px;"></div>
+        </nz-collapse-panel><nz-collapse-panel [nzHeader]="'自定义分组'">
+        <div id="myPaletteDiv5" style="height: 600px;max-height: 800px;"></div>
       </nz-collapse-panel>
-      <nz-collapse-panel [nzHeader]="'机床'">
-        <div id="myPaletteDiv2" style="height: 600px;max-height: 800px;"></div>
-      </nz-collapse-panel>
-      <nz-collapse-panel [nzHeader]="'交通工具'">
-        <div id="myPaletteDiv3" style="height: 600px;max-height: 800px;"></div>
-      </nz-collapse-panel>
-      <nz-collapse-panel [nzHeader]="'加热设备'">
-        <div id="myPaletteDiv4" style="height: 600px;max-height: 800px;"></div>
-      </nz-collapse-panel>
-    </nz-collapse>
-  </div>
-  <div id="dropleft" (click)="toggleleft()">
-    <i id="leftbtn" class="icon-left"></i>
-  </div>
-  <div  id="map-container" style="width:100%;height:99%">
-    <div id="map" style="width:100%;height: 100%;border-left: 1px solid darkgray;"></div>
+      </nz-collapse>
+    </div>
+    <div id="dropleft" (click)="toggleleft()">
+      <i id="leftbtn" class="icon-left"></i>
+    </div>
+    <div id="map"></div>
     <div id="toolTipDIV">
       <ul style="list-style: none">
         <li>设备信息：{{currDevice["svg"]}}</li>
@@ -101,17 +122,23 @@
       </ul>
     </div>
     <div id="myDiagramDiv"></div>
+    <!--<div id="echart" style="width:800px;height:600px;"></div>-->
   </div>
-</div>
-<nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="visible" nzTitle="关联设备" (nzAfterOpen)="handleOpen()"
-          (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-  <p>绑定设备：</p>
-  <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="tempDeviceId">
-    <nz-option *ngFor="let option of devices" [nzLabel]="option.name" [nzValue]="option.id"></nz-option>
-  </nz-select>
-</nz-modal>
 
-<div class="floatbar">
-  <nz-slider nzVertical [ngModel]="zoom" nztooltipvisible="never"></nz-slider>
-</div>
+  <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="addSvgShow" nzTitle="添加图源"
+            (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
+        <input type="file" id="selectSvg" multiple="multiple" name="selectSvg">
+  </nz-modal>
+
+  <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="visible" nzTitle="关联设备" (nzAfterOpen)="handleOpen()"
+            (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <p>绑定设备：</p>
+    <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="tempDeviceId">
+      <nz-option *ngFor="let option of devices" [nzLabel]="option.name" [nzValue]="option.id"></nz-option>
+    </nz-select>
+  </nz-modal>
+
+  <div class="floatbar">
+    <nz-slider nzVertical [ngModel]="zoom" nztooltipvisible="never"></nz-slider>
+  </div>
 </div>

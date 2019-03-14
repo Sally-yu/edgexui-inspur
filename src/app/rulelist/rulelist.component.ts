@@ -86,7 +86,7 @@ export class RulelistComponent implements OnInit {
       console.log(this.currWork);
     }
     else if(key==null){
-      this.currWork = this.nullWorkSpc; // 空设备
+      this.currWork = JSON.parse(JSON.stringify(this.nullWorkSpc)); // 深复制，包括子对象，防止使用后改变
       this.showList = false;
     }
   }
