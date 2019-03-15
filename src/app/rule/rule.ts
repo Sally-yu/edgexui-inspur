@@ -1,9 +1,10 @@
 import {AjaxService} from '../ajax.service';
 import * as go from 'gojs';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {NzMessageService} from 'ng-zorro-antd';
+import {HttpClient, HttpHeaders, HttpRequest, HttpResponse} from '@angular/common/http';
+import {NzMessageService, UploadFile} from 'ng-zorro-antd';
 import {UUID} from 'angular2-uuid';
+import {filter} from 'rxjs/operators';
 import * as echarts from 'node_modules/echarts/echarts.simple';
 
 declare var $: any; //jQuery
@@ -32,7 +33,7 @@ export class RuleComponent implements OnInit {
     {svg: '烘干塔', deviceid: '', status: '1'},
     {svg: '钻探工厂', deviceid: '', status: '1'}
   ];
-  cusData = [];
+  cusData ;
   builtIn = [
     {svg: 'Rectangle', category: 'shape'},
     // {svg: 'Square', category: 'shape'},
@@ -52,6 +53,7 @@ export class RuleComponent implements OnInit {
     // {svg: 'XLine', category: 'shape'}
   ];
   optMap = false;
+  timeOutId = 0;
 
   opacity = 1;
   down = true;
@@ -157,6 +159,11 @@ export class RuleComponent implements OnInit {
   saveUrl = this.ajax.saveUrl;
   backUrl = this.ajax.backUrl;
   workUrl = this.ajax.workUrl;
+  uploadUrl = this.ajax.uploadUrl;
+  cusUrl = this.ajax.cusUrl;
+
+  uploading = false;
+  fileList: UploadFile[] = [];
 
   initDiagram() {
     var self = this;
@@ -378,7 +385,21 @@ export class RuleComponent implements OnInit {
     myPalette2.nodeTemplateMap = myPalette1.nodeTemplateMap;
     myPalette3.nodeTemplateMap = myPalette1.nodeTemplateMap;
     myPalette4.nodeTemplateMap = myPalette1.nodeTemplateMap;
-    myPalette5.nodeTemplateMap = myPalette1.nodeTemplateMap;
+
+    myPalette5.nodeTemplateMap.add('',  // the default category
+      $(go.Node, 'Table',
+        $(go.Panel, 'Vertical',
+          $(go.Picture, {width: 53, height: 53, imageStretch: go.GraphObject.Uniform},
+            new go.Binding('source', 'svg', function (svg) {
+              return self.uploadUrl+'/' + svg + '.svg';
+            }),
+          ),
+          $(go.TextBlock,
+            {margin: 2},
+            new go.Binding('text', 'svg')
+          )),
+        // four named ports, one on each side:
+      ));
 
     self.diagram.nodeTemplateMap.add('picture',  // the default category
       $(go.Node, 'Auto',
@@ -644,6 +665,7 @@ export class RuleComponent implements OnInit {
     this.diagram.model = go.Model.fromJson(this.currWork);
   }
 
+  //获取后台设备列表
   getDevice() {
     let url = '/core-metadata/api/v1/device';
     var head = new HttpHeaders({
@@ -665,6 +687,7 @@ export class RuleComponent implements OnInit {
       });
   }
 
+  //匹配当前选中的设备
   matchDevice() {
     try {
       this.dataDevice = this.currDevice['deviceid'] ? this.devices.filter(d => d.id === this.currDevice['deviceid'])[0] : this.defaultDevice;
@@ -698,6 +721,7 @@ export class RuleComponent implements OnInit {
     this.handleCancel();
   }
 
+  //缩放
   zoomOut(n) {
     this.diagram.commandHandler.increaseZoom(n);
   }
@@ -710,8 +734,10 @@ export class RuleComponent implements OnInit {
     console.log(typeof (this.diagram.model.nodeDataArray));
   }
 
+  //切换工作区或者地图优先
   mapUp() {
     if (!this.optMap) {
+      this.makeMap();
       $('#myDiagramDiv').css('pointer-events', 'none');
       $('#myDiagramDiv  canvas').css('pointer-events', 'none');
       $('#myDiagramDiv  div').css('pointer-events', 'none');
@@ -741,16 +767,19 @@ export class RuleComponent implements OnInit {
       $('#droptop  i').toggleClass('icon-up');
       $('#droptop').css('top', '90px');
       $('#myDiagramDiv').css('top', '90px');
+      $('#map').css('top', '90px');
     } else {
       $('#topbar').css('display', 'none');
       $('#droptop  i').toggleClass('icon-up');
       $('#droptop  i').toggleClass('icon-down');
       $('#droptop').css('top', '0');
       $('#myDiagramDiv').css('top', '0');
+      $('#map').css('top', '0');
     }
     this.load();
   }
 
+  //显示左侧图标栏
   toggleleft() {
     this.diagram.currentTool.stopTool();
     var display = $('#leftbar').css('display');
@@ -760,16 +789,19 @@ export class RuleComponent implements OnInit {
       $('#leftbtn').toggleClass('icon-right');
       $('#dropleft').css('left', '320px');
       $('#myDiagramDiv').css('left', '320px');
+      $('#map').css('left', '320px');
     } else {
       $('#leftbar').css('display', 'none');
       $('#leftbtn').toggleClass('icon-left');
       $('#leftbtn').toggleClass('icon-right');
       $('#dropleft').css('left', '0');
       $('#myDiagramDiv').css('left', '0');
+      $('#map').css('left', '0');
     }
     this.load();
   }
 
+  //初始化地图
   makeMap() {
     var map = new BMap.Map('map');
     var point = new BMap.Point(116.404, 39.915);
@@ -779,20 +811,22 @@ export class RuleComponent implements OnInit {
     }, 2000);
   }
 
+  //初始
   init() {
     console.log(this.currWork);
     this.getDevice();
-    this.makeMap();
+    this.getCus();
+    console.log(this.cusData);
     this.initDiagram();
     $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
   }
 
-
-
+  //动画循环
   loop() {
-    var self=this;
+    this.stopLoop();
+    var self = this;
     var diagram = self.diagram;
-    setTimeout(function () {
+    self.timeOutId = setTimeout(function () {
       var oldskips = diagram.skipsUndoManager;
       diagram.skipsUndoManager = true;
       diagram.links.each(function (link) {
@@ -821,9 +855,56 @@ export class RuleComponent implements OnInit {
     }, 60);
   }
 
+  //停止动画循环
+  stopLoop() {
+    clearTimeout(this.timeOutId);
+  }
+
+  //上传自定义图标前
+  beforeUpload = (file: UploadFile): boolean => {
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
+
+  //上传自定义图标
+  handleUpload(): void {
+    const formData = new FormData();
+    // tslint:disable-next-line:no-any
+    this.fileList.forEach((file: any) => {
+      formData.append('file', file);
+    });
+    this.uploading = true;
+    // You can use any AJAX library you like
+    const req = new HttpRequest('POST', this.uploadUrl, formData, {
+      // reportProgress: true
+    });
+    this.http
+      .request(req)
+      .pipe(filter(e => e instanceof HttpResponse))
+      .subscribe(
+        () => {
+          this.uploading = false;
+          this.fileList = [];
+          this.message.success('upload successfully.');
+        },
+        () => {
+          this.uploading = false;
+          this.message.error('upload failed.');
+        }
+      );
+  }
+
+  getCus() {
+    this.http.get(this.cusUrl).subscribe(res=>{
+      console.log("res:"+res);
+      this.cusData=res;
+    })
+  }
+
   ngOnInit() {
     this.init();
     this.load();
+    // this.makeMap();
     this.loop();
   }
 }

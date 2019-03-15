@@ -15,6 +15,8 @@ export class AjaxService {
   public findUrl=this.host+'/assets/img/deviceid';
   public backUrl=this.host+'/assets/img/back';
   public workUrl=this.host+'/workspace';
+  public uploadUrl=this.host+'/assets/upload';
+  public cusUrl=this.host+'/assets/img/cussvg';
 
   constructor() {
     console.log(this.host);

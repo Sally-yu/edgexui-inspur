@@ -56,11 +56,11 @@
       切换
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-    <div class="topbtn">
+    <div class="topbtn" (click)="loop()">
       <i class="icon-right-circle"></i><br>
       启动
     </div>
-    <div class="topbtn">
+    <div class="topbtn" (click)="stopLoop()">
       <i class="icon-stop"></i><br>
       停止
     </div>
@@ -82,7 +82,7 @@
 
       </div>
       <nz-collapse nzAccordion>
-        <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'" >
+        <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'">
           <div id="myPaletteDiv1" style="height:600px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <nz-collapse-panel [nzHeader]="'机床'">
@@ -93,9 +93,10 @@
         </nz-collapse-panel>
         <nz-collapse-panel [nzHeader]="'加热设备'">
           <div id="myPaletteDiv4" style="height: 600px;max-height: 800px;"></div>
-        </nz-collapse-panel><nz-collapse-panel [nzHeader]="'自定义分组'">
-        <div id="myPaletteDiv5" style="height: 600px;max-height: 800px;"></div>
-      </nz-collapse-panel>
+        </nz-collapse-panel>
+        <nz-collapse-panel [nzHeader]="'自定义分组'">
+          <div id="myPaletteDiv5" style="height: 600px;max-height: 800px;"></div>
+        </nz-collapse-panel>
       </nz-collapse>
     </div>
     <div id="dropleft" (click)="toggleleft()">
@@ -127,7 +128,17 @@
 
   <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="addSvgShow" nzTitle="添加图源"
             (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
-        <input type="file" id="selectSvg" multiple="multiple" name="selectSvg">
+    <nz-upload
+      [(nzFileList)]="fileList"
+      [nzBeforeUpload]="beforeUpload">
+      <button nz-button>
+        <i nz-icon type="upload"></i><span>Select File</span>
+      </button>
+    </nz-upload>
+    <button nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
+            [disabled]="fileList.length == 0" style="margin-top: 16px">
+      {{ uploading ? 'Uploading' : 'Start Upload' }}
+    </button>
   </nz-modal>
 
   <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="visible" nzTitle="关联设备" (nzAfterOpen)="handleOpen()"

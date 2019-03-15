@@ -294,18 +294,18 @@
 }
 
 #upcontent {
-  width: 70px;
-  display: block;
-  text-align: center;
-  cursor: pointer;
-  right: 8px;
-  height: 10%;
-  position: absolute;
+   width: 70px;
+   display: block;
+   text-align: center;
+   cursor: pointer;
+   right: 8px;
+   height: 10%;
+   position: absolute;
 
-  i {
-    font-size: 30px;
-  }
-}
+   i {
+     font-size: 30px;
+   }
+ }
 
 #upcontent:hover, .topbtn:hover, #droptop:hover {
   background-color: #1890ff;
@@ -391,3 +391,11 @@
   //}
 }
 
+
+#map {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: 90px;
+  left: 320px;
+}
