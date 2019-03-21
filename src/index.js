@@ -13,6 +13,7 @@ $(document).ready(function() {
   //     }
   //   }
   // });
+  $("#video").css('top','0');
 });
 
 

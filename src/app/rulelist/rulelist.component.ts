@@ -101,7 +101,6 @@ export class RulelistComponent implements OnInit {
         console.log(error1);
         this.message.warning('删除失败:' + error1.error);
       });
-
   }
 
   ngOnInit() {

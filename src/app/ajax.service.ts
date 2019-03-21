@@ -15,9 +15,9 @@ export class AjaxService {
   public findUrl=this.host+'/assets/img/deviceid';
   public backUrl=this.host+'/assets/img/back';
   public workUrl=this.host+'/workspace';
-  public uploadUrl=this.host+'/assets/upload';
-  public cusUrl=this.host+'/assets/img/cussvg';
-
+  public uploadUrl=this.host+'/assets/upload';//上传保存自定义svg文件
+  public cusUrl=this.host+'/assets/img/cussvg';//get保存自定义svg文件
+  public updateCus=this.host+'/assets/updateCus'; //保存自定义svg关联信息到数据库
   constructor() {
     console.log(this.host);
   }

@@ -67,7 +67,11 @@
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
     <div class="topbtn">
       <i class="icon-plus-circle" (click)="addSvg()"></i><br>
-      添加图源
+      添加分组
+    </div>
+    <div class="topbtn">
+      <i class="icon-edit-square" (click)="modiSvg()"></i><br>
+      修改图源
     </div>
 
   </div>
@@ -77,11 +81,8 @@
     <div id="droptop" (click)="toggleTop()">
       <i class="icon-up"></i>
     </div>
-    <div id="leftbar">
-      <div>
-
-      </div>
-      <nz-collapse nzAccordion>
+    <div id="leftbar" >
+      <nz-collapse  >
         <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'">
           <div id="myPaletteDiv1" style="height:600px;max-height: 800px;"></div>
         </nz-collapse-panel>
@@ -94,9 +95,38 @@
         <nz-collapse-panel [nzHeader]="'加热设备'">
           <div id="myPaletteDiv4" style="height: 600px;max-height: 800px;"></div>
         </nz-collapse-panel>
-        <nz-collapse-panel [nzHeader]="'自定义分组'">
-          <div id="myPaletteDiv5" style="height: 600px;max-height: 800px;"></div>
+        <!--以下自定义分组 默认都不显示-->
+        <nz-collapse-panel class="cus" id="cus0" [nzHeader]="cusMenu[0].name">
+          <div id="cus0div"></div>
         </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus1" [nzHeader]="cusMenu[1].name">
+          <div id="cus1div" ></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus2" [nzHeader]="cusMenu[2].name">
+          <div id="cus2div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus3" [nzHeader]="cusMenu[3].name">
+          <div id="cus3div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus"  id="cus4" [nzHeader]="cusMenu[4].name">
+          <div id="cus4div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus5" [nzHeader]="cusMenu[5].name">
+          <div id="cus5div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus6" [nzHeader]="cusMenu[6].name">
+          <div id="cus6div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus7" [nzHeader]="cusMenu[7].name">
+          <div id="cus7div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus8" [nzHeader]="cusMenu[8].name">
+          <div id="cus8div"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel class="cus" id="cus9" [nzHeader]="cusMenu[9].name">
+          <div id="cus9div"></div>
+        </nz-collapse-panel>
+
       </nz-collapse>
     </div>
     <div id="dropleft" (click)="toggleleft()">
@@ -126,8 +156,15 @@
     <div id="echart" style="width:800px;height:600px;"></div>
   </div>
 
-  <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="addSvgShow" nzTitle="添加图源"
-            (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
+  <!--修改分组对话框-->
+  <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="modiShow" nzTitle="修改分组"
+            (nzOnOk)="handleUpload()"  (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
+    <p>选择分组</p>
+    <!--绑定欲上传愤怒中的divid -->
+    <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="cusUpload.divid">
+      <nz-option *ngFor="let option of cusAva" [nzLabel]="option.name" [nzValue]="option.divid"></nz-option>
+    </nz-select>
+    <br>
     <nz-upload
       [(nzFileList)]="fileList"
       [nzBeforeUpload]="beforeUpload">
@@ -136,6 +173,25 @@
       </button>
     </nz-upload>
     <button nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
+            [disabled]="fileList.length == 0" style="margin-top: 16px">
+      {{ uploading ? 'Uploading' : 'Start Upload' }}
+    </button>
+  </nz-modal>
+
+  <!--新建分组对话框-->
+  <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="addSvgShow" nzTitle="添加图源"
+            (nzOnOk)="handleNew()" (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
+    <p>添加分组</p>
+    <input nz-input type="text" [(ngModel)]="newGroup">
+    <br>
+    <nz-upload
+      [(nzFileList)]="fileList"
+      [nzBeforeUpload]="beforeUpload">
+      <button nz-button>
+        <i nz-icon type="upload"></i><span>Select File</span>
+      </button>
+    </nz-upload>
+    <button nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleNew()"
             [disabled]="fileList.length == 0" style="margin-top: 16px">
       {{ uploading ? 'Uploading' : 'Start Upload' }}
     </button>

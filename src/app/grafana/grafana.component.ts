@@ -12,7 +12,7 @@ export class GrafanaComponent implements OnInit {
 
   btn=true;
 
-  defaultUrl="http://localhost:8080/d/jgq_eofiz/yi-biao-pan-yan-shi?refresh=1m&orgId=1&from=1548314508355&to=1548314628355&theme=dark&&kiosk";
+  defaultUrl="http://172.31.1.27:9100/d/jgq_eofiz/she-bei-shu-zi-yun-wei-max?refresh=5s&orgId=1&kiosk";
 
   getUrl(){
     $('.iframe').attr("src", this.defaultUrl);

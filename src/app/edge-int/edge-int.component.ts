@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+declare  var $:any;
 @Component({
   selector: 'app-edge-int',
   templateUrl: './edge-int.component.html',
@@ -9,7 +10,13 @@ export class EdgeIntComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  defaultUrl="http://212.64.2.48/";
+
+  getUrl(){
+    $('.iframe').attr("src", this.defaultUrl);
   }
 
+  ngOnInit() {
+    this.getUrl();
+  }
 }

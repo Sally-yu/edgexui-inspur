@@ -21,6 +21,67 @@ export class RuleComponent implements OnInit {
   @Output() result: EventEmitter<any> = new EventEmitter();
   @Output() deleteOne: EventEmitter<any> = new EventEmitter();
 
+  cusMenu = [
+    {
+      divid: 'cus0',
+      dispaly: false,
+      name: '自定义分组1',
+      svg: []
+    }, {
+      divid: 'cus1',
+      dispaly: false,
+      name: '自定义分组2',
+      svg: []
+    }, {
+      divid: 'cus2',
+      dispaly: false,
+      name: '自定义分组3',
+      svg: []
+    }, {
+      divid: 'cus3',
+      dispaly: false,
+      name: '自定义分组4',
+      svg: []
+    }, {
+      divid: 'cus4',
+      dispaly: false,
+      name: '自定义分组5',
+      svg: []
+    }, {
+      divid: 'cus5',
+      dispaly: false,
+      name: '自定义分组6',
+      svg: []
+    }, {
+      divid: 'cus6',
+      dispaly: false,
+      name: '自定义分组7',
+      svg: []
+    }, {
+      divid: 'cus7',
+      dispaly: false,
+      name: '自定义分组8',
+      svg: []
+    }, {
+      divid: 'cus8',
+      dispaly: false,
+      name: '自定义分组9',
+      svg: []
+    }, {
+      divid: 'cus9',
+      dispaly: false,
+      name: '自定义分组10',
+      svg: []
+    },
+  ]; //自定义分录默认名称
+  cusUpload = {
+    divid: 'cus0',
+    display: true,
+    name: '新建分组1',
+    svg: []
+  };
+  cusAva = [];
+
   diagram;
   flag = 1000;
   DataArray = [
@@ -33,24 +94,16 @@ export class RuleComponent implements OnInit {
     {svg: '烘干塔', deviceid: '', status: '1'},
     {svg: '钻探工厂', deviceid: '', status: '1'}
   ];
-  cusData ;
+  cusData;
   builtIn = [
     {svg: 'Rectangle', category: 'shape'},
-    // {svg: 'Square', category: 'shape'},
     {svg: 'RoundedRectangle', category: 'shape'},
-    // {svg: 'Border',  category: 'shape'},
     {svg: 'Ellipse', category: 'shape'},
-    // {svg: 'Circle', category: 'shape'},
-    // {svg: 'TriangleRight', category: 'shape'},
-    // {svg: 'TriangleDown', category: 'shape'},
-    // {svg: 'TriangleLeft', category: 'shape'},
     {svg: 'TriangleUp', category: 'shape'},
     {svg: 'Diamond', category: 'shape'},
     {svg: 'LineH', category: 'shape'},
     {svg: 'LineV', category: 'shape'},
-    // {svg: 'MinusLine', category: 'shape'},
     {svg: 'PlusLine', category: 'shape'},
-    // {svg: 'XLine', category: 'shape'}
   ];
   optMap = false;
   timeOutId = 0;
@@ -155,12 +208,14 @@ export class RuleComponent implements OnInit {
 
   visible = false;
   addSvgShow = false;
+  modiShow = false;
+  newGroup;
+
   imgUrl = this.ajax.imgUrl;
-  saveUrl = this.ajax.saveUrl;
-  backUrl = this.ajax.backUrl;
   workUrl = this.ajax.workUrl;
   uploadUrl = this.ajax.uploadUrl;
   cusUrl = this.ajax.cusUrl;
+  updateCus = this.ajax.updateCus;
 
   uploading = false;
   fileList: UploadFile[] = [];
@@ -171,8 +226,17 @@ export class RuleComponent implements OnInit {
     var DataArray = self.DataArray;  //new一个防止双向绑定更改DataArray后图源列表改变
     var imgUrl = this.imgUrl + '/';
 
+    function showLinkLabel(e) {
+      var label = e.subject.findObject('LABEL');
+      if (label !== null) {
+        label.visible = (e.subject.fromNode.data.category === 'Conditional');
+      }
+    }
+
     self.diagram = $(go.Diagram, 'myDiagramDiv',  // must name or refer to the DIV HTML element
       {
+        'LinkDrawn': showLinkLabel,  // this DiagramEvent listener is defined below
+        'LinkRelinked': showLinkLabel,
         'undoManager.isEnabled': true  // enable undo & redo
       });
     var myPalette = $(go.Palette, 'myPaletteDiv',
@@ -200,11 +264,7 @@ export class RuleComponent implements OnInit {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
-    var myPalette5 = $(go.Palette, 'myPaletteDiv5',
-      {
-        'undoManager.isEnabled': true,
-        layout: $(go.GridLayout)
-      });
+
 
     var myToolTip = $(go.HTMLInfo, {
       show: showToolTip,
@@ -222,6 +282,8 @@ export class RuleComponent implements OnInit {
       mainElement: cxElement
     });
 
+    self.diagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
+    self.diagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
 
     function showToolTip(obj, diagram, tool) {
       var toolTipDIV = document.getElementById('toolTipDIV');
@@ -261,6 +323,7 @@ export class RuleComponent implements OnInit {
     }
 
     function showContextMenu(obj, diagram, tool) {
+      console.log(obj,diagram,tool);
       // Show only the relevant buttons given the current state.
       var cmd = diagram.commandHandler;
       // Now show the whole context menu element
@@ -299,13 +362,8 @@ export class RuleComponent implements OnInit {
 
     function nodeStyle() {
       return [
-        // The Node.location comes from the "loc" property of the node data,
-        // converted by the Point.parse static method.
-        // If the Node.location is changed, it updates the "loc" property of the node data,
-        // converting back using the Point.stringify static method.
         new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
         {
-          // the Node.location is at the center of each node
           locationSpot: go.Spot.Center
         }
       ];
@@ -331,14 +389,14 @@ export class RuleComponent implements OnInit {
           cursor: 'pointer',  // show a different cursor to indicate potential link point
           mouseEnter: function (e, port) {  // the PORT argument will be this Shape
             if (!e.diagram.isReadOnly) {
-              port.fill = 'rgba(0,255,0,0.5)';
+              port.fill = 'rgba(255,0,255,0.5)';
             }
           },
           mouseLeave: function (e, port) {
             port.fill = 'transparent';
           }
         });
-    };
+    }
 
     //工具栏图形
     myPalette.nodeTemplateMap.add('shape',  // the default category
@@ -363,8 +421,6 @@ export class RuleComponent implements OnInit {
             height: 20
           },
           new go.Binding('figure', 'svg')),
-        // Shape.fill is bound to Node.data.color
-        // four named ports, one on each side:
       ));
 
     myPalette1.nodeTemplateMap.add('',  // the default category
@@ -386,20 +442,6 @@ export class RuleComponent implements OnInit {
     myPalette3.nodeTemplateMap = myPalette1.nodeTemplateMap;
     myPalette4.nodeTemplateMap = myPalette1.nodeTemplateMap;
 
-    myPalette5.nodeTemplateMap.add('',  // the default category
-      $(go.Node, 'Table',
-        $(go.Panel, 'Vertical',
-          $(go.Picture, {width: 53, height: 53, imageStretch: go.GraphObject.Uniform},
-            new go.Binding('source', 'svg', function (svg) {
-              return self.uploadUrl+'/' + svg + '.svg';
-            }),
-          ),
-          $(go.TextBlock,
-            {margin: 2},
-            new go.Binding('text', 'svg')
-          )),
-        // four named ports, one on each side:
-      ));
 
     self.diagram.nodeTemplateMap.add('picture',  // the default category
       $(go.Node, 'Auto',
@@ -418,10 +460,10 @@ export class RuleComponent implements OnInit {
         ),
         // Shape.fill is bound to Node.data.color
         // four named ports, one on each side:
-        makePort('T', go.Spot.Top, go.Spot.TopSide, true, true),
-        makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
-        makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
-        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, true),
+        makePort('top', go.Spot.Top, go.Spot.Top, true, true),
+        makePort('left', go.Spot.Left, go.Spot.Left, true, true),
+        makePort('right', go.Spot.Right, go.Spot.Right, true, true),
+        makePort('bottom', go.Spot.Bottom, go.Spot.Bottom, true, true),
         {toolTip: myToolTip},
         {contextMenu: myContextMenu}
       ));
@@ -486,11 +528,7 @@ export class RuleComponent implements OnInit {
           rotatable: true, rotateObjectName: 'PICTURE',  // rotate the Shape without rotating the label
           // don't re-layout when node changes size
           layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-          // contextMenu: myContextMenu,
-          // toolTip: myToolTip
         },
-        // {contextMenu: myContextMenu},
-        // {toolTip: myToolTip},
         $(go.Picture,
           {
             name: 'PICTURE',  // named so that the above properties can refer to this GraphObject
@@ -498,7 +536,7 @@ export class RuleComponent implements OnInit {
           },
           new go.Binding('source', 'svg', function (svg) {
             return imgUrl + svg + '.svg';
-          }),
+          }).makeTwoWay(),
         ),
         $(go.Shape, 'Circle',
           {
@@ -515,76 +553,136 @@ export class RuleComponent implements OnInit {
             return color;
           })
         ),
-        makePort('T', go.Spot.Top, go.Spot.Top, true, true),
-        makePort('L', go.Spot.Left, go.Spot.Left, true, true),
-        makePort('R', go.Spot.Right, go.Spot.Right, true, true),
-        makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, true),
-        // { // this tooltip shows the name and picture of the kitten
-        //   toolTip:
-        //     $("ToolTip",
-        //       $(go.Panel, "Vertical",
-        //         $(go.TextBlock, { margin: 3 },
-        //           new go.Binding("text", "svg",function(s){
-        //               return "设备信息:"+s+"\n"+"运行状态:运行中";
-        //           }))))
-        // }
+        makePort('T', go.Spot.Top, go.Spot.TopSide, true, true),
+        makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
+        makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
+        makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, true),
         {toolTip: myToolTip},
         {contextMenu: myContextMenu}
       )
     );
 
+    // self.diagram.nodeTemplateMap.add("",  // the default category
+    //   $(go.Node, "Table", nodeStyle(),
+    //     // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
+    //     $(go.Panel, "Auto",
+    //       $(go.Shape, "Rectangle",
+    //         { fill: "#00A9C9", strokeWidth: 0 },
+    //         ),
+    //       $(go.TextBlock,
+    //         {
+    //           margin: 8,
+    //           maxSize: new go.Size(160, NaN),
+    //           wrap: go.TextBlock.WrapFit,
+    //           editable: true
+    //         },
+    //         new go.Binding("svg").makeTwoWay())
+    //     ),
+    //     // four named ports, one on each side:
+    //
+    //   ));
+
     self.diagram.toolManager.hoverDelay = 300;  // 300 milliseconds
+
+    function spotConverter(dir) {
+      if (dir === 'L') {
+        return go.Spot.LeftSide;
+      }
+      if (dir === 'R') {
+        return go.Spot.RightSide;
+      }
+      if (dir === 'T') {
+        return go.Spot.TopSide;
+      }
+      if (dir === 'B') {
+        return go.Spot.BottomSide;
+      }
+    }
+
+    // self.diagram.linkTemplate =
+    //   $(go.Link,  // the whole link panel
+    //     {
+    //       routing: go.Link.AvoidsNodes,
+    //       curve: go.Link.JumpOver,
+    //       corner: 5, toShortLength: 4,
+    //       relinkableFrom: true,
+    //       relinkableTo: true,
+    //       reshapable: true,
+    //       resegmentable: true,
+    //       // mouse-overs subtly highlight links:
+    //       mouseEnter: function (e, link) {
+    //         link.findObject('HIGHLIGHT').stroke = 'rgba(30,144,255,0.2)';
+    //       },
+    //       mouseLeave: function (e, link) {
+    //         link.findObject('HIGHLIGHT').stroke = 'transparent';
+    //       },
+    //       selectionAdorned: false
+    //     },
+    //     new go.Binding('points').makeTwoWay(),
+    //     $(go.Shape,  // the highlight shape, normally transparent
+    //       {isPanelMain: true, strokeWidth: 8, stroke: 'transparent', name: 'HIGHLIGHT'}),
+    //     $(go.Shape,  // the link path shape
+    //       {isPanelMain: true, stroke: 'gray', strokeWidth: 2},
+    //       new go.Binding('stroke', 'isSelected', function (sel) {
+    //         return sel ? 'dodgerblue' : 'gray';
+    //       }).ofObject()),
+    //     $(go.Shape,  // the arrowhead
+    //       {toArrow: 'standard', strokeWidth: 0, fill: 'gray'}),
+    //     $(go.Panel, 'Auto',  // the link label, normally not visible
+    //       {visible: false, name: 'LABEL', segmentIndex: 2, segmentFraction: 0.5},
+    //       new go.Binding('visible', 'visible').makeTwoWay(),
+    //       $(go.Shape, 'RoundedRectangle',  // the label shape
+    //         {fill: '#F8F8F8', strokeWidth: 0}),
+    //       $(go.TextBlock, 'Yes',  // the label
+    //         {
+    //           textAlign: 'center',
+    //           font: '10pt helvetica, arial, sans-serif',
+    //           stroke: '#333333',
+    //           editable: true
+    //         },
+    //         new go.Binding('text').makeTwoWay())
+    //     )
+    //   );
 
     self.diagram.linkTemplate =
       $(go.Link, {
           toShortLength: -2,
           fromShortLength: -2,
           layerName: 'Background',
-          routing: go.Link.Orthogonal,
+          routing: go.Link.Orthogonal, //直角
           corner: 15,
-          fromSpot: go.Spot.RightSide,
-          toSpot: go.Spot.LeftSide
         },
         // make sure links come in from the proper direction and go out appropriately
         new go.Binding('fromSpot', 'fromSpot', function (d) {
           return spotConverter(d);
-        }),
+        }).makeTwoWay(),
         new go.Binding('toSpot', 'toSpot', function (d) {
           return spotConverter(d);
-        }),
-        new go.Binding('points').makeTwoWay(),
+        }).makeTwoWay(),
+        // new go.Binding("points").makeTwoWay(),
         // mark each Shape to get the link geometry with isPanelMain: true
-        $(go.Shape, {isPanelMain: true, stroke: '#41BFEC', strokeWidth: 10},
+        $(go.Shape, {isPanelMain: true, stroke: '#41BFEC'/* blue*/, strokeWidth: 10},
           new go.Binding('stroke', 'color')),
         $(go.Shape, {isPanelMain: true, stroke: 'white', strokeWidth: 3, name: 'PIPE', strokeDashArray: [20, 40]})
       );
 
-    function spotConverter(dir) {
-      if (dir === 'left') {
-        return go.Spot.LeftSide;
-      }
-      if (dir === 'right') {
-        return go.Spot.RightSide;
-      }
-      if (dir === 'top') {
-        return go.Spot.TopSide;
-      }
-      if (dir === 'bottom') {
-        return go.Spot.BottomSide;
-      }
-      if (dir === 'rightsingle') {
-        return go.Spot.Right;
-      }
-    }
+    // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
+    self.diagram.model.linkFromPortIdProperty = "fromPort";
+    self.diagram.model.linkToPortIdProperty = "toPort";
+
+
+    self.diagram.model.linkFromPortIdProperty = 'fromPort';
+    self.diagram.model.linkToPortIdProperty = 'toPort';
+    self.diagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
+    self.diagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
 
     myPalette.model = new go.GraphLinksModel(self.builtIn);
     myPalette1.model = new go.GraphLinksModel(DataArray);
     myPalette2.model = new go.GraphLinksModel(DataArray);
     myPalette3.model = new go.GraphLinksModel(DataArray);
     myPalette4.model = new go.GraphLinksModel(DataArray);
-    myPalette5.model = new go.GraphLinksModel(self.cusData);
-
   }
+
 
   click(val) {
     switch (val) {
@@ -610,6 +708,10 @@ export class RuleComponent implements OnInit {
     this.addSvgShow = true;
   }
 
+  modiSvg() {
+    this.modiShow = true;
+  }
+
   showValue() {
     console.log(this.diagram.model.toJson());
   }
@@ -617,6 +719,10 @@ export class RuleComponent implements OnInit {
   save() {
     let dataarray = this.diagram.model.toJson();
     let datajson = JSON.parse(dataarray);
+    // datajson.linkDataArray.forEach(e=>{
+    //   e["fromSpot"]="bottom";
+    //   e["toSpot"]="top";
+    // })
     let data = {
       'key': UUID.UUID(),
       'class': datajson.class,
@@ -700,6 +806,7 @@ export class RuleComponent implements OnInit {
   handleCancel() {
     this.visible = false;
     this.addSvgShow = false;
+    this.modiShow = false;
   }
 
   //对话框确认
@@ -765,16 +872,13 @@ export class RuleComponent implements OnInit {
       $('#topbar').css('display', 'flex');
       $('#droptop  i').toggleClass('icon-down');
       $('#droptop  i').toggleClass('icon-up');
-      $('#droptop').css('top', '90px');
-      $('#myDiagramDiv').css('top', '90px');
-      $('#map').css('top', '90px');
+      $('#toolcontent').css('top', '90px');
     } else {
       $('#topbar').css('display', 'none');
       $('#droptop  i').toggleClass('icon-up');
       $('#droptop  i').toggleClass('icon-down');
       $('#droptop').css('top', '0');
-      $('#myDiagramDiv').css('top', '0');
-      $('#map').css('top', '0');
+      $('#toolcontent').css('top', '0');
     }
     this.load();
   }
@@ -815,9 +919,8 @@ export class RuleComponent implements OnInit {
   init() {
     console.log(this.currWork);
     this.getDevice();
-    this.getCus();
-    console.log(this.cusData);
     this.initDiagram();
+    this.getCus();
     $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
   }
 
@@ -867,12 +970,21 @@ export class RuleComponent implements OnInit {
   };
 
   //上传自定义图标
-  handleUpload(): void {
+  handleUpload() {
+    if (this.fileList.length < 1) {
+      this.message.info('请选择上传图源');
+      return;
+    }
     const formData = new FormData();
     // tslint:disable-next-line:no-any
+    this.cusUpload = this.cusAva.filter(d => d.divid === this.cusUpload.divid)[0];
     this.fileList.forEach((file: any) => {
       formData.append('file', file);
+      console.log(file);
+      this.cusUpload.svg = [...this.cusUpload.svg, {svg: file.name, deviceid: '', status: ''}];
     });
+    this.cusUpload.display = true;
+    formData.append('cusMenu', JSON.stringify(this.cusUpload));//发送本次修改的自定义分组及其内容 后台更新
     this.uploading = true;
     // You can use any AJAX library you like
     const req = new HttpRequest('POST', this.uploadUrl, formData, {
@@ -885,20 +997,94 @@ export class RuleComponent implements OnInit {
         () => {
           this.uploading = false;
           this.fileList = [];
-          this.message.success('upload successfully.');
         },
         () => {
           this.uploading = false;
           this.message.error('upload failed.');
+          return;
         }
       );
+    this.http.post(this.updateCus, this.cusUpload).subscribe(res => {
+      this.message.success('upload successfully.');
+    });
+  }
+
+  handleNew() {
+    let index = this.cusAva.length;
+    if (index >= 10) {
+      this.message.warning('最多可添加十个自定义分组');
+      return;
+    }
+    let divid = 'cus' + index;
+    this.cusAva = [...this.cusAva, {
+      divid: divid,
+      dispaly: true,
+      name: this.newGroup,
+      svg: []
+    }];
+    this.cusUpload.divid = divid;
+    // this.getCus();
+    this.handleUpload();
   }
 
   getCus() {
-    this.http.get(this.cusUrl).subscribe(res=>{
-      console.log("res:"+res);
-      this.cusData=res;
-    })
+    this.http.get(this.cusUrl).subscribe(res => {
+      this.cusData = res;
+      this.cusAva = this.cusData.filter(d => d.display === true);//已自定义的信息
+      var self = this;
+      console.log('ava' + JSON.stringify(this.cusAva));
+      this.cusAva.forEach(e => {
+          this.cusMenu[e.divid[e.divid.length - 1]] = e;
+          document.getElementById(e.divid).style.display = 'block';//显示上传过的分组
+          var $ = go.GraphObject.make;
+
+          var cusPalette = $(go.Palette, e.divid + 'div',
+            {
+              layout: $(go.GridLayout),
+            });
+
+          //删除自定义图标，实际是更新
+          function remove(e, obj) {
+            cusPalette.commit(function (d) {
+              var contextmenu = obj.part;
+              var nodedata = contextmenu.data;
+              var d=obj.
+              console.log(contextmenu);
+              console.log(nodedata);
+              // self.http.post(self.updateCus, nodedata.divid).subscribe(res => {
+              //   self.message.success('已删除');
+              // }, error1 => {
+              //   self.message.info('删除失败:', error1);
+              // });
+            });
+          }
+
+          cusPalette.nodeTemplateMap.add('',  // the default category
+            $(go.Node, 'Table',
+              $(go.Panel, 'Vertical',
+                $(go.Picture, {width: 53, height: 53, imageStretch: go.GraphObject.Uniform},
+                  new go.Binding('source', 'svg', function (svg) {
+                    return self.uploadUrl + '/' + svg + '.svg';
+                  }),
+                ),
+                $(go.TextBlock,
+                  {margin: 2},
+                  new go.Binding('text', 'svg')
+                )),
+              {
+                contextMenu:     // define a context menu for each node
+                  $('ContextMenu',  // that has one button
+                    $('ContextMenuButton',
+                      $(go.TextBlock, '删除图标', {click: remove}),
+                    )
+                  )
+              }
+            ));
+          cusPalette.model = new go.GraphLinksModel(e.svg);
+        }
+      );
+      console.log(this.cusMenu);
+    });
   }
 
   ngOnInit() {

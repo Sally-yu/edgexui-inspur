@@ -11,16 +11,16 @@
           <i class="icon-linechart"></i>
             &nbsp;边缘分析</span>
         <ul>
-          <li nz-menu-item (click)="content='边缘数据'">
+          <li nz-menu-item (click)="content='边缘连接'">
             <span title>
               <i class="icon-desktop"></i>
-               &nbsp;边缘数据</span>
+               &nbsp;边缘连接</span>
           </li>
-          <li nz-menu-item (click)="content='边缘配置'">
-            <span title>
-              <i class="icon-setting"></i>
-               &nbsp;边缘配置</span>
-          </li>
+          <!--<li nz-menu-item (click)="content='边缘配置'">-->
+            <!--<span title>-->
+              <!--<i class="icon-setting"></i>-->
+               <!--&nbsp;边缘配置</span>-->
+          <!--</li>-->
         </ul>
       </li>
 
@@ -82,13 +82,13 @@
   </nz-sider>
 
   <nz-layout style="height: 100%;background-color: #fff">
-    <nz-content [ngClass]="{'dark-content':(content=='边缘数据')||(content=='任务调度'),'light-content':(content!='边缘数据')&&(content!='任务调度')}" >
+    <nz-content [ngClass]="{'dark-content':(content=='边缘连接')||(content=='任务调度'),'light-content':(content!='边缘连接')&&(content!='任务调度')}" >
       <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%">
 
         <!--重要-->
         <!--加入app-login自动跳转登录，直接在4200试运行时备注掉，否则无限加载登录页。实机部署时取消备注，否则没有权限不能获取微服务数据-->
 
-        <!--<app-login></app-login>-->
+        <app-login></app-login>
 
         <h1>Inspur Edge Access System</h1>
         <h3>Welcome!</h3>
@@ -106,7 +106,7 @@
         <app-profile></app-profile>
       </div>
 
-      <div *ngIf="content=='边缘数据'" >
+      <div *ngIf="content=='边缘连接'" >
         <app-grafana></app-grafana>
       </div>
 

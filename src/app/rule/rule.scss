@@ -105,15 +105,15 @@
 //  margin-top: 0px;
 //}
 
-#content{
+#content {
   position: relative;
   height: 100%;
-  widht:100%
+  widht: 100%
 }
 
 #topbar {
-  width: 100%;/*必须沾满宽度防止浮动*/
-  float: left;/*必须*/
+  width: 100%; /*必须沾满宽度防止浮动*/
+  float: left; /*必须*/
   background-color: whitesmoke;
   height: 90px;
   border-bottom: 1px solid darkgray;
@@ -135,14 +135,14 @@
   -ms-transform: rotateX(80deg);
   -o-transform: rotateX(80deg);
   transform: rotateX(80deg);
-  -webkit-transform-origin:  center top;
-  -moz-transform-origin:  center top;
-  -ms-transform-origin:  center top;
-  -o-transform-origin:  center top;
+  -webkit-transform-origin: center top;
+  -moz-transform-origin: center top;
+  -ms-transform-origin: center top;
+  -o-transform-origin: center top;
   right: 10px;
   width: 60px;
   height: 60px;
-  top:90px;
+  top: 0;
   line-height: 60px;
   font-size: 30px;
   text-align: center;
@@ -185,7 +185,7 @@
   text-align: center;
   margin-top: 40px;
   font-size: 30px;
-  left:320px;
+  left: 320px;
   background-color: whitesmoke;
   cursor: pointer;
   -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
@@ -208,18 +208,24 @@
 #leftbar {
   max-height: 100%;
   width: 320px;
+  min-height: 680px;
   float: left;
+  overflow-y: scroll;
+  ::-webkit-scrollbar{
+    height:2px;
+  }
 }
 
 #toolcontent {
+  position:absolute;
   width: 100%;
   top: 90px;
   bottom: 0;
 }
 
-#container{
-  height:100%;
-  width:100%;
+#container {
+  height: 100%;
+  width: 100%;
 }
 
 .imgGroup {
@@ -294,18 +300,18 @@
 }
 
 #upcontent {
-   width: 70px;
-   display: block;
-   text-align: center;
-   cursor: pointer;
-   right: 8px;
-   height: 10%;
-   position: absolute;
+  width: 70px;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  right: 8px;
+  height: 10%;
+  position: absolute;
 
-   i {
-     font-size: 30px;
-   }
- }
+  i {
+    font-size: 30px;
+  }
+}
 
 #upcontent:hover, .topbtn:hover, #droptop:hover {
   background-color: #1890ff;
@@ -324,7 +330,8 @@
   -moz-transform-origin: left center;
   -ms-transform-origin: left center;
   -o-transform-origin: left center;
-  transform-origin: left center;  background-color: #1890ff;
+  transform-origin: left center;
+  background-color: #1890ff;
   color: #fff;
   box-shadow: 0 0 2px rgba(0, 0, 0, .8);
   text-shadow: 0 0 2px rgba(0, 0, 0, .8);
@@ -345,10 +352,10 @@
   -ms-transform: rotateX(0deg);
   -o-transform: rotateX(0deg);
   transform: rotateX(0deg);
-  -webkit-transform-origin:  center top;
-  -moz-transform-origin:  center top;
-  -ms-transform-origin:  center top;
-  -o-transform-origin:  center top;
+  -webkit-transform-origin: center top;
+  -moz-transform-origin: center top;
+  -ms-transform-origin: center top;
+  -o-transform-origin: center top;
   background-color: #1890ff;
   color: #fff;
   box-shadow: 0 0 2px rgba(0, 0, 0, .8);
@@ -358,6 +365,7 @@
   -ms-transition-duration: 200ms;
   -o-transition-duration: 200ms;
   transition-duration: 200ms;
+
   i {
     display: block;
   }
@@ -370,16 +378,16 @@
   width: 2px;
 }
 
-#container{
-  height:100%;
-  width:100%;
+#container {
+  height: 100%;
+  width: 100%;
 }
 
 #myDiagramDiv {
   position: absolute;
   bottom: 0;
   right: 0;
-  top: 90px;
+  top: 0;
   left: 320px;
   border: 1px solid darkgray;
   //pointer-events: none; //点穿事件，作用到下层
@@ -396,6 +404,14 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  top: 90px;
+  top: 0;
   left: 320px;
+}
+
+.cus {
+  div{
+    height: 600px;
+    max-height: 800px;
+  }
+  display:none;  //自定义分组默认都不显示
 }
