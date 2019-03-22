@@ -1,94 +1,110 @@
 <div *ngIf="opcDevice">
   <div style="margin-bottom: 16px;">
-    <button class="tool-btn-green" nz-button (click)="opcStart()" style="">
+    <!-- <button class="tool-btn-green" nz-button (click)="opcStart()" style="">
       <i class="icon-play-circle"></i>启动服务
-    </button>
-    <button class="tool-btn-red" nz-button (click)="opcStop()">
+    </button> -->
+    <button class="tool-btn-green" nz-button (click)="saveDataconfig()">保存配置</button>
+    <!-- <button class="tool-btn-red" nz-button (click)="opcStop()">
       <i class="icon-poweroff"></i>停止服务
-    </button>
-    <button nz-button (click)="pingTest()"><i class="icon-database"></i>连接测试</button>
-    <button nz-button><i class="icon-close-circle"></i>删除配置</button>
-    <button nz-button><i class="icon-sync"></i>刷新配置</button>
-    <button nz-button (click)="close()"><i class="icon-left-circle"></i>返回上级</button>
-  </div>
+    </button> -->
+    <button nz-button (click)="close()">返回上级</button>
+</div>
 
   <nz-content>
-    <h3>采集客户端配置</h3>
-    <div nz-row nzGutter="8">
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>服务器地址</nz-form-label>
-          <nz-input-group [nzSuffix]="suffixIconSearch">
-            <input type="text" nz-input [(ngModel)]="opcDevice.serverip">
-            <ng-template #suffixIconSearch>
-              <button class="input-btn" nz-button nzType="primary" (click)="search()">
-                <i class="icon-bulb"></i>
-              </button>
-            </ng-template>
-          </nz-input-group>
-        </nz-form-item>
+    <div nz-col nzSpan="8">
+        <div nz-row nzGutter="8">
+            <nz-form-item>
+                <nz-form-label>OPC类型</nz-form-label>
+                <nz-select style="width: 100%" nzShowSearch [(ngModel)]="datastrategy.opctype">
+                  <nz-option *ngFor="let type of opcTypes" [nzLabel]="type"
+                             [nzValue]="type"></nz-option>
+                </nz-select>
+              </nz-form-item>
+        </div>
+        <div nz-row nzGutter="8">
+            <nz-form-item>
+                <nz-form-label>服务器地址</nz-form-label>
+                <nz-input-group [nzSuffix]="suffixIconSearch">
+                  <input type="text" nz-input [(ngModel)]="datastrategy.opchost">
+                  <ng-template #suffixIconSearch>
+                    <button class="input-btn" nz-button nzType="primary" (click)="search()">
+                      <i class="icon-bulb"></i>
+                    </button>
+                  </ng-template>
+                </nz-input-group>
+              </nz-form-item>
+        </div>
+        <div nz-row nzGutter="8">
+          <nz-form-item>
+              <nz-form-label>服务端名称</nz-form-label>
+              <nz-select style="width: 100%" nzShowSearch [(ngModel)]="datastrategy.serverurl">
+                <nz-option *ngFor="let srv of servernames" [nzLabel]="srv"
+                           [nzValue]="srv"></nz-option>
+              </nz-select>
+            </nz-form-item>
       </div>
-
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>服务端名称</nz-form-label>
-          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.servername">
-            <nz-option *ngFor="let srv of servernames" [nzLabel]="srv"
-                       [nzValue]="srv"></nz-option>
-          </nz-select>
-        </nz-form-item>
-      </div>
-
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>采集频率</nz-form-label>
-          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.frq">
-            <nz-option *ngFor="let f of collectFrq" [nzLabel]="f+'ms'" [nzValue]="f"></nz-option>
-          </nz-select>
-        </nz-form-item>
-      </div>
-
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>OPC类型</nz-form-label>
-          <nz-select style="width: 100%" nzShowSearch [(ngModel)]="opcDevice.opctype">
-            <nz-option *ngFor="let type of opcTypes" [nzLabel]="type"
-                       [nzValue]="type"></nz-option>
-          </nz-select>
-        </nz-form-item>
-      </div>
+        <div nz-row nzGutter="8">
+            <nz-form-item>
+                <nz-form-label>采集频率</nz-form-label>
+                <nz-select style="width: 100%" nzShowSearch [(ngModel)]="datastrategy.interval">
+                  <nz-option *ngFor="let f of collectFrq" [nzLabel]="f+'ms'" [nzValue]="f"></nz-option>
+                </nz-select>
+              </nz-form-item>
+        </div>
     </div>
-
-    <h3>数据库配置</h3>
-    <div nz-row nzGutter="8">
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>数据库地址</nz-form-label>
-          <input nz-input type="text" [(ngModel)]="opcDevice.dbip">
-        </nz-form-item>
-      </div>
-
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>数据库名称</nz-form-label>
-          <input nz-input type="text" [(ngModel)]="opcDevice.dbname">
-        </nz-form-item>
-      </div>
-
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>用户名</nz-form-label>
-          <input nz-input type="text" [(ngModel)]="opcDevice.dbuser">
-        </nz-form-item>
-      </div>
-
-      <div nz-col nzSpan="6">
-        <nz-form-item>
-          <nz-form-label>密码</nz-form-label>
-          <input nz-input type="password" [(ngModel)]="opcDevice.dbpwd">
-        </nz-form-item>
-      </div>
+    <div nz-col nzSpan="8" [nzOffset]="1"> 
+        <div nz-row nzGutter="8">
+            <nz-form-item>
+                <nz-form-label>存储策略</nz-form-label>
+                <nz-select style="width: 100%" nzShowSearch nzAllowClear [(ngModel)]="datastrategy.savestrategy" (ngModelChange)="strategyChange(datastrategy.savestrategy)">
+                  <nz-option nzLabel="单机版部署" nzValue="单机版部署"></nz-option>
+                  <nz-option nzLabel="双服务冗余" nzValue="双服务冗余"></nz-option>
+                  <nz-option nzLabel="集群版部署" nzValue="集群版部署"></nz-option>
+                </nz-select>
+              </nz-form-item>
+        </div>
+        <div nz-row nzGutter="8">
+            <nz-form-item>
+                <nz-form-label>主数据库</nz-form-label>
+                <nz-select style="width: 100%" nzShowSearch nzAllowClear [(ngModel)]="servergroup[0]">
+                  <ng-container *ngFor="let influx of influxlist">
+                    <nz-option [nzLabel]="influx.servername" [nzValue]="influx.servername" *ngIf="isNotSelected(influx.servername)"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-item>
+        </div>
+        <div nz-row nzGutter="8">
+            <nz-form-item *ngIf="datastrategy.savestrategy !='单机版部署'">
+                <nz-form-label>从数据库1</nz-form-label>
+                <nz-select style="width: 100%" nzShowSearch nzAllowClear [(ngModel)]="servergroup[1]">
+                  <ng-container *ngFor="let influx of influxlist">
+                    <nz-option [nzLabel]="influx.servername" [nzValue]="influx.servername" *ngIf="isNotSelected(servergroup[1],influx.servername)"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-item>
+        </div>
+        <div nz-row nzGutter="8">
+            <div *ngIf="datastrategy.savestrategy =='集群版部署'">
+                <div *ngFor="let i of login">
+                    <div nz-row nzGutter="8">
+                     <nz-form-item>
+                      <nz-form-label > {{i.name}}</nz-form-label>
+                      <nz-select style="width: 100%" nzShowSearch nzAllowClear [(ngModel)]="servergroup[i.id]">
+                        <ng-container *ngFor="let influx of influxlist">
+                          <nz-option [nzLabel]="influx.servername" [nzValue]="influx.servername" *ngIf="isNotSelected(servergroup[i.id],influx.servername)"></nz-option>
+                        </ng-container>
+                      </nz-select>
+                    </nz-form-item>
+                 </div>
+                </div>
+                <button *ngIf="addstate" class="tool-btn-blue" nz-button (click)="addInput()">
+                  <i class="icon-play-circle"></i>添加数据库
+                </button>
+                <button *ngIf="removestate" class="tool-btn-red" nz-button (click)="removeInput()">
+                  <i class="icon-poweroff"></i>删除数据库
+                </button>
+              </div>
+        </div>
     </div>
   </nz-content>
-
 </div>

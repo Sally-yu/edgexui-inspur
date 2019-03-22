@@ -9,6 +9,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class DatabaseComponent implements OnInit {
   selectedValue;
+  mangourl="http://127.0.0.1:8090";
   //OpcUrl
   opcUrl = {
     RunorNot: 'http://10.24.19.221:9990/Api/RunorNot.ashx',
@@ -98,25 +99,25 @@ export class DatabaseComponent implements OnInit {
     this.getDatabaselist();
   }
   getDatabaselist(){
-    this.http.get('http://127.0.0.1:8090/assets/influx/get')
+    this.http.get(this.mangourl+'/assets/influx/get')
       .subscribe(data => {
         this.dataSet=JSON.parse(JSON.stringify(data));
       });
   }
   addDatabaselist(addData){
-    this.http.post('http://127.0.0.1:8090/assets/influx/insert',addData)
+    this.http.post(this.mangourl+'/assets/influx/insert',addData)
       .subscribe(res => {
 
       });
   }
   editDatabaselist(addData){
-    this.http.post('http://127.0.0.1:8090/assets/influx/edit',addData)
+    this.http.post(this.mangourl+'/assets/influx/edit',addData)
       .subscribe(res => {
 
       });
   }
   delDatabaselist(id){
-    this.http.post('http://127.0.0.1:8090/assets/influx/delete',{"key":id}).
+    this.http.post(this.mangourl+'/assets/influx/delete',{"key":id}).
     subscribe(res => {
 
     });
