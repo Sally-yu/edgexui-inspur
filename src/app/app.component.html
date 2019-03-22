@@ -82,16 +82,15 @@
   </nz-sider>
 
   <nz-layout style="height: 100%;background-color: #fff">
-    <nz-content [ngClass]="{'dark-content':(content=='边缘连接')||(content=='任务调度'),'light-content':(content!='边缘连接')&&(content!='任务调度')}" >
-      <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%">
+    <nz-content [ngClass]="{'dark-content':(content=='边缘连接')||(content=='任务调度')||(content=='边缘智能')||(content=='欢迎'),'light-content':(content!='边缘连接')&&(content!='任务调度')&&(content!='边缘智能')&&(content!='欢迎')}" >
+      <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%;background-color:#282c34">
 
         <!--重要-->
         <!--加入app-login自动跳转登录，直接在4200试运行时备注掉，否则无限加载登录页。实机部署时取消备注，否则没有权限不能获取微服务数据-->
 
-        <app-login></app-login>
+        <!--<app-login></app-login>-->
 
-        <h1>Inspur Edge Access System</h1>
-        <h3>Welcome!</h3>
+        <img [src]="framePath" alt="" style="width:904px;height:480px;">
       </div>
 
       <div *ngIf="content=='设备注册'">

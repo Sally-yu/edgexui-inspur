@@ -206,9 +206,12 @@ export class RuleComponent implements OnInit {
   ) {
   }
 
-  visible = false;
-  addSvgShow = false;
-  modiShow = false;
+  visible = false;//主布局右键菜单显示
+  addSvgShow = false;//新增图源对话框
+  modiShow = false;//修改图源对话框
+  saveWork = false;//保存布局对话框显示
+
+  workName = '';
   newGroup;
 
   imgUrl = this.ajax.imgUrl;
@@ -216,6 +219,7 @@ export class RuleComponent implements OnInit {
   uploadUrl = this.ajax.uploadUrl;
   cusUrl = this.ajax.cusUrl;
   updateCus = this.ajax.updateCus;
+  findNameUrl = this.ajax.findName;
 
   uploading = false;
   fileList: UploadFile[] = [];
@@ -323,7 +327,7 @@ export class RuleComponent implements OnInit {
     }
 
     function showContextMenu(obj, diagram, tool) {
-      console.log(obj,diagram,tool);
+      console.log(obj, diagram, tool);
       // Show only the relevant buttons given the current state.
       var cmd = diagram.commandHandler;
       // Now show the whole context menu element
@@ -667,8 +671,8 @@ export class RuleComponent implements OnInit {
       );
 
     // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
-    self.diagram.model.linkFromPortIdProperty = "fromPort";
-    self.diagram.model.linkToPortIdProperty = "toPort";
+    self.diagram.model.linkFromPortIdProperty = 'fromPort';
+    self.diagram.model.linkToPortIdProperty = 'toPort';
 
 
     self.diagram.model.linkFromPortIdProperty = 'fromPort';
@@ -682,7 +686,6 @@ export class RuleComponent implements OnInit {
     myPalette3.model = new go.GraphLinksModel(DataArray);
     myPalette4.model = new go.GraphLinksModel(DataArray);
   }
-
 
   click(val) {
     switch (val) {
@@ -716,16 +719,35 @@ export class RuleComponent implements OnInit {
     console.log(this.diagram.model.toJson());
   }
 
+  //保存前，若非新增 直接保存
+  beforeSave() {
+    if (this.currWork.name) {
+      this.save();
+    } else {
+      this.saveWork = true;
+    }
+  }
+
+  //保存对话框的确定事件 检查名称是否有重复
+  modalSave() {
+    this.http.post(this.findNameUrl, JSON.stringify(this.workName)).subscribe(res => {
+      console.log(res);
+      if (res['Status'] == '0') {
+        this.message.info('布局名称已存在');
+      } else if (res['Status'] == '1') {
+        this.save();
+        this.saveWork = false;
+      }
+    });
+  }
+
   save() {
     let dataarray = this.diagram.model.toJson();
     let datajson = JSON.parse(dataarray);
-    // datajson.linkDataArray.forEach(e=>{
-    //   e["fromSpot"]="bottom";
-    //   e["toSpot"]="top";
-    // })
     let data = {
-      'key': UUID.UUID(),
-      'class': datajson.class,
+      'name': this.currWork.name ? this.currWork.name : this.workName,//布局名称
+      'key': this.currWork.key ? this.currWork.key : UUID.UUID(),
+      'class': this.currWork.class ? this.currWork.class : datajson.class,
       'linkDataArray': datajson.linkDataArray,
       'nodeDataArray': datajson.nodeDataArray
     };
@@ -734,16 +756,22 @@ export class RuleComponent implements OnInit {
       'Opt': 'save',
       'Workspace': data
     };
-    console.log(post);
+    this.currWork.name = this.workName;
+    this.currWork.key = data.key;
+    //删除
+    this.http.post(this.workUrl, {opt: 'delete', workspace: {key: this.currWork.key}}).subscribe(res => {
+      }
+    );
+    //新增
     this.http.post(this.workUrl, post).subscribe(res => {
       if (res) {
-        console.log(res);
         this.message.success('保存成功');
       }
     }, error1 => {
       console.log(error1);
       this.message.info('保存失败:%s', error1);
     });
+    this.saveWork = false;
   }
 
   //计算最接近的四角，弹出菜单时避免超边界
@@ -1048,8 +1076,7 @@ export class RuleComponent implements OnInit {
             cusPalette.commit(function (d) {
               var contextmenu = obj.part;
               var nodedata = contextmenu.data;
-              var d=obj.
-              console.log(contextmenu);
+              var d = obj.console.log(contextmenu);
               console.log(nodedata);
               // self.http.post(self.updateCus, nodedata.divid).subscribe(res => {
               //   self.message.success('已删除');

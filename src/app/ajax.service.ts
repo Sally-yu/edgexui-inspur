@@ -18,6 +18,7 @@ export class AjaxService {
   public uploadUrl=this.host+'/assets/upload';//上传保存自定义svg文件
   public cusUrl=this.host+'/assets/img/cussvg';//get保存自定义svg文件
   public updateCus=this.host+'/assets/updateCus'; //保存自定义svg关联信息到数据库
+  public findName=this.host+'/workspace/findname';//查找同名布局是否已存在
   constructor() {
     console.log(this.host);
   }

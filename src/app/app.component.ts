@@ -17,6 +17,7 @@ export class AppComponent {
   ajax= new AjaxService;
   imgUrl=this.ajax.imgUrl;
   logoPath=this.imgUrl+'/'+'logo-big.png';
+  framePath=this.imgUrl+'/'+'framework.png';
   content='欢迎';
   collapsed=false;
 

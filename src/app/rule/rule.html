@@ -9,7 +9,7 @@
       <i class="icon-reload"></i><br>
       重新加载
     </div>
-    <div class="topbtn" (click)="save()">
+    <div class="topbtn" (click)="beforeSave()">
       <i class="icon-save"></i><br>
       保存
     </div>
@@ -203,6 +203,12 @@
     <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="tempDeviceId">
       <nz-option *ngFor="let option of devices" [nzLabel]="option.name" [nzValue]="option.id"></nz-option>
     </nz-select>
+  </nz-modal>
+
+  <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="saveWork" nzTitle="保存布局"
+            (nzAfterClose)="saveWork=false" (nzOnCancel)="saveWork=false" (nzOnOk)="modalSave()">
+    <p>布局名称：</p>
+    <input type="text" nz-input [(ngModel)]="workName">
   </nz-modal>
 
   <div class="floatbar">

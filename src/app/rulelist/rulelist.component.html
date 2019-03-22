@@ -15,19 +15,19 @@
   <nz-table #deviceServicesData [nzData]="workSpc" [nzSize]="'middle'">
     <thead>
     <tr>
-      <th>key</th>
-      <th>class</th>
-      <th>node</th>
-      <th>link</th>
-      <th>option</th>
+      <th>名称</th>
+      <th>id</th>
+      <th>类型</th>
+      <th>操作</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let data of workSpc">
+      <td>{{data.name}}</td>
       <td>{{data.key}}</td>
       <td>{{data.class}}</td>
-      <td>{{data.nodeDataArray}}</td>
-      <td>{{data.linkDataArray}}</td>
+      <!--<td>{{data.nodeDataArray}}</td>-->
+      <!--<td>{{data.linkDataArray}}</td>-->
       <td>
         <a (click)="rowSelected(data.key)">详情</a>
         <nz-divider nzType="vertical"></nz-divider>

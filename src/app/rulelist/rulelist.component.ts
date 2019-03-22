@@ -16,6 +16,7 @@ export class RulelistComponent implements OnInit {
   listUrl = this.ajax.workUrl;
 
   nullWorkSpc = {
+    'name':'',
     'key': '',
     'class': 'GraphLinksModel',
     'linkDataArray': [],
