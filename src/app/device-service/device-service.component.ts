@@ -15,19 +15,94 @@ export class DeviceServiceComponent implements OnInit {
     'X-Session-Token': '21232f297a57a5a743894a0e4a801fc3',
     'X-Requested-With': 'XMLHttpRequest'
   });
-
+  mangourl="http://127.0.0.1:8090";
+  influxPort = '8086';
   selectOpc;
-
+  isSpinning=false;
+  //OpcUrl
+  opcUrl = {
+    RunorNot: 'http://10.72.212.104:9990/Api/RunorNot.ashx',
+    InfluxHandle: 'http://10.72.212.104:9990/Api/InfluxHandle.ashx',
+    OpcHandle: 'http://10.72.212.104:9990/Api/OpcHandle.ashx',
+  };
   show = true;//显示列表主界面
   loading = false;
   selectedService;//选中的service，赋值后会打开详情界面
-
+  datastrategy={ 
+    "opcstate":   "",
+    "opctype":    "DA",
+    "opchost":    "10.72.212.104",
+    "serverurl":  "opcda://10.72.212.104/KEPware.KEPServerEx.V4",
+    "interval":     "100",
+    "savestrategy":  "单机版部署",
+    "influxhost":    "172.31.1.27" ,
+    "influxdatabase":"ExgeX",
+    "servergroup":   "",
+    "login":         ""                
+  }  
   device_services;
 
   constructor(
     private http: HttpClient,
     private message: NzMessageService
   ) {
+  }
+   //更新数据存储策略配置信息
+   updateDataconfig(state) {
+    this.datastrategy.opcstate=state;
+    this.http.post(this.mangourl+'/assets/opcua/update',this.datastrategy)
+    .subscribe(res => {
+      this.isSpinning=eval(state.toLowerCase());
+    });
+  }
+ // //启动
+ startOPCServer() {
+    var opcaction = 'startcollect';
+    var data = new FormData();
+    data.append('database', this.datastrategy.influxdatabase);
+    data.append('inhost', this.datastrategy.influxhost);
+    data.append('opctype', this.datastrategy.opctype);
+    data.append('opcip', this.datastrategy.opchost);
+    data.append('inport', this.influxPort);
+    data.append('serverurl', this.datastrategy.serverurl);
+    data.append('frequency', this.datastrategy.interval);
+    data.append('opcaction', opcaction);
+    this.http.post(this.opcUrl.OpcHandle, data, {responseType: 'text'}).subscribe(res => {
+      if (res.indexOf('Error') > -1 || res.indexOf('Exception') > -1) {   //后端代码内部报错也返回200，会在请求成功的结果中
+        this.message.warning('启动失败');
+      } else {
+        this.message.success(res);
+        this.updateDataconfig("true");
+        // this.runornot(true);
+      }
+      console.log(res);
+    }, error1 => {
+      this.message.warning('启动失败', error1.error);
+      console.log(error1.error);
+    });
+  }
+
+  //停止
+  stopOPCServer() {
+    if(!this.isSpinning){
+      this.message.info('该服务未启动，无需停止');
+      return 0;
+    }
+    var opcaction = 'stopcollect';
+    var data = new FormData();
+    data.append('opcaction', opcaction);
+    this.http.post(this.opcUrl.OpcHandle, data, {responseType: 'text'}).subscribe(res => {
+      if (res.indexOf('Error') > -1 || res.indexOf('Exception') > -1) {   //后端代码内部报错也返回200，会在请求成功的结果中
+        this.message.warning('停止失败');
+      } else {
+        this.updateDataconfig("false");
+        this.message.success(res);
+      }
+      console.log(res);
+    }, error1 => {
+      this.message.warning('停止失败', error1.error);
+      console.log(error1.error);
+    });
   }
 
   //获取服务
@@ -41,24 +116,16 @@ export class DeviceServiceComponent implements OnInit {
           'created': 0,
           'modified': 0,
           'origin': 0,
-          'description': '华力电机测试',
+          'description': '微型车床',
           'id': '22223df234f',
-          'name': '华力电机测试',
+          'name': '微型车床测试',
           'lastConnected': 0,
           'lastReported': 0,
           'operatingState': 'ENABLED',
-          'labels': ['opc'],
+          'labels': ['OPC'],
           'addressable': {},
           'adminState': 'UNLOCKED',
           'opc': true,
-          'serverip': '10.24.19.221',
-          'servername': '',
-          'opctype': 'DA',
-          'frq': '100',
-          'dbip': '10.24.19.221',
-          'dbname': 'mom',
-          'dbuser': 'admin',
-          'dbpwd': 'admin'
         };
       this.device_services = [...this.device_services, opcTest];//添加伪数据测试
       console.log(this.device_services);
@@ -78,24 +145,16 @@ export class DeviceServiceComponent implements OnInit {
         'created': 0,
         'modified': 0,
         'origin': 0,
-        'description': '华力电机测试',
+        'description': '微型车床',
         'id': '22223df234f',
-        'name': '华力电机测试',
+        'name': '微型车床测试',
         'lastConnected': 0,
         'lastReported': 0,
         'operatingState': 'ENABLED',
-        'labels': ['opc'],
+        'labels': ['OPC'],
         'addressable': {},
         'adminState': 'UNLOCKED',
         'opc': true,
-        'serverip': '10.24.19.221',
-        'servername': '',
-        'opctype': 'DA',
-        'frq': 100,
-        'dbip': '10.24.19.221',
-        'dbname': 'mom',
-        'dbuser': 'admin',
-        'dbpwd': 'admin'
       };
       this.device_services=[];
       this.device_services = [...this.device_services, opcTest];//添加伪数据测试
@@ -126,8 +185,14 @@ export class DeviceServiceComponent implements OnInit {
   edit(name) {
     var selected = this.device_services.filter(s => s.name === name)[0];
     if (name && selected.opc) {
-      this.selectOpc = selected;
-      this.show = false;
+      if(this.isSpinning){
+        this.message.info('该服务在启动状态下禁止编辑');
+        return 0;
+      }else{
+        this.selectOpc = selected;
+        this.show = false;
+      }
+     
     } else if (name) {
       var url = '/core-metadata/api/v1/deviceservice/name/' + name;
       this.http.get(url, {headers: this.head}).subscribe(res => {
@@ -188,9 +253,17 @@ export class DeviceServiceComponent implements OnInit {
       });
     }
   }
+  getDataconfig(){
 
+    this.http.post(this.mangourl+'/assets/opcua/get',null)
+    .subscribe(data => {
+      this.datastrategy=JSON.parse(JSON.stringify(data));
+      var wsg= this.datastrategy;
+    });
+  }
   ngOnInit() {
     this.getService();
+    this.getDataconfig()
   }
 
 }
