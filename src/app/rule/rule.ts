@@ -292,13 +292,12 @@ export class RuleComponent implements OnInit {
     function showToolTip(obj, diagram, tool) {
       var toolTipDIV = document.getElementById('toolTipDIV');
       var pt = diagram.lastInput.viewPoint;
-      var topHeight = document.getElementById('topbar').offsetHeight;//顶部的bar高度缩放变化，去px绝对数值
       self.currDevice = obj.data;
       self.matchDevice();
       console.log(self.currDevice);
       var fromLeft = document.getElementById('leftbar').offsetWidth;
       var left = pt.x + fromLeft + 10;//左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
-      var top = pt.y + 10 + topHeight;
+      var top = pt.y + 10;
       var r = self.getPos(pt.x, pt.y);
       switch (r) {
         case 1:
@@ -337,11 +336,9 @@ export class RuleComponent implements OnInit {
       self.matchDevice();
       console.log(self.currDevice);
       var pt = diagram.lastInput.viewPoint;
-      var topHeight = document.getElementById('topbar').offsetHeight;//顶部的bar高度缩放变化，去px绝对数值
       var fromLeft = document.getElementById('leftbar').offsetWidth;
-      console.log(topHeight);
       var left = pt.x + fromLeft + 10; //左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
-      var top = pt.y + 10 + topHeight;
+      var top = pt.y + 10 ;
       var r = self.getPos(pt.x, pt.y);//计算四角中最接近的，以此调整位置
       console.log(r);
       switch (r) {

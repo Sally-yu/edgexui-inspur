@@ -20,11 +20,11 @@
       <th>标签</th>
       <th>状态</th>
       <th>管理</th>
+      <th>操作</th>
       <!-- <th>上次连接</th>
       <th>上次响应</th>
       <th>创建时间</th>
       <th>修改时间</th> -->
-      <th>操作</th>
     </tr>
     </thead>
     <tbody>
@@ -33,22 +33,26 @@
       <td>{{data.description}}</td>
       <td>{{data.labels}}</td>
       <td *ngIf="data.opc">
-          <nz-switch [(ngModel)]="isSpinning"></nz-switch>
+          <nz-switch [(ngModel)]="isSpinning" [disabled]="true"></nz-switch>
       </td>
-      <td>{{data.adminState}}</td>
+      <td *ngIf="!data.opc">
+        <nz-switch [(ngModel)]="f" [disabled]="true"></nz-switch>
+      </td>
+      <td >{{data.adminState}}</td>
       <!-- <td>{{data.lastConnected}}</td>
       <td>{{data.lastReported}}</td>
       <td>{{data.created}}</td>
       <td>{{data.modified}}</td> -->
       <td>
-        <a *ngIf="data.opc" style="color:rgb(67, 34, 255);font-size: 15px;" (click)="startOPCServer(data.name)">启动</a>
-        <nz-divider *ngIf="data.opc" nzType="vertical"></nz-divider>
-        <a *ngIf="data.opc" style="color:#F22;font-size: 15px;" (click)="stopOPCServer(data.name)">停止</a>
-        <nz-divider *ngIf="data.opc" nzType="vertical"></nz-divider>
+
         <a style="font-size: 15px;" (click)="edit(data.name)">编辑</a>
         <nz-divider nzType="vertical"></nz-divider>
+        <a *ngIf="data.opc&&!isSpinning"  style="color:rgb(67, 34, 255);font-size: 15px;" (click)="startOPCServer(data.name)">启动</a>
+        <a *ngIf="data.opc&&isSpinning" style="color:#F22;font-size: 15px;" (click)="stopOPCServer(data.name)">停止</a>
+        <a *ngIf="!data.opc" style="color:#F22;font-size: 15px;" (click)="stopOPCServer(data.name)">启动</a>
+        <nz-divider nzType="vertical"></nz-divider>
         <a *ngIf="!data.opc" style="color:#F22;font-size: 15px;" (click)="delete(data.name)">删除</a>
-        <!-- <span *ngIf="data.opc" style="color: #9d9d9d"  nz-tooltip nzTitle="opc设备暂不支持删除" nzPlacement="rightTop">删除</span> -->
+        <a *ngIf="data.opc" style="color: #9d9d9d"  nz-tooltip nzTitle="opc设备暂不支持删除" nzPlacement="rightTop">删除</a>
       </td>
     </tr>
     </tbody>

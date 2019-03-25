@@ -13,7 +13,7 @@ export class OpcuaComponent implements OnInit {
   @Input() opcDevice;
 
   @Output() result: EventEmitter<any> = new EventEmitter();
-  mangourl="http://127.0.0.1:8090";
+  mangourl="http://10.24.20.7:8090";
   servergroup=new Array();
   servername:string;
   removestate:boolean=false;//判断是否显示删除数据库按钮
@@ -121,8 +121,9 @@ export class OpcuaComponent implements OnInit {
     this.datastrategy.influxdatabase=influxhost[0].database;
     this.http.post(this.mangourl+'/assets/opcua/insert',this.datastrategy)
     .subscribe(res => {
-     
+      this.close()
     });
+
   }
   // //删除配置
   // delete() {

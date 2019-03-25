@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NzMessageService} from 'ng-zorro-antd';
+import {NzMessageService, toBoolean} from 'ng-zorro-antd';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {unescapeIdentifier} from '@angular/compiler';
 
@@ -15,10 +15,12 @@ export class DeviceServiceComponent implements OnInit {
     'X-Session-Token': '21232f297a57a5a743894a0e4a801fc3',
     'X-Requested-With': 'XMLHttpRequest'
   });
-  mangourl="http://127.0.0.1:8090";
+  mangourl="http://10.24.20.7:8090";
   influxPort = '8086';
   selectOpc;
   isSpinning=false;
+  f=false;
+
   //OpcUrl
   opcUrl = {
     RunorNot: 'http://10.72.212.104:9990/Api/RunorNot.ashx',
@@ -116,9 +118,9 @@ export class DeviceServiceComponent implements OnInit {
           'created': 0,
           'modified': 0,
           'origin': 0,
-          'description': '微型车床',
+          'description': 'OPC',
           'id': '22223df234f',
-          'name': '微型车床测试',
+          'name': 'OPC设备服务',
           'lastConnected': 0,
           'lastReported': 0,
           'operatingState': 'ENABLED',
@@ -145,9 +147,9 @@ export class DeviceServiceComponent implements OnInit {
         'created': 0,
         'modified': 0,
         'origin': 0,
-        'description': '微型车床',
+        'description': 'OPC',
         'id': '22223df234f',
-        'name': '微型车床测试',
+        'name': 'OPC设备服务',
         'lastConnected': 0,
         'lastReported': 0,
         'operatingState': 'ENABLED',
@@ -258,7 +260,7 @@ export class DeviceServiceComponent implements OnInit {
     this.http.post(this.mangourl+'/assets/opcua/get',null)
     .subscribe(data => {
       this.datastrategy=JSON.parse(JSON.stringify(data));
-      var wsg= this.datastrategy;
+      this.isSpinning=eval(this.datastrategy.opcstate.toLowerCase());
     });
   }
   ngOnInit() {

@@ -9,7 +9,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class DatabaseComponent implements OnInit {
   selectedValue;
-  mangourl="http://127.0.0.1:8090";
+  mangourl="http://10.24.20.7:8090";
   //OpcUrl
   opcUrl = {
     RunorNot: 'http://10.24.19.221:9990/Api/RunorNot.ashx',
