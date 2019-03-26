@@ -7,7 +7,7 @@
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
     <div class="topbtn" (click)="load()">
       <i class="icon-reload"></i><br>
-      重新加载
+      加载
     </div>
     <div class="topbtn" (click)="beforeSave()">
       <i class="icon-save"></i><br>
@@ -48,7 +48,7 @@
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
     <div id="myPaletteDiv"
-         style="margin:0 8px;height:80%;width:160px;top:10%;background-color: white;box-shadow: inset 0px 0px 4px 0px black;border-radius: 4px"></div>
+         style="margin:0 8px;height:80%;width:120px;top:10%;background-color: white;box-shadow: inset 0px 0px 4px 0px black;border-radius: 4px"></div>
 
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
     <div class="topbtn" (click)="mapUp()">
@@ -65,12 +65,12 @@
       停止
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-    <div class="topbtn">
-      <i class="icon-plus-circle" (click)="addSvg()"></i><br>
+    <div class="topbtn" (click)="addSvg()">
+      <i class="icon-plus-circle"></i><br>
       添加分组
     </div>
-    <div class="topbtn">
-      <i class="icon-edit-square" (click)="modiSvg()"></i><br>
+    <div class="topbtn" (click)="modiSvg()">
+      <i class="icon-edit-square"></i><br>
       修改图源
     </div>
 
@@ -81,26 +81,26 @@
     <div id="droptop" (click)="toggleTop()">
       <i class="icon-up"></i>
     </div>
-    <div id="leftbar" >
-      <nz-collapse  >
+    <div id="leftbar">
+      <nz-collapse>
         <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'">
-          <div id="myPaletteDiv1" style="height:600px;max-height: 800px;"></div>
+          <div id="myPaletteDiv1" style="height:400px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <nz-collapse-panel [nzHeader]="'机床'">
-          <div id="myPaletteDiv2" style="height: 600px;max-height: 800px;"></div>
+          <div id="myPaletteDiv2" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <nz-collapse-panel [nzHeader]="'交通工具'">
-          <div id="myPaletteDiv3" style="height: 600px;max-height: 800px;"></div>
+          <div id="myPaletteDiv3" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <nz-collapse-panel [nzHeader]="'加热设备'">
-          <div id="myPaletteDiv4" style="height: 600px;max-height: 800px;"></div>
+          <div id="myPaletteDiv4" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <!--以下自定义分组 默认都不显示-->
         <nz-collapse-panel class="cus" id="cus0" [nzHeader]="cusMenu[0].name">
           <div id="cus0div"></div>
         </nz-collapse-panel>
         <nz-collapse-panel class="cus" id="cus1" [nzHeader]="cusMenu[1].name">
-          <div id="cus1div" ></div>
+          <div id="cus1div"></div>
         </nz-collapse-panel>
         <nz-collapse-panel class="cus" id="cus2" [nzHeader]="cusMenu[2].name">
           <div id="cus2div"></div>
@@ -108,7 +108,7 @@
         <nz-collapse-panel class="cus" id="cus3" [nzHeader]="cusMenu[3].name">
           <div id="cus3div"></div>
         </nz-collapse-panel>
-        <nz-collapse-panel class="cus"  id="cus4" [nzHeader]="cusMenu[4].name">
+        <nz-collapse-panel class="cus" id="cus4" [nzHeader]="cusMenu[4].name">
           <div id="cus4div"></div>
         </nz-collapse-panel>
         <nz-collapse-panel class="cus" id="cus5" [nzHeader]="cusMenu[5].name">
@@ -153,15 +153,15 @@
       </ul>
     </div>
     <div id="myDiagramDiv"></div>
-    <div id="echart" style="width:800px;height:600px;"></div>
+    <div id="echart" style="width:800px;min-height:300px;"></div>
   </div>
 
   <!--修改分组对话框-->
   <nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="modiShow" nzTitle="修改分组"
-            (nzOnOk)="handleUpload()"  (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
+            (nzOnOk)="handleUpload()" (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
     <p>选择分组</p>
-    <!--绑定欲上传愤怒中的divid -->
-    <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="cusUpload.divid">
+    <!--绑定欲上传分组中的divid -->
+    <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="cusUpload.divid" >
       <nz-option *ngFor="let option of cusAva" [nzLabel]="option.name" [nzValue]="option.divid"></nz-option>
     </nz-select>
     <br>

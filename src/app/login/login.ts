@@ -213,6 +213,7 @@ export class LoginComponent implements OnInit {
         maxSelectionCount: 1, // users can select only one part at a time
         'toolManager.hoverDelay': 10,  // how quickly tooltips are shown
         initialAutoScale: go.Diagram.Uniform,  // scale to show all of the contents
+        allowVerticalScroll:false,
       });
 
     function infoString(obj) {

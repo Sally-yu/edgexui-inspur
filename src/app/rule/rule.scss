@@ -99,12 +99,6 @@
   cursor: pointer;
 }
 
-//#contextMenu li:hover ul li {
-//  display: block;
-//  margin-left: 0px;
-//  margin-top: 0px;
-//}
-
 #content {
   position: relative;
   height: 100%;
@@ -115,7 +109,7 @@
   width: 100%; /*必须沾满宽度防止浮动*/
   float: left; /*必须*/
   background-color: whitesmoke;
-  height: 90px;
+  height: 70px;
   border-bottom: 1px solid darkgray;
   padding-left: 8px;
   display: flex;
@@ -185,7 +179,7 @@
   text-align: center;
   margin-top: 40px;
   font-size: 30px;
-  left: 320px;
+  left: 260px;
   background-color: whitesmoke;
   cursor: pointer;
   -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
@@ -207,8 +201,8 @@
 
 #leftbar {
   max-height: 100%;
-  width: 320px;
-  min-height: 680px;
+  width: 260px;
+  min-height: 360px;
   float: left;
   overflow-y: scroll;
   ::-webkit-scrollbar{
@@ -219,7 +213,7 @@
 #toolcontent {
   position:absolute;
   width: 100%;
-  top: 90px;
+  top: 70px;
   bottom: 0;
 }
 
@@ -287,15 +281,16 @@
 }
 
 .topbtn {
-  width: 70px;
+  font-size: 10px;
+  width: 50px;
   display: block;
-  height: 90px;
+  height: 70px;
   text-align: center;
   cursor: pointer;
-  padding-top: 15px;
+  padding-top: 6px;
   //color: #1890ff;
   i {
-    font-size: 30px;
+    font-size: 25px;
   }
 }
 
@@ -388,7 +383,7 @@
   bottom: 0;
   right: 0;
   top: 0;
-  left: 320px;
+  left: 260px;
   border: 1px solid darkgray;
   //pointer-events: none; //点穿事件，作用到下层
   //canvas{
@@ -405,12 +400,12 @@
   bottom: 0;
   right: 0;
   top: 0;
-  left: 320px;
+  left: 260px;
 }
 
 .cus {
   div{
-    height: 600px;
+    height: 400px;
     max-height: 800px;
   }
   display:none;  //自定义分组默认都不显示
