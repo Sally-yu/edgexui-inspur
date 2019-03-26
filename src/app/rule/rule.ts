@@ -383,7 +383,7 @@ export class RuleComponent implements OnInit {
           alignment: align,  // align the port on the main Shape
           stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
           portId: name,  // declare this object to be a "port"
-          fromSpot: spot,  // declare where links may connect at this port
+          fromSpot: align,  // declare where links may connect at this port
           fromLinkable: output,  // declare whether the user may draw links from here
           toSpot: spot,  // declare where links may connect at this port
           toLinkable: input,  // declare whether the user may draw links to here
@@ -461,10 +461,10 @@ export class RuleComponent implements OnInit {
         ),
         // Shape.fill is bound to Node.data.color
         // four named ports, one on each side:
-        makePort('top', go.Spot.Top, go.Spot.Top, true, true),
-        makePort('left', go.Spot.Left, go.Spot.Left, true, true),
-        makePort('right', go.Spot.Right, go.Spot.Right, true, true),
-        makePort('bottom', go.Spot.Bottom, go.Spot.Bottom, true, true),
+        makePort('T', go.Spot.Top, go.Spot.Top, true, true),
+        makePort('L', go.Spot.Left, go.Spot.Left, true, true),
+        makePort('R', go.Spot.Right, go.Spot.Right, true, true),
+        makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, true),
         {toolTip: myToolTip},
         {contextMenu: myContextMenu}
       ));
@@ -486,7 +486,7 @@ export class RuleComponent implements OnInit {
           new go.Binding('text').makeTwoWay()),
       ));
 
-    self.diagram.nodeTemplateMap.add('shape',  // the default category
+    self.diagram.nodeTemplateMap.add('shape',
       $(go.Node, 'Auto',
         nodeStyle(),
         {
@@ -507,7 +507,8 @@ export class RuleComponent implements OnInit {
             width: 80,
             height: 80
           },
-          new go.Binding('figure', 'svg')),
+          new go.Binding('figure', 'svg').makeTwoWay()
+        ),
         // Shape.fill is bound to Node.data.color
         // four named ports, one on each side:
         makePort('T', go.Spot.Top, go.Spot.TopSide, true, true),
@@ -589,12 +590,12 @@ export class RuleComponent implements OnInit {
           corner: 15,
         },
         // make sure links come in from the proper direction and go out appropriately
-        new go.Binding('fromSpot', 'fromSpot', function (d) {
-          return spotConverter(d);
-        }).makeTwoWay(),
-        new go.Binding('toSpot', 'toSpot', function (d) {
-          return spotConverter(d);
-        }).makeTwoWay(),
+        // new go.Binding('fromPortId', 'fromPortId', function (d) {
+        //   return spotConverter(d);
+        // }).makeTwoWay(),
+        // new go.Binding('toPortId', 'toPortId', function (d) {
+        //   return spotConverter(d);
+        // }).makeTwoWay(),
         // new go.Binding("points").makeTwoWay(),
         // mark each Shape to get the link geometry with isPanelMain: true
         $(go.Shape, {isPanelMain: true, stroke: '#41BFEC'/* blue*/, strokeWidth: 10},
@@ -603,11 +604,8 @@ export class RuleComponent implements OnInit {
       );
 
     // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
-    self.diagram.model.linkFromPortIdProperty = 'fromPort';
-    self.diagram.model.linkToPortIdProperty = 'toPort';
 
-    self.diagram.model.linkFromPortIdProperty = 'fromPort';
-    self.diagram.model.linkToPortIdProperty = 'toPort';
+
     self.diagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
     self.diagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
 
@@ -1056,6 +1054,8 @@ export class RuleComponent implements OnInit {
   ngOnInit() {
     this.init();
     this.load();
+    this.diagram.model.linkFromPortIdProperty = 'fromPortId';
+    this.diagram.model.linkToPortIdProperty = 'toPortId';
     // this.makeMap();
     this.loop();
   }
