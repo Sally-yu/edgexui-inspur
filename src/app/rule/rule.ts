@@ -829,7 +829,7 @@ export class RuleComponent implements OnInit {
       $('#topbar').css('display', 'flex');
       $('#droptop  i').toggleClass('icon-down');
       $('#droptop  i').toggleClass('icon-up');
-      $('#toolcontent').css('top', '70px');
+      $('#toolcontent').css('top', '60px');
     } else {
       $('#topbar').css('display', 'none');
       $('#droptop  i').toggleClass('icon-up');

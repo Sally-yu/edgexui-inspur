@@ -1,78 +1,78 @@
 <div style="height: 100%;width:100%" id="content">
   <div id="topbar">
-    <div class="topbtn" (click)="close()">
+    <div class="topbtn" (click)="close()" nzTitle="返回" nzPlacement="bottom" nz-tooltip>
       <i class="icon-Import"></i><br>
-      返回
+      <!--返回-->
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-    <div class="topbtn" (click)="load()">
+    <div class="topbtn" (click)="load()" nzTitle="加载" nzPlacement="bottom" nz-tooltip>
       <i class="icon-reload"></i><br>
-      加载
+      <!--加载-->
     </div>
-    <div class="topbtn" (click)="beforeSave()">
+    <div class="topbtn" (click)="beforeSave()" nzTitle="保存" nzPlacement="bottom" nz-tooltip>
       <i class="icon-save"></i><br>
-      保存
+      <!--保存-->n
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
-    <div class="topbtn" (click)="this.diagram.commandHandler.undo()">
+    <div class="topbtn" (click)="this.diagram.commandHandler.undo()" nzTitle="撤销" nzPlacement="bottom" nz-tooltip>
       <i class="icon-undo"></i><br>
-      撤销
+      <!--撤销-->
     </div>
-    <div class="topbtn" (click)="this.diagram.commandHandler.redo()">
+    <div class="topbtn" (click)="this.diagram.commandHandler.redo()" nzTitle="重做" nzPlacement="bottom" nz-tooltip>
       <i class="icon-redo"></i><br>
-      重做
+      <!--重做-->
     </div>
-    <div class="topbtn" (click)="zoomOut(0.6)">
+    <div class="topbtn" (click)="zoomOut(0.6)" nzTitle="缩小" nzPlacement="bottom" nz-tooltip>
       <i class="icon-minus-circle"></i><br>
-      缩小
+      <!--缩小-->
     </div>
-    <div class="topbtn" (click)="zoomOut(1.7)">
+    <div class="topbtn" (click)="zoomOut(1.7)" nzTitle="放大" nzPlacement="bottom" nz-tooltip>
       <i class="icon-plus-circle"></i><br>
-      放大
+      <!--放大-->
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
-    <div class="topbtn">
+    <div class="topbtn"  nzTitle="添加链接" nzPlacement="bottom" nz-tooltip>
       <i class="icon-link"></i><br>
-      链接
+      <!--链接-->
     </div>
-    <div class="topbtn">
+    <div class="topbtn" nzTitle="添加图片" nzPlacement="bottom" nz-tooltip>
       <i class="icon-image"></i><br>
-      图片
+      <!--图片-->
     </div>
-    <div class="topbtn" (click)="addComm()">
+    <div class="topbtn" (click)="addComm()" nzTitle="添加备注" nzPlacement="bottom" nz-tooltip>
       <i class="icon-comment"></i><br>
-      备注
+      <!--备注-->
+    </div>
+
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn" (click)="mapUp()" nzTitle="切换" nzPlacement="bottom" nz-tooltip>
+      <i [class]="mapIcon"></i><br>
+      <!--切换-->
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'" ></nz-divider>
+    <div class="topbtn" (click)="loop()" nzTitle="启动" nzPlacement="bottom" nz-tooltip>
+      <i class="icon-right-circle"></i><br>
+      <!--启动-->
+    </div>
+    <div class="topbtn" (click)="stopLoop()" nzTitle="停止" nzPlacement="bottom" nz-tooltip>
+      <i class="icon-stop"></i><br>
+      <!--停止-->
+    </div>
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn" (click)="addSvg()" nzTitle="添加分组" nzPlacement="bottom" nz-tooltip>
+      <i class="icon-plus-circle"></i><br>
+      <!--添加分组-->
+    </div>
+    <div class="topbtn" (click)="modiSvg()" nzTitle="修改图源" nzPlacement="bottom" nz-tooltip>
+      <i class="icon-edit-square"></i><br>
+      <!--修改图源-->
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
     <div id="myPaletteDiv"
-         style="margin:0 8px;height:80%;width:120px;top:10%;background-color: white;box-shadow: inset 0px 0px 4px 0px black;border-radius: 4px"></div>
-
-    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-    <div class="topbtn" (click)="mapUp()">
-      <i [class]="mapIcon"></i><br>
-      切换
-    </div>
-    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-    <div class="topbtn" (click)="loop()">
-      <i class="icon-right-circle"></i><br>
-      启动
-    </div>
-    <div class="topbtn" (click)="stopLoop()">
-      <i class="icon-stop"></i><br>
-      停止
-    </div>
-    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
-    <div class="topbtn" (click)="addSvg()">
-      <i class="icon-plus-circle"></i><br>
-      添加分组
-    </div>
-    <div class="topbtn" (click)="modiSvg()">
-      <i class="icon-edit-square"></i><br>
-      修改图源
-    </div>
+         style="margin:0 8px;height:100%;width:120px;"></div>
 
   </div>
 
@@ -82,7 +82,7 @@
       <i class="icon-up"></i>
     </div>
     <div id="leftbar">
-      <nz-collapse>
+      <nz-collapse nzAccordion>
         <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'">
           <div id="myPaletteDiv1" style="height:400px;max-height: 800px;"></div>
         </nz-collapse-panel>
