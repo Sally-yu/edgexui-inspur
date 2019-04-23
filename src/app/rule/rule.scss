@@ -202,16 +202,17 @@
 #leftbar {
   max-height: 100%;
   width: 260px;
-  min-height: 360px;
+  min-height: 100%;
   float: left;
   overflow-y: scroll;
-  ::-webkit-scrollbar{
-    height:2px;
+
+  ::-webkit-scrollbar {
+    height: 2px;
   }
 }
 
 #toolcontent {
-  position:absolute;
+  position: absolute;
   width: 100%;
   top: 60px;
   bottom: 0;
@@ -315,7 +316,8 @@
   color: #fff;
   box-shadow: 0 0 2px rgba(0, 0, 0, .8);
   text-shadow: 0 0 4px rgba(0, 0, 0, .8);
-  i{
+
+  i {
     color: #fff;
   }
 }
@@ -409,9 +411,23 @@
 }
 
 .cus {
-  div{
+  div {
     height: 400px;
     max-height: 800px;
   }
-  display:none;  //自定义分组默认都不显示
+
+  display: none; //自定义分组默认都不显示
 }
+
+#echart {
+  border-radius: 2px;
+  box-shadow:  0 0 2px rgba(0, 0, 0, .8);
+  width: 300px;
+  min-height: 300px;
+  position: absolute;
+  z-index: 1000;
+  top: 100px;
+  right: 100px;
+  background-color: rgba(220, 230, 210, 0.6);
+}
+

@@ -1,13 +1,13 @@
 import {AjaxService} from '../ajax.service';
-import * as go from 'gojs';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpRequest, HttpResponse} from '@angular/common/http';
 import {NzMessageService, UploadFile} from 'ng-zorro-antd';
 import {UUID} from 'angular2-uuid';
 import {filter} from 'rxjs/operators';
+import * as go from 'gojs';
 import * as echarts from 'node_modules/echarts/echarts.simple';
 
-declare var $: any; //jQuery
+declare let $: any; //jQuery
 declare var BMap: any;
 
 @Component({
@@ -95,6 +95,8 @@ export class RuleComponent implements OnInit {
     {svg: '钻探工厂', deviceid: '', status: '1'}
   ];
   cusData;
+
+  //内置标准几何图形
   builtIn = [
     {svg: 'Rectangle', category: 'shape'},
     {svg: 'RoundedRectangle', category: 'shape'},
@@ -108,11 +110,13 @@ export class RuleComponent implements OnInit {
   optMap = false;
   timeOutId = 0;
 
+  //连线动效用参数
   opacity = 1;
   down = true;
 
   mapIcon = 'icon-setting';
 
+  //默认的空设备，防止html绑定不到字段报错
   private defaultDevice = {
     'created': 0,
     'modified': 0,
@@ -190,7 +194,7 @@ export class RuleComponent implements OnInit {
       'resources': [],
       'commands': []
     }
-  };//默认的空设备，防止html绑定不到字段报错
+  };
 
   dataDevice = {};//存放选中图标的deviceid对应的device
   currDevice = {};//选中图标的nodedata
@@ -214,6 +218,7 @@ export class RuleComponent implements OnInit {
   workName = '';
   newGroup;
 
+  //预定义url
   imgUrl = this.ajax.imgUrl;
   workUrl = this.ajax.workUrl;
   uploadUrl = this.ajax.uploadUrl;
@@ -224,6 +229,7 @@ export class RuleComponent implements OnInit {
   uploading = false;
   fileList: UploadFile[] = [];
 
+  //初始化布局图和工具栏
   initDiagram() {
     var self = this;
     var $ = go.GraphObject.make;
@@ -264,6 +270,16 @@ export class RuleComponent implements OnInit {
         layout: $(go.GridLayout)
       });
     var myPalette4 = $(go.Palette, 'myPaletteDiv4',
+      {
+        'undoManager.isEnabled': true,
+        layout: $(go.GridLayout)
+      });
+    var myPalette5 = $(go.Palette, 'myPaletteDiv5',
+      {
+        'undoManager.isEnabled': true,
+        layout: $(go.GridLayout)
+      });
+    var myPalette6 = $(go.Palette, 'myPaletteDiv6',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
@@ -338,7 +354,7 @@ export class RuleComponent implements OnInit {
       var pt = diagram.lastInput.viewPoint;
       var fromLeft = document.getElementById('leftbar').offsetWidth;
       var left = pt.x + fromLeft + 10; //左侧菜单宽度  左侧图源栏款 10点向右偏移，在鼠标点击位置右侧
-      var top = pt.y + 10 ;
+      var top = pt.y + 10;
       var r = self.getPos(pt.x, pt.y);//计算四角中最接近的，以此调整位置
       console.log(r);
       switch (r) {
@@ -387,17 +403,23 @@ export class RuleComponent implements OnInit {
           fromLinkable: output,  // declare whether the user may draw links from here
           toSpot: spot,  // declare where links may connect at this port
           toLinkable: input,  // declare whether the user may draw links to here
-          cursor: 'pointer',  // show a different cursor to indicate potential link point
+          cursor: 'pointer',
+          // show a different cursor to indicate potential link point
+        },
+        {
           mouseEnter: function (e, port) {  // the PORT argument will be this Shape
             if (!e.diagram.isReadOnly) {
-              port.fill = 'rgba(255,0,255,0.5)';
+              port.fill = 'rgba(65,191,236,0.5)';
             }
-          },
+          }
+          ,
           mouseLeave: function (e, port) {
             port.fill = 'transparent';
           }
-        });
+        }
+      );
     }
+
 
     //工具栏图形
     myPalette.nodeTemplateMap.add('shape',  // the default category
@@ -442,9 +464,11 @@ export class RuleComponent implements OnInit {
     myPalette2.nodeTemplateMap = myPalette1.nodeTemplateMap;
     myPalette3.nodeTemplateMap = myPalette1.nodeTemplateMap;
     myPalette4.nodeTemplateMap = myPalette1.nodeTemplateMap;
+    myPalette5.nodeTemplateMap = myPalette1.nodeTemplateMap;
+    myPalette6.nodeTemplateMap = myPalette1.nodeTemplateMap;
 
 
-    self.diagram.nodeTemplateMap.add('picture',  // the default category
+    self.diagram.nodeTemplateMap.add('picture',  // picture
       $(go.Node, 'Auto',
         nodeStyle(),
         {
@@ -614,8 +638,12 @@ export class RuleComponent implements OnInit {
     myPalette2.model = new go.GraphLinksModel(DataArray);
     myPalette3.model = new go.GraphLinksModel(DataArray);
     myPalette4.model = new go.GraphLinksModel(DataArray);
+    myPalette5.model = new go.GraphLinksModel(DataArray);
+    myPalette6.model = new go.GraphLinksModel(DataArray);
+
   }
 
+  //设备右键菜单选项
   click(val) {
     switch (val) {
       case 'addDevice':
@@ -636,16 +664,14 @@ export class RuleComponent implements OnInit {
     this.diagram.currentTool.stopTool();
   }
 
+  //添加分组，弹出对话框
   addSvg() {
     this.addSvgShow = true;
   }
 
+  //修改现有分组，弹出对话框
   modiSvg() {
     this.modiShow = true;
-  }
-
-  showValue() {
-    console.log(this.diagram.model.toJson());
   }
 
   //保存前，若非新增 直接保存
@@ -670,6 +696,7 @@ export class RuleComponent implements OnInit {
     });
   }
 
+  //保存布局
   save() {
     let dataarray = this.diagram.model.toJson();
     let datajson = JSON.parse(dataarray);
@@ -724,6 +751,7 @@ export class RuleComponent implements OnInit {
     }
   }
 
+  //加载，重新加载，从列表传进来的布局图，未保存前可刷新加载
   load() {
     this.diagram.model = go.Model.fromJson(this.currWork);
   }
@@ -759,14 +787,14 @@ export class RuleComponent implements OnInit {
     }
   }
 
-  //对话框取消
+  //设备对话框取消
   handleCancel() {
     this.visible = false;
     this.addSvgShow = false;
     this.modiShow = false;
   }
 
-  //对话框确认
+  //设备对话框确认
   handleOk() {
     this.visible = false;
     this.currDevice['deviceid'] = this.tempDeviceId; //确认改变currdevice
@@ -775,12 +803,12 @@ export class RuleComponent implements OnInit {
     this.message.success('成功绑定设备');
   }
 
-  //打开对话框
+  //打开设备对话框
   handleOpen() {
     this.tempDeviceId = this.currDevice['deviceid'];//赋值给下拉框绑定数据，避免双向绑定改变currdevice
   }
 
-  //关闭对话框，等同取消
+  //关闭设备对话框，等同取消
   handleClose() {
     this.handleCancel();
   }
@@ -792,10 +820,9 @@ export class RuleComponent implements OnInit {
 
   //添加标签
   addComm() {
-    this.showValue();
     this.diagram.model.nodeDataArray = [...this.diagram.model.nodeDataArray, {category: 'Comment', text: '添加评论'}];
-    console.log(this.diagram.model.nodeDataArray);
-    console.log(typeof (this.diagram.model.nodeDataArray));
+    // console.log(this.diagram.model.nodeDataArray);
+    // console.log(typeof (this.diagram.model.nodeDataArray));
   }
 
   //切换工作区或者地图优先
@@ -874,10 +901,10 @@ export class RuleComponent implements OnInit {
 
   //初始
   init() {
-    console.log(this.currWork);
-    this.getDevice();
-    this.initDiagram();
-    this.getCus();
+    // console.log(this.currWork);
+    this.getDevice();//获取可用设备，来自edge
+    this.initDiagram();//初始化布局图表
+    this.getCus();//获取图表自定义分组
     $('.ant-collapse-content-box').css('padding', '0');//去折叠面板padding，默认16px
   }
 
@@ -966,14 +993,15 @@ export class RuleComponent implements OnInit {
     });
   }
 
-  divChanged(){
+  divChanged() {
     this.cusUpload = this.cusAva.filter(d => d.divid === this.cusUpload.divid)[0];
-    this.fileList=this.cusUpload.svg;
+    this.fileList = this.cusUpload.svg;
     console.log(this.cusUpload);
     console.log(this.cusAva);
     console.log(this.fileList);
   }
 
+  //添加自定义分组
   handleNew() {
     let index = this.cusAva.length;
     if (index >= 10) {
@@ -992,6 +1020,7 @@ export class RuleComponent implements OnInit {
     this.handleUpload();
   }
 
+  //获取所有自定义分组信息
   getCus() {
     this.http.get(this.cusUrl).subscribe(res => {
       this.cusData = res;
@@ -1051,12 +1080,43 @@ export class RuleComponent implements OnInit {
     });
   }
 
+  //初始化echarts
+  initEchart() {
+    var myChart = echarts.init(document.getElementById('echart'));
+
+    // 指定图表的配置项和数据
+    var option = {
+      title: {
+        text: 'ECharts 入门示例'
+      },
+      tooltip: {},
+      legend: {
+        data: ['销量']
+      },
+      xAxis: {
+        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+      },
+      yAxis: {},
+      series: [{
+        name: '销量',
+        type: 'bar',
+        data: [5, 20, 36, 10, 10, 20]
+      }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  }
+
   ngOnInit() {
     this.init();
     this.load();
+    this.initEchart();
     this.diagram.model.linkFromPortIdProperty = 'fromPortId';
     this.diagram.model.linkToPortIdProperty = 'toPortId';
     // this.makeMap();
     this.loop();
+    $('#echart').draggable();
   }
+
 }

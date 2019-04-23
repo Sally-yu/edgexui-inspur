@@ -76,15 +76,15 @@ export class RulelistComponent implements OnInit {
     }
   }
 
-  // 点选一行的详情，编辑详情
+  // 点选一行编辑，跳转到编辑页面;key传null为新增跳转
   rowSelected(key) {
     if (key) {
       this.currWork = this.workSpc.filter(d => d.key === key)[0]; // 当前选中设备
       this.showList = false;
       this.currWork.linkDataArray.forEach(d => {
-        console.log(d.points);
+        // console.log(d.points);
       });
-      console.log(this.currWork);
+      // console.log(this.currWork);
     }
     else if(key==null){
       this.currWork = JSON.parse(JSON.stringify(this.nullWorkSpc)); // 深复制，包括子对象，防止使用后改变
@@ -99,9 +99,16 @@ export class RulelistComponent implements OnInit {
         this.getWorkSpc();
       },
       error1 => {
-        console.log(error1);
+        // console.log(error1);
         this.message.warning('删除失败:' + error1.error);
       });
+  }
+
+  //预览不可编辑
+  preview(key){
+    if(key){
+
+    }
   }
 
   ngOnInit() {

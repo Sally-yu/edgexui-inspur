@@ -95,6 +95,12 @@
         <nz-collapse-panel [nzHeader]="'加热设备'">
           <div id="myPaletteDiv4" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
+        <nz-collapse-panel [nzHeader]="'工具箱5'">
+          <div id="myPaletteDiv5" style="height: 400px;max-height: 800px;"></div>
+        </nz-collapse-panel>
+        <nz-collapse-panel [nzHeader]="'工具箱6'">
+          <div id="myPaletteDiv6" style="height: 400px;max-height: 800px;"></div>
+        </nz-collapse-panel>
         <!--以下自定义分组 默认都不显示-->
         <nz-collapse-panel class="cus" id="cus0" [nzHeader]="cusMenu[0].name">
           <div id="cus0div"></div>
@@ -153,7 +159,6 @@
       </ul>
     </div>
     <div id="myDiagramDiv"></div>
-    <div id="echart" style="width:800px;min-height:300px;"></div>
   </div>
 
   <!--修改分组对话框-->
@@ -211,7 +216,10 @@
     <input type="text" nz-input [(ngModel)]="workName">
   </nz-modal>
 
-  <div class="floatbar">
+  <!--滑动缩放条 有问题 暂时不用-->
+  <!--  <div class="floatbar">
     <nz-slider nzVertical [ngModel]="zoom" nztooltipvisible="never"></nz-slider>
-  </div>
+  </div>-->
 </div>
+
+<div id="echart" ></div>

@@ -29,7 +29,9 @@
       <!--<td>{{data.nodeDataArray}}</td>-->
       <!--<td>{{data.linkDataArray}}</td>-->
       <td>
-        <a (click)="rowSelected(data.key)">详情</a>
+        <a (click)="preview(data.key)">预览</a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a (click)="rowSelected(data.key)">编辑</a>
         <nz-divider nzType="vertical"></nz-divider>
         <a (click)="delete(data.key)" style="color:#F22;">删除</a>
       </td>
