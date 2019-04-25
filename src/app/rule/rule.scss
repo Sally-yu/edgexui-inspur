@@ -322,6 +322,17 @@
   }
 }
 
+.activebtn{
+  background-color: #1890ff;
+  color: #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, .8);
+  text-shadow: 0 0 4px rgba(0, 0, 0, .8);
+
+  i {
+    color: #fff;
+  }
+}
+
 #dropleft:hover {
   -webkit-transform: rotateY(0deg);
   -moz-transform: rotateY(0deg);
@@ -419,11 +430,12 @@
   display: none; //自定义分组默认都不显示
 }
 
-#echart {
+.echarts {
+  display: none;
   border-radius: 2px;
   box-shadow:  0 0 2px rgba(0, 0, 0, .8);
   width: 300px;
-  min-height: 300px;
+  height: 300px;
   position: absolute;
   z-index: 1000;
   top: 100px;

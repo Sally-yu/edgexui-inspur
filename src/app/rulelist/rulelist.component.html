@@ -23,14 +23,16 @@
     </thead>
     <tbody>
     <tr *ngFor="let data of workSpc">
-      <td>{{data.name}}</td>
+      <td>
+        <a (mouseenter)="preview(data.key)" (mouseleave)="preview(null)">
+          {{data.name}}
+        </a>
+      </td>
       <td>{{data.key}}</td>
       <td>{{data.class}}</td>
       <!--<td>{{data.nodeDataArray}}</td>-->
       <!--<td>{{data.linkDataArray}}</td>-->
       <td>
-        <a (click)="preview(data.key)">预览</a>
-        <nz-divider nzType="vertical"></nz-divider>
         <a (click)="rowSelected(data.key)">编辑</a>
         <nz-divider nzType="vertical"></nz-divider>
         <a (click)="delete(data.key)" style="color:#F22;">删除</a>
@@ -40,3 +42,4 @@
   </nz-table>
 </div>
 
+<div id="diagram" ></div>

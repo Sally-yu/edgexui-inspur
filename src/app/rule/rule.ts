@@ -302,9 +302,6 @@ export class RuleComponent implements OnInit {
       mainElement: cxElement
     });
 
-    self.diagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
-    self.diagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
-
     function showToolTip(obj, diagram, tool) {
       var toolTipDIV = document.getElementById('toolTipDIV');
       var pt = diagram.lastInput.viewPoint;
@@ -818,9 +815,9 @@ export class RuleComponent implements OnInit {
     this.diagram.commandHandler.increaseZoom(n);
   }
 
-  //添加标签
+  //添加备注
   addComm() {
-    this.diagram.model.nodeDataArray = [...this.diagram.model.nodeDataArray, {category: 'Comment', text: '添加评论'}];
+    this.diagram.model.nodeDataArray = [...this.diagram.model.nodeDataArray, {category: 'Comment', text: '添加备注'}];
     // console.log(this.diagram.model.nodeDataArray);
     // console.log(typeof (this.diagram.model.nodeDataArray));
   }
@@ -1082,7 +1079,9 @@ export class RuleComponent implements OnInit {
 
   //初始化echarts
   initEchart() {
-    var myChart = echarts.init(document.getElementById('echart'));
+    var myChart1 = echarts.init(document.getElementById('echart1'));
+    var myChart2 = echarts.init(document.getElementById('echart2'));
+    var myChart3 = echarts.init(document.getElementById('echart3'));
 
     // 指定图表的配置项和数据
     var option = {
@@ -1105,18 +1104,33 @@ export class RuleComponent implements OnInit {
     };
 
     // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+    myChart1.setOption(option);
+    myChart2.setOption(option);
+    myChart3.setOption(option);
+  }
+
+  //显示echart并可拖动
+  drag() {
+    let display = $('.echarts').css('display');
+    if (display == 'none') {
+      $('#dragbtn').toggleClass('activebtn');
+      $('.echarts').css('display', 'block');
+      $('.echarts').draggable({containment: '#content', scroll: false});
+      this.initEchart();
+    } else if (display == 'block') {
+      $('.echarts').css('display', 'none');
+      $('#dragbtn').toggleClass('activebtn');
+    }
   }
 
   ngOnInit() {
     this.init();
     this.load();
-    this.initEchart();
     this.diagram.model.linkFromPortIdProperty = 'fromPortId';
     this.diagram.model.linkToPortIdProperty = 'toPortId';
     // this.makeMap();
     this.loop();
-    $('#echart').draggable();
+    // this.initEchart();
   }
 
 }

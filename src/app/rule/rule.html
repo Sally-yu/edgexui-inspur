@@ -51,6 +51,7 @@
       <i [class]="mapIcon"></i><br>
       <!--切换-->
     </div>
+
     <nz-divider class="divider" [nzType]="'vertical'" ></nz-divider>
     <div class="topbtn" (click)="loop()" nzTitle="启动" nzPlacement="bottom" nz-tooltip>
       <i class="icon-right-circle"></i><br>
@@ -65,14 +66,20 @@
       <i class="icon-plus-circle"></i><br>
       <!--添加分组-->
     </div>
-    <div class="topbtn" (click)="modiSvg()" nzTitle="修改图源" nzPlacement="bottom" nz-tooltip>
+    <div class="topbtn" (click)="modiSvg()" nzTitle="修改分组" nzPlacement="bottom" nz-tooltip>
       <i class="icon-edit-square"></i><br>
-      <!--修改图源-->
+      <!--修改分组-->
     </div>
     <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
 
     <div id="myPaletteDiv"
          style="margin:0 8px;height:100%;width:120px;"></div>
+
+    <nz-divider class="divider" [nzType]="'vertical'"></nz-divider>
+    <div class="topbtn" (click)="drag()" id="dragbtn" nzTitle="图表" nzPlacement="bottom" nz-tooltip>
+      <i class="icon-table"></i><br>
+      <!--图表切换-->
+    </div>
 
   </div>
 
@@ -222,4 +229,6 @@
   </div>-->
 </div>
 
-<div id="echart" ></div>
+<div class="echarts" id="echart1" *ngIf="true"></div>
+<div class="echarts" id="echart2" style="left:500px" *ngIf="true"></div>
+<div class="echarts" id="echart3" style="top:500px" *ngIf="true"></div>
