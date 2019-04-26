@@ -1,13 +1,13 @@
 import {AjaxService} from '../ajax.service';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpRequest, HttpResponse} from '@angular/common/http';
-import {NzMessageService, UploadFile} from 'ng-zorro-antd';
+import {NzMessageService, UploadFile, UploadFileStatus} from 'ng-zorro-antd';
 import {UUID} from 'angular2-uuid';
 import {filter} from 'rxjs/operators';
 import * as go from 'gojs';
 import * as echarts from 'node_modules/echarts/echarts.simple';
 
-declare let $: any; //jQuery
+declare var $: any; //jQuery
 declare var BMap: any;
 
 @Component({
@@ -86,14 +86,54 @@ export class RuleComponent implements OnInit {
   flag = 1000;
   DataArray = [
     {svg: '卡车', deviceid: '', status: ''},
-    {svg: '粉碎机', deviceid: '', status: ''},
-    {svg: '机组', deviceid: '', status: '0'},
+    {svg: '卡车1', deviceid: '', status: ''},
+    {svg: '卡车2', deviceid: '', status: '0'},
+    {svg: '车厢', deviceid: '', status: '0'},
+    {svg: '传送带', deviceid: '', status: '0'},
+    {svg: '船舶', deviceid: '', status: '1'},
+  ];
+  DataArray1 = [
+    {svg: '红白烟囱', deviceid: '', status: ''},
+    {svg: '烟囱', deviceid: '', status: '0'},
     {svg: '加工厂', deviceid: '', status: '0'},
     {svg: '冷却塔', deviceid: '', status: '0'},
     {svg: '提炼塔', deviceid: '', status: '1'},
     {svg: '烘干塔', deviceid: '', status: '1'},
+    {svg: '钻探工厂', deviceid: '', status: '1'},
+    {svg: '干燥塔', deviceid: '', status: '1'}
+
+  ];
+  DataArray2 = [
+    {svg: '结晶器', deviceid: '', status: ''},
+    {svg: '搅拌器', deviceid: '', status: ''},
+    {svg: '漏斗', deviceid: '', status: '0'},
+    {svg: '化学处理塔', deviceid: '', status: '0'},
+    {svg: '锅炉', deviceid: '', status: '0'},
+    {svg: '粉碎机', deviceid: '', status: '1'},
+    {svg: '剪切机', deviceid: '', status: '1'},
+  ];
+  DataArray3 = [
+    {svg: '抛光机', deviceid: '', status: ''},
+    {svg: '烧结机', deviceid: '', status: ''},
+    {svg: '均化器', deviceid: '', status: '0'},
+    {svg: '冷却器', deviceid: '', status: '0'},
+    {svg: '汽轮机', deviceid: '', status: '0'},
+  ];
+  DataArray4 = [
+    {svg: '真空助力机', deviceid: '', status: ''},
+    {svg: '热风加热器', deviceid: '', status: ''},
+    {svg: '搅拌器', deviceid: '', status: '0'},
+    {svg: '制氮机', deviceid: '', status: '0'},
+    {svg: '结晶器', deviceid: '', status: '0'},
+  ];
+  DataArray5 = [
+    {svg: '锅炉', deviceid: '', status: ''},
+    {svg: '锅炉1', deviceid: '', status: ''},
+    {svg: '机组', deviceid: '', status: '0'},
+    {svg: '烘干塔', deviceid: '', status: '1'},
     {svg: '钻探工厂', deviceid: '', status: '1'}
   ];
+
   cusData;
 
   //内置标准几何图形
@@ -232,7 +272,7 @@ export class RuleComponent implements OnInit {
   //初始化布局图和工具栏
   initDiagram() {
     var self = this;
-    var $ = go.GraphObject.make;
+    let $ = go.GraphObject.make;
     var DataArray = self.DataArray;  //new一个防止双向绑定更改DataArray后图源列表改变
     var imgUrl = this.imgUrl + '/';
 
@@ -249,44 +289,44 @@ export class RuleComponent implements OnInit {
         'LinkRelinked': showLinkLabel,
         'undoManager.isEnabled': true  // enable undo & redo
       });
-    var myPalette = $(go.Palette, 'myPaletteDiv',
+    var Palette = $(go.Palette, 'myPaletteDiv',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout),
       });
-    var myPalette1 = $(go.Palette, 'myPaletteDiv1',
+    var Palette1 = $(go.Palette, 'myPaletteDiv1',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout),
       });
-    var myPalette2 = $(go.Palette, 'myPaletteDiv2',
+    var Palette2 = $(go.Palette, 'myPaletteDiv2',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
-    var myPalette3 = $(go.Palette, 'myPaletteDiv3',
+    var Palette3 = $(go.Palette, 'myPaletteDiv3',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
-    var myPalette4 = $(go.Palette, 'myPaletteDiv4',
+    var Palette4 = $(go.Palette, 'myPaletteDiv4',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
-    var myPalette5 = $(go.Palette, 'myPaletteDiv5',
+    var Palette5 = $(go.Palette, 'myPaletteDiv5',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
-    var myPalette6 = $(go.Palette, 'myPaletteDiv6',
+    var Palette6 = $(go.Palette, 'myPaletteDiv6',
       {
         'undoManager.isEnabled': true,
         layout: $(go.GridLayout)
       });
 
 
-    var myToolTip = $(go.HTMLInfo, {
+    var ToolTip = $(go.HTMLInfo, {
       show: showToolTip,
       hide: hideToolTip,
       // since hideToolTip is very simple,
@@ -297,7 +337,7 @@ export class RuleComponent implements OnInit {
     var cxElement = document.getElementById('contextMenu');
     // Since we have only one main element, we don't have to declare a hide method,
     // we can set mainElement and GoJS will hide it automatically
-    var myContextMenu = $(go.HTMLInfo, {
+    var ContextMenu = $(go.HTMLInfo, {
       show: showContextMenu,
       mainElement: cxElement
     });
@@ -419,7 +459,7 @@ export class RuleComponent implements OnInit {
 
 
     //工具栏图形
-    myPalette.nodeTemplateMap.add('shape',  // the default category
+    Palette.nodeTemplateMap.add('shape',  // the default category
       $(go.Node, 'Table',
         nodeStyle(),
         {
@@ -443,7 +483,7 @@ export class RuleComponent implements OnInit {
           new go.Binding('figure', 'svg')),
       ));
 
-    myPalette1.nodeTemplateMap.add('',  // the default category
+    Palette1.nodeTemplateMap.add('',  // the default category
       $(go.Node, 'Table',
         $(go.Panel, 'Vertical',
           $(go.Picture, {width: 40, height: 40, imageStretch: go.GraphObject.Uniform},
@@ -458,11 +498,11 @@ export class RuleComponent implements OnInit {
         // four named ports, one on each side:
       ));
 
-    myPalette2.nodeTemplateMap = myPalette1.nodeTemplateMap;
-    myPalette3.nodeTemplateMap = myPalette1.nodeTemplateMap;
-    myPalette4.nodeTemplateMap = myPalette1.nodeTemplateMap;
-    myPalette5.nodeTemplateMap = myPalette1.nodeTemplateMap;
-    myPalette6.nodeTemplateMap = myPalette1.nodeTemplateMap;
+    Palette2.nodeTemplateMap = Palette1.nodeTemplateMap;
+    Palette3.nodeTemplateMap = Palette1.nodeTemplateMap;
+    Palette4.nodeTemplateMap = Palette1.nodeTemplateMap;
+    Palette5.nodeTemplateMap = Palette1.nodeTemplateMap;
+    Palette6.nodeTemplateMap = Palette1.nodeTemplateMap;
 
 
     self.diagram.nodeTemplateMap.add('picture',  // picture
@@ -486,8 +526,8 @@ export class RuleComponent implements OnInit {
         makePort('L', go.Spot.Left, go.Spot.Left, true, true),
         makePort('R', go.Spot.Right, go.Spot.Right, true, true),
         makePort('B', go.Spot.Bottom, go.Spot.Bottom, true, true),
-        {toolTip: myToolTip},
-        {contextMenu: myContextMenu}
+        {toolTip: ToolTip},
+        {contextMenu: ContextMenu}
       ));
 
     self.diagram.nodeTemplateMap.add('Comment',
@@ -536,8 +576,8 @@ export class RuleComponent implements OnInit {
         makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
         makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
         makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, true),
-        {toolTip: myToolTip},
-        {contextMenu: myContextMenu}
+        {toolTip: ToolTip},
+        {contextMenu: ContextMenu}
       ));
 
     self.diagram.nodeTemplateMap.add('',
@@ -580,8 +620,8 @@ export class RuleComponent implements OnInit {
         makePort('L', go.Spot.Left, go.Spot.LeftSide, true, true),
         makePort('R', go.Spot.Right, go.Spot.RightSide, true, true),
         makePort('B', go.Spot.Bottom, go.Spot.BottomSide, true, true),
-        {toolTip: myToolTip},
-        {contextMenu: myContextMenu}
+        {toolTip: ToolTip},
+        {contextMenu: ContextMenu}
       )
     );
 
@@ -630,13 +670,13 @@ export class RuleComponent implements OnInit {
     self.diagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
     self.diagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
 
-    myPalette.model = new go.GraphLinksModel(self.builtIn);
-    myPalette1.model = new go.GraphLinksModel(DataArray);
-    myPalette2.model = new go.GraphLinksModel(DataArray);
-    myPalette3.model = new go.GraphLinksModel(DataArray);
-    myPalette4.model = new go.GraphLinksModel(DataArray);
-    myPalette5.model = new go.GraphLinksModel(DataArray);
-    myPalette6.model = new go.GraphLinksModel(DataArray);
+    Palette.model = new go.GraphLinksModel(self.builtIn);
+    Palette1.model = new go.GraphLinksModel(DataArray);
+    Palette2.model = new go.GraphLinksModel(this.DataArray1);
+    Palette3.model = new go.GraphLinksModel(this.DataArray2);
+    Palette4.model = new go.GraphLinksModel(this.DataArray3);
+    Palette5.model = new go.GraphLinksModel(this.DataArray4);
+    Palette6.model = new go.GraphLinksModel(this.DataArray5);
 
   }
 
@@ -959,11 +999,12 @@ export class RuleComponent implements OnInit {
     const formData = new FormData();
     // tslint:disable-next-line:no-any
     this.cusUpload = this.cusAva.filter(d => d.divid === this.cusUpload.divid)[0];
+    // console.log(this.fileList);
     this.fileList.forEach((file: any) => {
       formData.append('file', file);
       this.cusUpload.svg = [...this.cusUpload.svg, {svg: file.name, deviceid: '', status: ''}];
     });
-    console.log(JSON.stringify(this.fileList));
+    // console.log(JSON.stringify(this.fileList));
     this.cusUpload.display = true;
     formData.append('cusMenu', JSON.stringify(this.cusUpload));//发送本次修改的自定义分组及其内容 后台更新
     this.uploading = true;
@@ -990,14 +1031,6 @@ export class RuleComponent implements OnInit {
     });
   }
 
-  divChanged() {
-    this.cusUpload = this.cusAva.filter(d => d.divid === this.cusUpload.divid)[0];
-    this.fileList = this.cusUpload.svg;
-    console.log(this.cusUpload);
-    console.log(this.cusAva);
-    console.log(this.fileList);
-  }
-
   //添加自定义分组
   handleNew() {
     let index = this.cusAva.length;
@@ -1017,6 +1050,36 @@ export class RuleComponent implements OnInit {
     this.handleUpload();
   }
 
+  //修改分组对话框选项变更
+  selectedChanged() {
+    this.fileList=[];
+    console.log('changed');
+    this.http.get(this.cusUrl).subscribe(res => {
+      let data;
+      data = res;
+      console.log(data);
+      let files = data.filter(d => d.display === true&&d.divid===this.cusUpload.divid);
+      files.forEach(e => {
+        e['svg'].forEach(ec => {
+          let file: UploadFile = {
+            uid: UUID.UUID(),
+            size: 5555,
+            name: ec['svg'],
+            filename: ec['svg'] + '.svg',
+            lastModified: '1551340778344',
+            lastModifiedDate: new Date(),
+            type: 'image/svg+xml'
+          };
+          this.fileList = [...this.fileList, file];
+        });
+      });
+      console.log(this.fileList);
+    }, error1 => {
+      console.log(error1);
+    });
+  }
+
+
   //获取所有自定义分组信息
   getCus() {
     this.http.get(this.cusUrl).subscribe(res => {
@@ -1027,7 +1090,7 @@ export class RuleComponent implements OnInit {
       this.cusAva.forEach(e => {
           this.cusMenu[e.divid[e.divid.length - 1]] = e;
           document.getElementById(e.divid).style.display = 'block';//显示上传过的分组
-          var $ = go.GraphObject.make;
+          let $ = go.GraphObject.make;
 
           var cusPalette = $(go.Palette, e.divid + 'div',
             {
@@ -1041,11 +1104,6 @@ export class RuleComponent implements OnInit {
               var nodedata = contextmenu.data;
               console.log(contextmenu);
               console.log(nodedata);
-              // self.http.post(self.updateCus, nodedata.divid).subscribe(res => {
-              //   self.message.success('已删除');
-              // }, error1 => {
-              //   self.message.info('删除失败:', error1);
-              // });
             });
           }
 
@@ -1086,27 +1144,120 @@ export class RuleComponent implements OnInit {
     // 指定图表的配置项和数据
     var option = {
       title: {
-        text: 'ECharts 入门示例'
+        text: 'Step Line'
       },
-      tooltip: {},
+      tooltip: {
+        trigger: 'axis'
+      },
       legend: {
-        data: ['销量']
+        data:['Step Start', 'Step Middle', 'Step End']
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
       },
       xAxis: {
-        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
-      yAxis: {},
-      series: [{
-        name: '销量',
-        type: 'bar',
-        data: [5, 20, 36, 10, 10, 20]
-      }]
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          name:'Step Start',
+          type:'line',
+          step: 'start',
+          data:[120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+          name:'Step Middle',
+          type:'line',
+          step: 'middle',
+          data:[220, 282, 201, 234, 290, 430, 410]
+        },
+        {
+          name:'Step End',
+          type:'line',
+          step: 'end',
+          data:[450, 432, 401, 454, 590, 530, 510]
+        }
+      ]
     };
+
+    var option1 = {
+      legend: {},
+      tooltip: {},
+      dataset: {
+        source: [
+          ['product', '2015', '2016', '2017'],
+          ['Matcha Latte', 43.3, 85.8, 93.7],
+          ['Milk Tea', 83.1, 73.4, 55.1],
+          ['Cheese Cocoa', 86.4, 65.2, 82.5],
+          ['Walnut Brownie', 72.4, 53.9, 39.1]
+        ]
+      },
+      xAxis: {type: 'category'},
+      yAxis: {},
+      // Declare several bar series, each will be mapped
+      // to a column of dataset.source by default.
+      series: [
+        {type: 'bar'},
+        {type: 'bar'},
+        {type: 'bar'}
+      ]
+    };
+
+    var option2 = {
+      title : {
+        text: '运输结构',
+        x:'center'
+      },
+      tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['卡车','火车','管道','船舶','空运']
+      },
+      series : [
+        {
+          name: '运输方式',
+          type: 'pie',
+          radius : '55%',
+          center: ['50%', '60%'],
+          data:[
+            {value:335, name:'卡车'},
+            {value:310, name:'火车'},
+            {value:234, name:'管道'},
+            {value:135, name:'船舶'},
+            {value:1548, name:'空运'}
+          ],
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+
 
     // 使用刚指定的配置项和数据显示图表。
     myChart1.setOption(option);
-    myChart2.setOption(option);
-    myChart3.setOption(option);
+    myChart2.setOption(option1);
+    myChart3.setOption(option2);
   }
 
   //显示echart并可拖动

@@ -36,10 +36,10 @@
                &nbsp;数据订阅</span>
       </li>
 
-      <li nz-menu-item (click)="content='任务调度'">
+      <li nz-menu-item (click)="content='拓扑监控'">
             <span title>
               <i class="icon-reloadtime"></i>
-               &nbsp;任务调度</span>
+               &nbsp;拓扑监控</span>
       </li>
 
       <li nz-menu-item (click)="content='通知告警'">
@@ -54,22 +54,23 @@
                &nbsp;数据管理</span>
       </li>
 
-      <li nz-submenu>
-            <span title>
-              <i class="icon-cluster"></i>
-               &nbsp;设备管理</span>
-        <ul>
-          <li nz-menu-item (click)="content='设备注册'"><i class="icon-edit"></i>
-            &nbsp;设备注册
-          </li>
-          <li nz-menu-item (click)="content='设备服务'"><i class="icon-fork"></i>
-            &nbsp;设备服务
-          </li>
-          <li nz-menu-item (click)="content='设备配置'"><i class="icon-file"></i>
-            &nbsp;设备配置
-          </li>
-        </ul>
+      <li nz-menu-item (click)="content='设备注册'"><i class="icon-edit"></i>
+        &nbsp;设备注册
       </li>
+      <li nz-menu-item (click)="content='设备服务'"><i class="icon-fork"></i>
+        &nbsp;设备服务
+      </li>
+      <li nz-menu-item (click)="content='设备配置'"><i class="icon-file"></i>
+        &nbsp;设备配置
+      </li>
+      <!--<li nz-submenu>-->
+            <!--<span title>-->
+              <!--<i class="icon-cluster"></i>-->
+               <!--&nbsp;设备管理</span>-->
+        <!--<ul>-->
+          <!---->
+        <!--</ul>-->
+      <!--</li>-->
 
       <!--网关代理实际使用发现没用-->
       <!--<li nz-menu-item (click)="content='网关代理'">-->
@@ -82,7 +83,7 @@
   </nz-sider>
 
   <nz-layout style="height: 100%;background-color: #fff">
-    <nz-content [ngClass]="{'dark-content':(content=='边缘连接')||(content=='任务调度')||(content=='边缘智能')||(content=='欢迎'),'light-content':(content!='边缘连接')&&(content!='任务调度')&&(content!='边缘智能')&&(content!='欢迎')}" >
+    <nz-content [ngClass]="{'dark-content':(content=='边缘连接')||(content=='拓扑监控')||(content=='边缘智能')||(content=='欢迎'),'light-content':(content!='边缘连接')&&(content!='拓扑监控')&&(content!='边缘智能')&&(content!='欢迎')}" >
       <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%;">
         <!--重要-->
         <!--加入app-login自动跳转登录，直接在4200试运行时备注掉，否则无限加载登录页。实机部署时取消备注，否则没有权限不能获取微服务数据-->
@@ -129,7 +130,7 @@
         <app-export></app-export>
       </div>
 
-      <div *ngIf="content=='任务调度'" >
+      <div *ngIf="content=='拓扑监控'" >
         <app-rulelist></app-rulelist>
       </div>
 

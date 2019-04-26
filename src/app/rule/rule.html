@@ -90,22 +90,22 @@
     </div>
     <div id="leftbar">
       <nz-collapse nzAccordion>
-        <nz-collapse-panel [nzActive]="true" [nzHeader]="'管道'">
+        <nz-collapse-panel [nzActive]="true" [nzHeader]="'交通运输'">
           <div id="myPaletteDiv1" style="height:400px;max-height: 800px;"></div>
         </nz-collapse-panel>
-        <nz-collapse-panel [nzHeader]="'机床'">
+        <nz-collapse-panel [nzHeader]="'工厂设施'">
           <div id="myPaletteDiv2" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
-        <nz-collapse-panel [nzHeader]="'交通工具'">
+        <nz-collapse-panel [nzHeader]="'工业容器'">
           <div id="myPaletteDiv3" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <nz-collapse-panel [nzHeader]="'加热设备'">
           <div id="myPaletteDiv4" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
-        <nz-collapse-panel [nzHeader]="'工具箱5'">
+        <nz-collapse-panel [nzHeader]="'工业酿造'">
           <div id="myPaletteDiv5" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
-        <nz-collapse-panel [nzHeader]="'工具箱6'">
+        <nz-collapse-panel [nzHeader]="'能源设备'">
           <div id="myPaletteDiv6" style="height: 400px;max-height: 800px;"></div>
         </nz-collapse-panel>
         <!--以下自定义分组 默认都不显示-->
@@ -173,7 +173,7 @@
             (nzOnOk)="handleUpload()" (nzAfterClose)="handleClose()" (nzOnCancel)="handleCancel()">
     <p>选择分组</p>
     <!--绑定欲上传分组中的divid -->
-    <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="cusUpload.divid" >
+    <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="cusUpload.divid">
       <nz-option *ngFor="let option of cusAva" [nzLabel]="option.name" [nzValue]="option.divid"></nz-option>
     </nz-select>
     <br>
@@ -181,12 +181,12 @@
       [(nzFileList)]="fileList"
       [nzBeforeUpload]="beforeUpload">
       <button nz-button>
-        <i nz-icon type="upload"></i><span>Select File</span>
+        <i nz-icon type="upload"></i><span>选择文件</span>
       </button>
     </nz-upload>
     <button nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleUpload()"
             [disabled]="fileList.length == 0" style="margin-top: 16px">
-      {{ uploading ? 'Uploading' : 'Start Upload' }}
+      {{ uploading ? '上传中…' : '上传' }}
     </button>
   </nz-modal>
 
@@ -200,12 +200,12 @@
       [(nzFileList)]="fileList"
       [nzBeforeUpload]="beforeUpload">
       <button nz-button>
-        <i nz-icon type="upload"></i><span>Select File</span>
+        <i nz-icon type="upload"></i><span>选择文件</span>
       </button>
     </nz-upload>
     <button nz-button [nzType]="'primary'" [nzLoading]="uploading" (click)="handleNew()"
             [disabled]="fileList.length == 0" style="margin-top: 16px">
-      {{ uploading ? 'Uploading' : 'Start Upload' }}
+      {{ uploading ? '上传中…' : '上传' }}
     </button>
   </nz-modal>
 
@@ -231,4 +231,4 @@
 
 <div class="echarts" id="echart1" *ngIf="true"></div>
 <div class="echarts" id="echart2" style="left:500px" *ngIf="true"></div>
-<div class="echarts" id="echart3" style="top:330px;:" *ngIf="true"></div>
+<div class="echarts" id="echart3" style="top:430px;" *ngIf="true"></div>

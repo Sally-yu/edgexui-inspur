@@ -4,7 +4,7 @@ import {NzMessageService} from 'ng-zorro-antd';
 import {AjaxService} from '../ajax.service';
 import * as go from 'gojs';
 
-declare let $: any;
+declare var $: any;
 
 @Component({
   selector: 'app-rulelist',
@@ -132,7 +132,7 @@ export class RulelistComponent implements OnInit {
 
   //初始化布局图和工具栏
   initDiagram() {
-    var $ = go.GraphObject.make;
+    let $ = go.GraphObject.make;
     let self = this;
     var imgUrl = this.ajax.imgUrl + '/';
 
