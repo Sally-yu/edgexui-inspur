@@ -124,11 +124,11 @@
 //下拉按钮
 #droptop {
   position: absolute;
-  -webkit-transform: rotateX(80deg);
-  -moz-transform: rotateX(80deg);
-  -ms-transform: rotateX(80deg);
-  -o-transform: rotateX(80deg);
-  transform: rotateX(80deg);
+  -webkit-transform: rotateX(85deg);
+  -moz-transform: rotateX(85deg);
+  -ms-transform: rotateX(85deg);
+  -o-transform: rotateX(85deg);
+  transform: rotateX(85deg);
   -webkit-transform-origin: center top;
   -moz-transform-origin: center top;
   -ms-transform-origin: center top;
@@ -162,11 +162,11 @@
 //左侧展开
 #dropleft {
   position: absolute;
-  -webkit-transform: rotateY(80deg);
-  -moz-transform: rotateY(80deg);
-  -ms-transform: rotateY(80deg);
-  -o-transform: rotateY(80deg);
-  transform: rotateY(80deg);
+  -webkit-transform: rotateY(85deg);
+  -moz-transform: rotateY(85deg);
+  -ms-transform: rotateY(85deg);
+  -o-transform: rotateY(85deg);
+  transform: rotateY(85deg);
   -webkit-transform-origin: left center;
   -moz-transform-origin: left center;
   -ms-transform-origin: left center;
@@ -435,11 +435,11 @@
   border-radius: 2px;
   box-shadow:  0 0 2px rgba(0, 0, 0, .8);
   width: 300px;
-  height: 300px;
+  height: 200px;
   position: absolute;
   z-index: 1000;
   top: 100px;
   right: 100px;
-  background-color: rgba(220, 230, 210, 0.6);
+  background-color: rgba(192, 220, 236, .5);
 }
 
