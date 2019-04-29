@@ -1,0 +1,128 @@
+<div *ngIf="show; then thenBlock; else elseBlock"></div>
+<ng-template #thenBlock>
+  <div style="margin-bottom: 16px;">
+    <button nz-button class="tool-btn-green" (click)="addNewRow()">
+      新增
+    </button>
+    <button nz-button [nzType]="'primary'" (click)="reFresh()">
+      刷新
+    </button>
+  </div>
+
+  <nz-table #schedulEvent [nzData]="schedulevents" [nzLoading]="loading" [nzSize]="'middle'">
+    <thead>
+    <tr>
+      <th>事件名称</th>
+      <th>所属任务</th>
+      <th>设备服务</th>
+      <th>方式</th>
+      <th>路径</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of schedulEvent.data">
+      <td>{{data.name}}</td>
+      <td>{{data.schedule}}</td>
+      <td>{{data.service}}</td>
+      <td>{{data.addressable.method}}</td>
+      <td>{{data.addressable.path}}</td>
+      <td>
+        <a (click)="editRow(data.id)">编辑</a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a style="color:#F22;" nz-popconfirm nzTitle="确认删除该事件吗？" (nzOnConfirm)="deleteRow(data.id,data.addressable.name)"
+               (nzOnCancel)="cancelDelete()">删除</a>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</ng-template>
+<ng-template #elseBlock>
+  <div style="margin-bottom: 16px;">
+    <button nz-button [nzType]="'primary'" (click)="saveEventInfo()">保存</button>
+    <button nz-button (click)="goback()">返回</button>
+  </div>
+  <div nz-row nzGutter="2" style="margin-bottom: 0">
+    <div nz-col nzSpan="5">
+      <nz-form-item>
+        <nz-form-label>事件名称</nz-form-label>
+          <input nz-input placeholder="" [(ngModel)]="selectevent.name" style="width: 100%">
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="5"  nzOffset="1" >
+      <nz-form-item>
+        <nz-form-label>参数</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectevent.parameters" style="width: 100%">
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="5"  nzOffset="1" >
+      <nz-form-item>
+        <nz-form-label>任务名称</nz-form-label>
+          <nz-select  [(ngModel)]="selectevent.schedule" style="width: 100%">
+            <nz-option *ngFor="let s of schedulerlist" [nzValue]="s" [nzLabel]="s"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="5"  nzOffset="1" >
+      <nz-form-item>
+        <nz-form-label>设备服务</nz-form-label>
+          <nz-select  [(ngModel)]="selectevent.service" style="width: 100%">
+            <nz-option *ngFor="let o of deviceservicelist" [nzValue]="o" [nzLabel]="o"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row nzGutter="2" style="margin-bottom: 0">
+    <div nz-col nzSpan="23">
+        <nz-divider nzText="寻址信息"  style="margin: 0px" nzOrientation="left"></nz-divider>
+    </div> 
+  </div>
+  <div nz-col nzSpan="7" nzOffset="0">
+    <div nz-row nzGutter="2" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>寻址名称</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectevent.addressable.name">
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="2" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>地址</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectevent.addressable.address">
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-col nzSpan="7" nzOffset="1">
+    <div nz-row nzGutter="2" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>方式</nz-form-label>
+        <nz-select  [(ngModel)]="selectevent.addressable.method" style="width: 100%">
+          <nz-option *ngFor="let o of methodData" [nzValue]="o" [nzLabel]="o"></nz-option>
+        </nz-select>
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="2" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>端口号</nz-form-label>
+        <nz-input-number  [(ngModel)]="selectevent.addressable.port" style="width: 100%"></nz-input-number>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-col nzSpan="7" nzOffset="1">
+    <div nz-row nzGutter="2" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>设备名称</nz-form-label>
+        <nz-select  [(ngModel)]="devicename" style="width: 100%">
+          <nz-option *ngFor="let o of devicelist" [nzValue]="o" [nzLabel]="o"></nz-option>
+        </nz-select>
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="2" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>命令</nz-form-label>
+        <nz-select  [(ngModel)]="commandname" style="width: 100%">
+          <nz-option *ngFor="let o of commandlist" [nzValue]="o" [nzLabel]="o"></nz-option>
+        </nz-select>
+      </nz-form-item>
+    </div>
+  </div>  
+</ng-template>

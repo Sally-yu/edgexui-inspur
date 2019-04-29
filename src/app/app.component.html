@@ -6,40 +6,43 @@
           <img [src]="logoPath" alt="inspur" style="width: 13rem; padding-top: 0.3rem">
         </div>
       </li>
-      <li nz-submenu>
-        <span title>
-          <i class="icon-linechart"></i>
-            &nbsp;边缘分析</span>
-        <ul>
-          <li nz-menu-item (click)="content='边缘连接'">
+      <div *ngIf="isemptyofArray(dataSet); then thenBlock; else elseBlock"></div>
+      <ng-template #thenBlock>
+        <li nz-submenu>
             <span title>
-              <i class="icon-desktop"></i>
-               &nbsp;边缘连接</span>
+              <i class="icon-linechart"></i>
+                &nbsp;边缘分析</span>
+            <ul *ngFor="let data of dataSet">
+              <li nz-menu-item (click)="setAnalysis(data,'true')">
+                <span title>
+                  <i class="icon-desktop"></i>
+                    &nbsp;{{data.name}}</span>
+              </li>
+            </ul>
           </li>
-          <!--<li nz-menu-item (click)="content='边缘配置'">-->
-            <!--<span title>-->
-              <!--<i class="icon-setting"></i>-->
-               <!--&nbsp;边缘配置</span>-->
-          <!--</li>-->
-        </ul>
-      </li>
-
-      <li nz-menu-item (click)="content='边缘智能'">
+      </ng-template>
+      <ng-template #elseBlock>
+        <li nz-menu-item (click)="setAnalysis(data,'false')">
+            <span title>
+              <i class="icon-bulb"></i>
+                &nbsp;边缘分析</span>
+          </li>
+      </ng-template>
+         
+      <!-- <li nz-menu-item (click)="content='边缘智能'">
             <span title>
               <i class="icon-bulb"></i>
                &nbsp;边缘智能</span>
+      </li> -->
+      <li nz-menu-item (click)="content='设备拓扑'">
+          <span title>
+            <i class="icon-bulb"></i>
+             &nbsp;拓扑监控</span>
       </li>
-
       <li nz-menu-item (click)="content='数据订阅'">
             <span title>
               <i class="icon-export"></i>
                &nbsp;数据订阅</span>
-      </li>
-
-      <li nz-menu-item (click)="content='拓扑监控'">
-            <span title>
-              <i class="icon-reloadtime"></i>
-               &nbsp;拓扑监控</span>
       </li>
 
       <li nz-menu-item (click)="content='通知告警'">
@@ -53,25 +56,34 @@
               <i class="icon-database"></i>
                &nbsp;数据管理</span>
       </li>
-
-      <li nz-menu-item (click)="content='设备注册'"><i class="icon-edit"></i>
-        &nbsp;设备注册
+      <li nz-menu-item (click)="content='任务调度'">
+        <span title>
+          <i class="icon-edit"></i>
+           &nbsp;任务调度</span>
       </li>
-      <li nz-menu-item (click)="content='设备服务'"><i class="icon-fork"></i>
-        &nbsp;设备服务
+      <li nz-menu-item (click)="content='设备注册'">
+        <span title>
+          <i class="icon-edit"></i>
+           &nbsp;设备注册</span>
       </li>
-      <li nz-menu-item (click)="content='设备配置'"><i class="icon-file"></i>
-        &nbsp;设备配置
-      </li>
-      <!--<li nz-submenu>-->
-            <!--<span title>-->
-              <!--<i class="icon-cluster"></i>-->
-               <!--&nbsp;设备管理</span>-->
-        <!--<ul>-->
-          <!---->
-        <!--</ul>-->
-      <!--</li>-->
-
+      <!-- <li nz-menu-item (click)="content='设备配置'">
+        <span title>
+          <i class="icon-file"></i>
+           &nbsp;设备配置</span>
+      </li> -->
+      <li nz-submenu >
+          <span title>
+            <i class="icon-fork"></i>
+             &nbsp;设备服务</span>
+             <ul>
+              <li nz-menu-item (click)="content='工业类服务'"><i class="icon-reloadtime"></i>
+                  &nbsp;工业类服务
+                </li>
+              <li nz-menu-item (click)="content='能源类服务'"><i class="icon-edit"></i>
+                &nbsp;能源类服务
+              </li>
+             </ul>
+        </li>
       <!--网关代理实际使用发现没用-->
       <!--<li nz-menu-item (click)="content='网关代理'">-->
             <!--<span title>-->
@@ -83,36 +95,41 @@
   </nz-sider>
 
   <nz-layout style="height: 100%;background-color: #fff">
-    <nz-content [ngClass]="{'dark-content':(content=='边缘连接')||(content=='拓扑监控')||(content=='边缘智能')||(content=='欢迎'),'light-content':(content!='边缘连接')&&(content!='拓扑监控')&&(content!='边缘智能')&&(content!='欢迎')}" >
+    <nz-content [ngClass]="{'dark-content':(content=='边缘分析')||(content=='设备拓扑')||(content=='边缘智能')||(content=='欢迎'),'light-content':(content!='边缘分析')&&(content!='设备拓扑')&&(content!='边缘智能')&&(content!='欢迎')}" >
       <div *ngIf="content=='欢迎'" class="welcome-page" style="height: 100%;">
         <!--重要-->
         <!--加入app-login自动跳转登录，直接在4200试运行时备注掉，否则无限加载登录页。实机部署时取消备注，否则没有权限不能获取微服务数据-->
         <h1>Inspur Edge Access System</h1>
 
-        <!--<app-login></app-login>-->
+        <app-login></app-login>
 
         <!--<img [src]="framePath" alt="" style="width:904px;height:480px;">-->
       </div>
+      <div *ngIf="content=='工业类服务'">
+        <app-opcua_service></app-opcua_service>
+      </div>
+
+      <div *ngIf="content=='能源类服务'">
+        <app-edgex_service></app-edgex_service>
+      </div>
 
       <div *ngIf="content=='设备注册'">
-        <app-device></app-device>
+        <app-device_register></app-device_register>
       </div>
 
-      <div *ngIf="content=='设备服务'">
-        <app-device-service></app-device-service>
-      </div>
 
       <div *ngIf="content=='设备配置'">
-        <app-profile></app-profile>
+        <app-device_config></app-device_config>
       </div>
 
-      <div *ngIf="content=='边缘连接'" >
-        <app-grafana></app-grafana>
+      <div *ngIf="content=='边缘分析'">
+          <app-analysis-ui (setParentmenu)="getplayUIlist()" > </app-analysis-ui>
       </div>
+        
 
-      <div *ngIf="content=='边缘配置'">
+      <!-- <div *ngIf="content=='边缘配置'">
         <app-grafana-setup></app-grafana-setup>
-      </div>
+      </div> -->
 
       <div *ngIf="content=='边缘智能'">
         <app-edge-int></app-edge-int>
@@ -121,17 +138,19 @@
       <div *ngIf="content=='通知告警'">
         <app-notification></app-notification>
       </div>
-
+      <div *ngIf="content=='任务调度'">
+        <app-edge-scheduled></app-edge-scheduled>
+      </div>
       <div *ngIf="content=='数据管理'">
-        <app-database></app-database>
+        <app-database_management></app-database_management>
       </div>
 
       <div *ngIf="content=='数据订阅'">
-        <app-export></app-export>
+        <app-cloud_subscribe></app-cloud_subscribe>
       </div>
 
-      <div *ngIf="content=='拓扑监控'" >
-        <app-rulelist></app-rulelist>
+      <div *ngIf="content=='设备拓扑'" >
+        <app-device_topolist></app-device_topolist>
       </div>
 
       <div *ngIf="content=='网关代理'">

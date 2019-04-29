@@ -1,0 +1,250 @@
+<div *ngIf="showNewTab; then thenBlock; else elseBlock"></div>
+<ng-template #thenBlock>
+  <div>
+    <div class="export table">
+      <div style="margin-bottom: 16px;">
+        <button nz-button class="tool-btn-green" (click)="newExport()">
+          新增
+        </button>
+        <button nz-button (click)="reFresh()" [nzType]="'primary'">
+          刷新
+        </button>
+      </div>
+      <nz-table #deviceTabel [nzData]="registrations" [nzSize]="'middle'">
+        <thead>
+        <tr>
+          <th>订阅名称</th>
+          <th>订阅方式</th>
+          <th>格式</th>
+          <th>寻址信息</th>
+          <th>设备名称</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of deviceTabel.data">
+          <td>{{data.name}}</td>
+          <td>{{data.destination}}</td>
+          <td>{{data.format}}</td>
+          <td>
+            <a (click)='viewAddress(data.id)' nz-popover nzTitle="寻址信息" nzTrigger="click" [nzContent]="ipTemplate"
+               nzPlacement="bottomRight">
+              查看
+            </a>
+          </td>
+          <td>{{data.filter.deviceIdentifiers[0]}}</td>
+          <td>
+            <div *ngIf="!data.enable" nz-button  nzShape="circle" [nzSize]="small" style="width: 25px;height: 25px; background-color: #bfbfbf"></div>
+            <div *ngIf="data.enable" nz-button  nzLoading nzType="primary" nzShape="circle" [nzSize]="small" style="width: 25px;height: 25px; background-color: #095df8"></div>
+        </td>
+          <td>
+            <a (click)="editRow(data.id)">编辑</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a *ngIf="!data.enable"  [id]="data.name" style="color:rgb(67, 34, 255);font-size: 15px;"  (click)="startExport(data)">启动</a>
+            <a *ngIf="data.enable" style="color:#F22;font-size: 15px;" (click)="stopExport(data)">停止</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a style="color:#F22;" nz-popconfirm nzTitle="确认删除该订阅吗？" (nzOnConfirm)="deleteExport(data.id)"
+               (nzOnCancel)="cancelDelete()">删除</a>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div> 
+  </div>
+  
+  <ng-template #ipTemplate>
+    <nz-table #ipData [nzData]="addressableinfo" [nzShowPagination]=false>
+      <thead>
+      <tr>
+        <th>名称</th>
+        <th>协议</th>
+        <th>方式</th>
+        <th>地址</th>
+        <th>端口</th>
+        <th>发布者</th>
+        <th>主题</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let devcieIp of ipData.data">
+        <td>{{devcieIp.addressable.name}}</td>
+        <td>{{devcieIp.addressable.protocol}}</td>
+        <td>{{devcieIp.addressable.method}}</td>
+        <td>{{devcieIp.addressable.address}}</td>
+        <td>{{devcieIp.addressable.port}}</td>
+        <td>{{devcieIp.addressable.publisher}}</td>
+        <td>{{devcieIp.addressable.topic}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+</ng-template>
+<ng-template #elseBlock>
+  <div style="margin: 0px;">
+      <button nz-button class="tool-btn-green" (click)="submitExport()">
+        保存
+      </button>
+      <button nz-button (click)="closeExport()" [nzType]="'primary'">
+        返回
+      </button>
+  </div>
+  <!-- <div nz-row nzGutter="8" style="margin-bottom: 0">
+    <div nz-col nzSpan="23">
+      <nz-divider nzText="基本配置"  style="margin: 0px"></nz-divider>
+    </div> 
+ </div> -->
+  <div nz-row nzGutter="8" style="margin-bottom: 0">
+    <div nz-col nzSpan="5">
+      <nz-form-item>
+        <nz-form-label>订阅名称</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="" [(ngModel)]="selectedExport.name" style="width: 100%">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="5"  nzOffset="1" >
+      <nz-form-item>
+        <nz-form-label>订阅方式</nz-form-label>
+        <nz-form-control>
+          <nz-select  [(ngModel)]="selectedExport.destination" style="width: 100%">
+            <nz-option *ngFor="let c of destinationData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="5"  nzOffset="1" >
+      <nz-form-item>
+        <nz-form-label>压缩方式</nz-form-label>
+        <nz-form-control>
+          <nz-select  [(ngModel)]="zip" style="width: 100%">
+            <nz-option *ngFor="let c of zipData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="5"  nzOffset="1" >
+      <nz-form-item>
+        <nz-form-label>格式</nz-form-label>
+        <nz-form-control>
+          <nz-select  [(ngModel)]="selectedExport.format" style="width: 100%">
+            <nz-option *ngFor="let c of fomartData" [nzValue]="c" [nzLabel]="c"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <!-- <div nz-col nzSpan="8">
+      <nz-form-item>
+        <nz-form-label>启用</nz-form-label>
+        <nz-form-control>
+          <nz-switch [(ngModel)]="selectedExport.enable"></nz-switch>
+        </nz-form-control>
+      </nz-form-item>
+    </div> -->
+  </div>
+  <div nz-row nzGutter="8" style="margin-bottom: 0">
+    <div nz-col nzSpan="23">
+        <nz-divider nzText="寻址信息"  style="margin: 0px" nzOrientation="left"></nz-divider>
+    </div> 
+  </div>
+  <div nz-row>
+  <div nz-col nzSpan="7" nzOffset="0">
+    <div nz-row nzGutter="8" style="margin-bottom: 0">
+        <nz-form-item>
+          <nz-form-label>寻址名称</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="" [(ngModel)]="selectedExport.addressable.name">
+          </nz-form-control>
+        </nz-form-item>
+    </div>
+    <div nz-row nzGutter="8" style="margin-bottom: 0">
+        <nz-form-item>
+          <nz-form-label>地址</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="" [(ngModel)]="selectedExport.addressable.address">
+          </nz-form-control>
+        </nz-form-item>
+    </div>
+    <div nz-row nzGutter="8" style="margin-bottom: 0">
+        <nz-form-item>
+          <nz-form-label>用户</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="" [(ngModel)]="selectedExport.addressable.user">
+          </nz-form-control>
+        </nz-form-item>
+    </div>      
+  </div>
+  <div nz-col nzSpan="7" nzOffset="1" >
+      <div nz-row nzGutter="8" style="margin-bottom: 0">
+          <nz-form-item>
+              <nz-form-label>协议</nz-form-label>
+              <nz-form-control>
+                <nz-select  [(ngModel)]="selectedExport.addressable.protocol" style="width: 100%">
+                  <nz-option *ngFor="let c of protcolData" [nzValue]="c" [nzLabel]="c"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+      </div>
+      <div nz-row nzGutter="8" style="margin-bottom: 0">
+          <nz-form-item>
+              <nz-form-label>端口</nz-form-label>
+              <nz-form-control>
+                <nz-input-number  [(ngModel)]="selectedExport.addressable.port" style="width: 100%"></nz-input-number>
+              </nz-form-control>
+          </nz-form-item>
+      </div>
+      <div nz-row nzGutter="8" style="margin-bottom: 0">
+          <nz-form-item>
+              <nz-form-label>密码</nz-form-label>
+              <nz-form-control>
+                <input nz-input placeholder="" [(ngModel)]="selectedExport.addressable.password">
+              </nz-form-control>
+            </nz-form-item>
+      </div>      
+  </div>  
+  <div nz-col nzSpan="7" nzOffset="1">
+      <div nz-row nzGutter="8" style="margin-bottom: 0">
+          <nz-form-item>
+              <nz-form-label>方式</nz-form-label>
+              <nz-form-control>
+                <nz-select  [(ngModel)]="selectedExport.addressable.method" style="width: 100%">
+                  <nz-option *ngFor="let c of methodData" [nzValue]="c" [nzLabel]="c"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+      </div>
+      <div nz-row nzGutter="8" style="margin-bottom: 0">
+          <nz-form-item>
+              <nz-form-label>发布者</nz-form-label>
+              <nz-form-control>
+                <input nz-input placeholder="" [(ngModel)]="selectedExport.addressable.publisher">
+              </nz-form-control>
+            </nz-form-item>
+      </div>
+      <div nz-row nzGutter="8" style="margin-bottom: 0">
+          <nz-form-item>
+              <nz-form-label>订阅主题</nz-form-label>
+              <nz-form-control>
+                <input nz-input placeholder="" [(ngModel)]="selectedExport.addressable.topic">
+              </nz-form-control>
+          </nz-form-item>
+      </div>      
+  </div> 
+</div>   
+  <div nz-row nzGutter="8" style="margin-bottom: 0">
+    <div nz-col nzSpan="23">
+        <nz-divider nzText="寻址信息"  style="margin: 0px" nzOrientation="left"></nz-divider>
+    </div> 
+  </div>
+  <div nz-row nzGutter="8" style="margin-bottom: 0">
+    <div nz-col nzSpan="7">
+      <nz-form-item>
+        <nz-form-label>选择设备</nz-form-label>
+        <nz-select style="width: 100%" nzShowSearch [(ngModel)]="selectedExport.filter.deviceIdentifiers[0]">
+            <nz-option *ngFor="let devicename of devicelists" [nzLabel]="devicename" [nzValue]="devicename"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>
+  </div>
+</ng-template>
+

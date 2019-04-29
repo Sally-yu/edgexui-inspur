@@ -39,11 +39,12 @@
               "node_modules/jquery-ui-dist/jquery-ui.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.js",
               "node_modules/jquery-ui-dist/jquery-ui.js",
+              "node_modules/jquery/dist/jquery.js",
               "node_modules/lodash/index.js",
               "node_modules/gojs/release/go.js",
               "node_modules/gojs/release/go-debug.js",
+              "node_modules/jquery/dist/jquery.min.js",
               "node_modules/underscore/underscore.js",
               "node_modules/backbone/backbone.js",
               "node_modules/dagre/dist/dagre.js",

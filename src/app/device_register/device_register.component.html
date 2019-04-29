@@ -1,0 +1,155 @@
+<div *ngIf="show; then thenBlock; else elseBlock"></div>
+<ng-template #thenBlock>
+  <div style="margin-bottom: 16px;">
+    <button nz-button class="tool-btn-green" (click)="addNewRow()">
+      新增
+    </button>
+    <button nz-button [nzType]="'primary'" (click)="reFresh()">
+      刷新
+    </button>
+  </div>
+
+  <nz-table #deviceData [nzData]="devices" [nzLoading]="loading" [nzSize]="'middle'">
+    <thead>
+    <tr>
+      <th>设备名称</th>
+      <th>所属服务</th>
+      <th>设备描述</th>
+      <th>运行状态</th>
+      <th>管理状态</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of deviceData.data">
+      <td>{{data.name}}</td>
+      <td>{{data.service.name}}</td>
+      <td>{{data.description}}</td>
+      <td>{{data.operatingState}}</td>
+      <td>{{data.adminState}}</td>
+      <td>
+        <a (click)="editRow(data.id)">编辑</a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a style="color:#F22;" nz-popconfirm nzTitle="确认删除该设备吗？" (nzOnConfirm)="deleteRow(data.id,data.addressable.name)"
+               (nzOnCancel)="cancelDelete()">删除</a>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</ng-template>
+<ng-template #elseBlock>
+  <div style="margin-bottom: 16px;">
+    <button nz-button [nzType]="'primary'" (click)="saveDeviceInfo()">保存</button>
+    <button nz-button (click)="goback()">返回</button>
+  </div>
+
+  <div nz-col nzSpan="7" nzOffset="0">
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>设备名称</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.name">
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>运行状态</nz-form-label>
+          <nz-select  [(ngModel)]="selectdevice.operatingState" style="width: 100%">
+            <nz-option *ngFor="let o of opertionstates" [nzValue]="o" [nzLabel]="o"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>寻址名称</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.addressable.name">
+      </nz-form-item>
+    </div>  
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>地址</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.addressable.address">
+      </nz-form-item>
+    </div>       
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>用户</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.addressable.user">
+      </nz-form-item>
+    </div>   
+  </div>    
+  <div nz-col nzSpan="7" nzOffset="1">
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+        <nz-form-item>
+          <nz-form-label>设备服务</nz-form-label>
+            <nz-select  [(ngModel)]="selectdevice.service.name" style="width: 100%">
+              <nz-option *ngFor="let d of deviceservicelist" [nzValue]="d" [nzLabel]="d"></nz-option>
+            </nz-select>
+        </nz-form-item>
+    </div>
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>管理状态</nz-form-label>
+          <nz-select  [(ngModel)]="selectdevice.adminState" style="width: 100%">
+            <nz-option *ngFor="let a of adminstates" [nzValue]="a" [nzLabel]="a"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>寻址方式</nz-form-label>
+          <nz-select  [(ngModel)]="selectdevice.addressable.method" style="width: 100%">
+            <nz-option *ngFor="let m of methodData" [nzValue]="m" [nzLabel]="m"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>  
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>端口号</nz-form-label>
+        <nz-input-number   [(ngModel)]="selectdevice.addressable.port" style="width: 100%"></nz-input-number>
+      </nz-form-item>
+    </div>       
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>密码</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.addressable.password">
+      </nz-form-item>
+    </div>   
+  </div>  
+  <div nz-col nzSpan="7" nzOffset="1">
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+        <nz-form-item>
+          <nz-form-label>描述</nz-form-label>
+          <input nz-input placeholder="" [(ngModel)]="selectdevice.description">
+        </nz-form-item>
+    </div>
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>配置文件</nz-form-label>
+          <nz-select  [(ngModel)]="selectdevice.profile.name" style="width: 100%">
+            <nz-option *ngFor="let p of profilelist" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>协议类型</nz-form-label>
+          <nz-select  [(ngModel)]="selectdevice.addressable.protocol" style="width: 100%">
+            <nz-option *ngFor="let p of protcolData" [nzValue]="p" [nzLabel]="p"></nz-option>
+          </nz-select>
+      </nz-form-item>
+    </div>  
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>发布者</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.addressable.publisher">
+      </nz-form-item>
+    </div>       
+    <div nz-row nzGutter="6" style="margin-bottom: 0">
+      <nz-form-item>
+        <nz-form-label>主题</nz-form-label>
+        <input nz-input placeholder="" [(ngModel)]="selectdevice.addressable.topic">
+      </nz-form-item>
+    </div>   
+  </div>  
+</ng-template>
+

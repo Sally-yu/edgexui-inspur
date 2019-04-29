@@ -12,21 +12,21 @@ import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 
 import { GatewayComponent } from './gateway/gateway';
-import { DeviceComponent } from './device/device';
-import { NotificationComponent } from './notification/notification';
-import { ExportComponent } from './export/export';
-import { RuleComponent } from './rule/rule';
+import { DeviceComponent } from './device_register/device_register.component';
+import { NotificationComponent } from './edge_notification/notification.component';
+import { ExportComponent } from './cloud_subscribe/cloud_subscribe.component';
+import { RuleComponent } from './device_topolist/device_topo/device_topo.component';
 import { LoginComponent } from './login/login';
-import { GrafanaComponent } from './grafana/grafana.component';
-import { DatabaseComponent } from './database/database.component';
-import { DeviceDetailComponent } from './device-detail/device-detail.component';
-import { ProfileComponent } from './profile/profile.component';
-import { DeviceServiceComponent } from './device-service/device-service.component';
-import { ServiceDetailComponent } from './service-detail/service-detail.component';
-import { GrafanaSetupComponent } from './grafana-setup/grafana-setup.component';
-import { OpcuaComponent } from './opcua/opcua.component';
-import { EdgeIntComponent } from './edge-int/edge-int.component';
-import { RulelistComponent } from './rulelist/rulelist.component';
+import { AnalysisUIComponent } from './edge_analysis/analysis-ui/analysis-ui.component';
+import { DatabaseComponent } from './database_management/database_management.component';
+import { DeviceDetailComponent } from './device_management/device-detail/device-detail.component';
+import { ProfileComponent } from './device_management/device_config/device_config.component';
+import { Edgex_ServiceComponent } from './edge_services/edgex_service/edgex_service.component';
+import { Opcua_ServiceComponent } from './edge_services/opcua_service/opcua_service.component';
+import { EdgeIntComponent } from './edge_intelligent/edge-int.component';
+import { RulelistComponent } from './device_topolist/device_topolist.component';
+import { AnalysisListComponent } from './edge_analysis/analysis-list/analysis-list.component';
+import { EdgeScheduledComponent } from './edge-scheduled/edge-scheduled.component';
 
 
 
@@ -34,23 +34,24 @@ registerLocaleData(zh);
 
 @NgModule({
   declarations: [
+    RuleComponent,
     AppComponent,
     GatewayComponent,
     DeviceComponent,
     NotificationComponent,
     ExportComponent,
-    RuleComponent,
     LoginComponent,
-    GrafanaComponent,
+    DatabaseComponent,
+    AnalysisUIComponent,
     DatabaseComponent,
     DeviceDetailComponent,
     ProfileComponent,
-    DeviceServiceComponent,
-    ServiceDetailComponent,
-    GrafanaSetupComponent,
-    OpcuaComponent,
+    Edgex_ServiceComponent,
+    Opcua_ServiceComponent,
     EdgeIntComponent,
     RulelistComponent,
+    AnalysisListComponent,
+    EdgeScheduledComponent,
   ],
   imports: [
     BrowserModule,
