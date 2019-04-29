@@ -100,7 +100,12 @@ export class RuleComponent implements OnInit {
     {svg: '提炼塔', deviceid: '', status: '1'},
     {svg: '烘干塔', deviceid: '', status: '1'},
     {svg: '钻探工厂', deviceid: '', status: '1'},
-    {svg: '干燥塔', deviceid: '', status: '1'}
+    {svg: '干燥塔', deviceid: '', status: '1'},
+    {svg: '抛光机', deviceid: '', status: ''},
+    {svg: '烧结机', deviceid: '', status: ''},
+    {svg: '均化器', deviceid: '', status: '0'},
+    {svg: '冷却器', deviceid: '', status: '0'},
+    {svg: '汽轮机', deviceid: '', status: '0'},
 
   ];
   DataArray2 = [
@@ -111,6 +116,7 @@ export class RuleComponent implements OnInit {
     {svg: '锅炉', deviceid: '', status: '0'},
     {svg: '粉碎机', deviceid: '', status: '1'},
     {svg: '剪切机', deviceid: '', status: '1'},
+
   ];
   DataArray3 = [
     {svg: '抛光机', deviceid: '', status: ''},
@@ -1268,6 +1274,7 @@ export class RuleComponent implements OnInit {
       $('.echarts').css('display', 'block');
       $('.echarts').draggable({containment: '#content', scroll: false});
       this.initEchart();
+      // $('.echarts').resizable();
     } else if (display == 'block') {
       $('.echarts').css('display', 'none');
       $('#dragbtn').toggleClass('activebtn');
